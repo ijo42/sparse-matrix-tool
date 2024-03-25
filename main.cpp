@@ -90,7 +90,7 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
     std::string lineString;
     std::vector<std::string> line;
     SparseDoubleLinkedMatrix matrix{};
-    std::map<unsigned int, SparseDoubleLinkedMatrixElement*> elements{};
+    std::map<unsigned int, SparseDoubleLinkedMatrixElement*> elements{}; //мб лучше использвать unordered_map?
 
     std::getline(input,lineString);
     line = split(lineString, DLSMDelimiter);
