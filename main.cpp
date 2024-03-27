@@ -1,7 +1,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <ranges>
 #include <string>
 #include <sstream>
@@ -29,22 +29,65 @@ std::vector<std::string> split(const std::string &s, char delim) {
     return elems;
 }
 
-SparseDoubleLinkedMatrixElement *createIfNotExists(std::map<unsigned int, SparseDoubleLinkedMatrixElement *>& table, unsigned int id,
+SparseDoubleLinkedMatrixElement *initElement(const double value) {
+    auto *element = new SparseDoubleLinkedMatrixElement;
+    element->value = value;
+    element->nextLine = element->nextColumn = nullptr;
+    return element;
+}
+
+/* n - кол-во столбцов, m - кол-во строк */
+SparseDoubleLinkedMatrix generateRnd(int n, int m) {
+    int k = n * m / 10; // максимальное кол-во ненулевых
+    srand(time(0));
+
+    auto matrix = SparseDoubleLinkedMatrix{};
+    matrix.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(n);
+    matrix.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>(m);
+    auto columnTail = std::vector<SparseDoubleLinkedMatrixElement*>(n),
+            lineTail = std::vector<SparseDoubleLinkedMatrixElement*>(m);
+    std::uninitialized_fill(matrix.columnPointer.begin(), matrix.columnPointer.end(), nullptr);
+    std::uninitialized_fill(matrix.linePointer.begin(), matrix.linePointer.end(), nullptr);
+
+    for (int i = 0; i < n && k > 0; ++i) {      // вместо полного прохода прегенерировать непустые индексы
+        for (int j = 0; j < m && k > 0; ++j) {
+            if(rand() % 10 < 10){
+                auto element = initElement(rand() % 100 / 10.0);
+                if(!matrix.columnPointer[i])
+                    matrix.columnPointer[i] = columnTail[i] = element;
+                else {
+                    columnTail[i]->nextColumn = element;
+                    columnTail[i] = columnTail[i]->nextColumn;
+                }
+
+                if(!matrix.linePointer[j])
+                    matrix.linePointer[j] = lineTail[j] = element;
+                else {
+                    lineTail[j]->nextLine = element;
+                    lineTail[j] = lineTail[j]->nextLine;
+                }
+
+                k--;
+            }
+        }
+    }
+    return matrix;
+}
+
+SparseDoubleLinkedMatrixElement *createIfNotExists(std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement *>& table, unsigned int id,
                                                    const double value = NAN) {
     if(id == 0)
         return nullptr;
 
     if(!table.contains(id)) {
-        auto *element = new SparseDoubleLinkedMatrixElement;
-        element->value = value;
-        element->nextLine = element->nextColumn = nullptr;
+        auto *element = initElement(value);
         table.insert({id,element});
     } else if(value != NAN)
         table.at(id)->value = value;
     return table.at(id);
 }
 
-void loadPointers(const std::vector<std::string>& line, std::map<unsigned int, SparseDoubleLinkedMatrixElement*>& elements, std::vector<SparseDoubleLinkedMatrixElement *>& pointers) {
+void loadPointers(const std::vector<std::string>& line, std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement*>& elements, std::vector<SparseDoubleLinkedMatrixElement *>& pointers) {
     for (const auto& number: line) {
         int id = std::stoi(number);
         if(id != 0) {
@@ -55,7 +98,7 @@ void loadPointers(const std::vector<std::string>& line, std::map<unsigned int, S
         }
     }
 }
-void loadElement(const std::vector<std::string>& line, std::map<unsigned int, SparseDoubleLinkedMatrixElement*>& elements, int id) {
+void loadElement(const std::vector<std::string>& line, std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement*>& elements, int id) {
 
     const double value = std::stod(line[0]);
     const int nextLineId = std::stoi(line[1]), nextColumnId = std::stoi(line[2]);
@@ -90,7 +133,7 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
     std::string lineString;
     std::vector<std::string> line;
     SparseDoubleLinkedMatrix matrix{};
-    std::map<unsigned int, SparseDoubleLinkedMatrixElement*> elements{}; //мб лучше использвать unordered_map?
+    std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement*> elements{};
 
     std::getline(input,lineString);
     line = split(lineString, DLSMDelimiter);
@@ -151,6 +194,8 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
         }
     }
 
+
+    /* TODO: оптимизировать вывод */
     output << join(columnIds, DLSMDelimiter) << "\n"
             << join(lineIds, DLSMDelimiter) << "\n";
     k = 1;
