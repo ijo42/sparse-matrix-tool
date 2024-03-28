@@ -50,8 +50,8 @@ SparseDoubleLinkedMatrix generateRnd(int n, int m) {
 
     for (int i = 0; i < n && k > 0; ++i) {      // вместо полного прохода прегенерировать непустые индексы
         for (int j = 0; j < m && k > 0; ++j) {
-            if(rand() % 10 < 10){
-                auto element = initElement(rand() % 100 / 10.0);
+            if(rand() % 10 == 0){
+                auto element = initElement(rand() % 1000 / 100.0);
                 if(!matrix.columnPointer[i])
                     matrix.columnPointer[i] = columnTail[i] = element;
                 else {
