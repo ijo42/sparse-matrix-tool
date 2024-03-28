@@ -44,10 +44,8 @@ SparseDoubleLinkedMatrix generateRnd(int n, int m) {
     auto matrix = SparseDoubleLinkedMatrix{};
     matrix.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(n);
     matrix.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>(m);
-    auto columnTail = std::vector<SparseDoubleLinkedMatrixElement*>(n),
-            lineTail = std::vector<SparseDoubleLinkedMatrixElement*>(m);
-    std::uninitialized_fill(matrix.columnPointer.begin(), matrix.columnPointer.end(), nullptr);
-    std::uninitialized_fill(matrix.linePointer.begin(), matrix.linePointer.end(), nullptr);
+    auto columnTail = std::vector<SparseDoubleLinkedMatrixElement*>(n, nullptr),
+            lineTail = std::vector<SparseDoubleLinkedMatrixElement*>(m, nullptr);
 
     for (int i = 0; i < n && k > 0; ++i) {      // вместо полного прохода прегенерировать непустые индексы
         for (int j = 0; j < m && k > 0; ++j) {
@@ -113,7 +111,7 @@ void loadElement(const std::vector<std::string>& line, std::unordered_map<unsign
 
 void printMatrix(const SparseDoubleLinkedMatrix& matrix) {
     std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.size());
-    std::copy(matrix.columnPointer.begin(), matrix.columnPointer.end(), columnTail.begin());
+    std::ranges::copy(matrix.columnPointer, columnTail.begin());
     for (const auto lineHead: matrix.linePointer) {
         auto lineTail = lineHead;
         for (int i = 0; i < columnTail.size(); i++) {
@@ -170,8 +168,7 @@ unsigned int findElementNext(std::vector<SparseDoubleLinkedMatrixElement *>::ite
 }
 
 void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix) {
-    std::ofstream output(path, std::ios::trunc);
-    std::vector<SparseDoubleLinkedMatrixElement*> elements{};
+    std::vector<SparseDoubleLinkedMatrixElement*> elements(matrix.linePointer.size()*matrix.columnPointer.size() / 10);
     std::vector<unsigned int> lineIds(matrix.linePointer.size(), 0), columnIds(matrix.columnPointer.size(), 0);
     unsigned int k = 1, i = 0, j;
 
