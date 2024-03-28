@@ -38,7 +38,7 @@ SparseDoubleLinkedMatrixElement *initElement(const double value) {
 }
 
 /* n - кол-во столбцов, m - кол-во строк */
-SparseDoubleLinkedMatrix generateRnd(int n, int m) {
+SparseDoubleLinkedMatrix generateRnd(const int n, const int m) {
     int k = n * m / 10; // максимальное кол-во ненулевых
     srand(time(0));
 
@@ -97,6 +97,7 @@ void loadPointers(const std::vector<std::string>& line, std::unordered_map<unsig
         }
     }
 }
+
 void loadElement(const std::vector<std::string>& line, std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement*>& elements, int id) {
 
     const double value = std::stod(line[0]);
@@ -213,12 +214,58 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
     std::ranges::copy(outputText, std::ostream_iterator<std::string>(output, "\n"));
 }
 
+SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& matrix) {
+    auto newMatrix = SparseDoubleLinkedMatrix{};
+
+    // нули авто иницилизированы, т.к. без счётчика не обойтись
+    newMatrix.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix.columnPointer.size(), nullptr);
+    newMatrix.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>{};
+    newMatrix.linePointer.reserve(matrix.linePointer.size());           // нули будут заполнены вручную, что бы не вводить счетчик
+
+    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer.size());
+    std::ranges::copy(matrix.columnPointer, columnPointer.begin());
+
+    std::vector<SparseDoubleLinkedMatrixElement*> newColumnPointer(matrix.columnPointer.size(), nullptr);
+
+    for (const auto linePointer: matrix.linePointer) {
+        SparseDoubleLinkedMatrixElement* newLineTail = nullptr;
+        unsigned int columnI = 0;
+        for (auto & columnTail : columnPointer) {
+            if(linePointer && linePointer == columnTail) {
+                auto element = initElement(columnTail->value);
+                if(newLineTail) {   // если первый элемент в строке существует связываем предыдущий элемент с текущим
+                    newLineTail->nextLine = element;
+                } else {            // если это первый элемент в строке, записываем в указатели
+                    newMatrix.linePointer.push_back(element);
+                }
+                newLineTail = element; // двигаем хвост строк
+
+                if(!newColumnPointer[columnI]) { // если это первый элемент в столбце, записываем в указатели
+                    newMatrix.columnPointer[columnI] = newColumnPointer[columnI] = element;
+                } else {                         // если первый элемент в столбце существует, связываем с предыдущим
+                    newColumnPointer[columnI]->nextColumn = element;
+                }
+                newColumnPointer[columnI] = element; // двигаем хвост столбца
+
+                columnTail = columnTail->nextColumn; // двигаем хвост оригинальной матрицы
+            }
+            columnI++;
+        }
+        if(!newLineTail)
+            newMatrix.linePointer.push_back(newLineTail);
+    }
+    return newMatrix;
+}
 
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
     auto matrix = generateRnd(4, 7);
+    auto secondMatrix = deepCopy(matrix);
+    secondMatrix.columnPointer[0]->value = 777.0;
+
+    printMatrix(secondMatrix);
     printMatrix(matrix);
     saveToFile(R"(..\examples\ex0.txt)", matrix);
 
