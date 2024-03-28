@@ -112,6 +112,9 @@ void loadElement(const std::vector<std::string>& line, std::unordered_map<unsign
 }
 
 void printMatrix(const SparseDoubleLinkedMatrix& matrix) {
+    if (matrix.columnPointer.empty())
+        std::cout << "Матрица пуста";
+
     std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.size());
     std::ranges::copy(matrix.columnPointer, columnTail.begin());
     for (const auto lineHead: matrix.linePointer) {
@@ -257,6 +260,27 @@ SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& matrix) {
     return newMatrix;
 }
 
+void deepDelete(SparseDoubleLinkedMatrix& matrix) {
+    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer.size());
+    std::ranges::copy(matrix.columnPointer, columnPointer.begin());
+    unsigned int i = 0;
+    for(auto lineHead = matrix.linePointer.begin(); lineHead != matrix.linePointer.end(); ++i, ++lineHead){
+        auto lineTail = *lineHead;
+        unsigned int j = 0;
+        for (auto columnHead = columnPointer.begin(); columnHead != columnPointer.end(); ++j, ++columnHead) {
+            if(lineTail && lineTail == *columnHead) {
+                auto element = lineTail;
+                lineTail = lineTail->nextLine;
+                *columnHead = (*columnHead)->nextColumn;
+                element->nextColumn = element->nextLine = nullptr;
+                free(element);
+            }
+        }
+    }
+    matrix.columnPointer.clear();
+    matrix.linePointer.clear();
+}
+
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
@@ -266,8 +290,9 @@ int main() {
     secondMatrix.columnPointer[0]->value = 777.0;
 
     printMatrix(secondMatrix);
-    printMatrix(matrix);
-    saveToFile(R"(..\examples\ex0.txt)", matrix);
+    deepDelete(secondMatrix);
+    printMatrix(secondMatrix);
+    //saveToFile(R"(..\examples\ex0.txt)", matrix);
 
     return 0;
 }
