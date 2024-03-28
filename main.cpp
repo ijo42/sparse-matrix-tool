@@ -160,6 +160,10 @@ std::string join(const std::vector<unsigned int> &lst, const char delim) {
     return ret;
 }
 
+/*
+ * поиск элемента `searched` начиная от текущей позиции итератора
+ * возвращает кол-во элементов между текущим элементом и искомым
+ */
 unsigned int findElementNext(std::vector<SparseDoubleLinkedMatrixElement *>::iterator current, const SparseDoubleLinkedMatrixElement* searched) {
     int i = 0;
     for (; *current != searched; ++current, ++i) {}
@@ -211,10 +215,10 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
 
 
 int main() {
-    auto matrix = loadFromFile(R"(..\examples\ex1.txt)");
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
+    auto matrix = generateRnd(4, 7);
     printMatrix(matrix);
     saveToFile(R"(..\examples\ex0.txt)", matrix);
 
