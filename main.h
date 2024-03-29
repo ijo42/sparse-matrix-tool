@@ -9,6 +9,7 @@
 #include <ranges>
 #include <string>
 #include <sstream>
+#include <functional>
 #include <vector>
 #include "shared.h"
 #include "io.h"

@@ -70,6 +70,7 @@ void printMatrix(const SparseDoubleLinkedMatrix& matrix) {
         }
         std::cout << "\n";
     }
+    std::cout << std::endl;
 }
 
 
@@ -110,11 +111,20 @@ SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& matrix) {
             }
             columnI++;
         }
-        if(!newLineTail)
+        if(!newLineTail)    // сохранение пустой строки
             newMatrix.linePointer.push_back(newLineTail);
     }
     return newMatrix;
 }
+
+unsigned int countElement(const SparseDoubleLinkedMatrix &matrix) {
+    return matrix.columnPointer.size() * matrix.linePointer.size();
+}
+
+std::pair<long long unsigned int, long long unsigned int> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
+    return std::pair{matrix.columnPointer.size(), matrix.linePointer.size()};
+}
+
 /*
  * удаляет матрицу, а так же все элементы из ОЗУ
  * после операции класс матрицы имеет нулевые векторы
@@ -138,4 +148,77 @@ void deepDelete(SparseDoubleLinkedMatrix& matrix) {
     }
     matrix.columnPointer.clear();
     matrix.linePointer.clear();
+}
+
+SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2, const std::function<double(double,double)> &accumulateFunc) {
+    SparseDoubleLinkedMatrix output{};
+    if(matrixSize(matrix1) != matrixSize(matrix2)) { // неквадратные матрицы нельзя складывать
+        return output;
+    }
+
+    // нули авто иницилизированы, т.к. без счётчика не обойтись
+    output.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix1.columnPointer.size(), nullptr);
+    output.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>{};
+    output.linePointer.reserve(matrix1.linePointer.size());           // нули будут заполнены вручную, что бы не вводить счетчик
+
+    std::vector<SparseDoubleLinkedMatrixElement*>
+                columnTail(matrix1.columnPointer.size()),
+                columnTail1(matrix1.columnPointer.size()),
+                columnTail2(matrix2.columnPointer.size());
+
+    std::ranges::copy(matrix1.columnPointer, columnTail1.begin());
+    std::ranges::copy(matrix2.columnPointer, columnTail2.begin());
+
+    for (int i = 0; i < matrix1.linePointer.size(); i++) {
+        auto lineTail = static_cast<SparseDoubleLinkedMatrixElement *>(nullptr),
+            lineTail1 = matrix1.linePointer[i],
+            lineTail2 = matrix2.linePointer[i];
+
+        for (int j = 0; j < output.columnPointer.size(); ++j) {
+            double value = 0.0;
+            if(lineTail1 && lineTail1 == columnTail1[j]) {
+                value = accumulateFunc(value, lineTail1->value);
+                lineTail1 = lineTail1->nextLine;
+                columnTail1[j] = columnTail1[j]->nextColumn;
+            }
+            if(lineTail2 && lineTail2 == columnTail2[j]) {
+                value = accumulateFunc(value, lineTail2->value);
+                lineTail2 = lineTail2->nextLine;
+                columnTail2[j] = columnTail2[j]->nextColumn;
+            }
+
+
+            if(value != 0.0) {
+                auto element = initElement(value);
+
+                if(lineTail) { // не первый элемент в строке, связываем
+                    lineTail->nextLine = element;
+                } else {       // первый элемент в строке, сохраняем
+                    output.linePointer.push_back(element);
+                }
+                lineTail = element;
+
+                if(columnTail[j]) {
+                    columnTail[j]->nextColumn = element;
+                } else {
+                    output.columnPointer[j] = element;
+                }
+                columnTail[j] = element;
+
+            }
+        }
+        if(!lineTail) { // пустая строка
+            output.linePointer.push_back(lineTail);
+        }
+
+    }
+    return output;
+}
+
+SparseDoubleLinkedMatrix add(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2) {
+    return twoMatrixAccumulateOperation(matrix1, matrix2, [&](const double a, const double o) { return a+o; });
+}
+
+SparseDoubleLinkedMatrix sub(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2) {
+    return twoMatrixAccumulateOperation(matrix1, matrix2, [&](const double a, const double o) { return a-o; });
 }
