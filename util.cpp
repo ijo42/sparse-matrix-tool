@@ -21,3 +21,16 @@ std::string join(const std::vector<unsigned int> &lst, const char delim) {
     }
     return ret;
 }
+
+/*
+ * возвращает кол-во строк в файле
+ */
+unsigned int countLines(const std::string& path) {
+    unsigned int k = 0;
+    std::ifstream input(path);
+    std::string line;
+    while(std::getline(input,line)) {
+        k++;
+    }
+    return k;
+}

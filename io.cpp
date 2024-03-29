@@ -53,7 +53,10 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
     std::ifstream input(path);
     std::string lineString;
     SparseDoubleLinkedMatrix matrix{};
-    std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement*> elements{};
+    const auto lines = countLines(path);
+    if(lines < 3)
+        return matrix;
+    std::unordered_map<unsigned int, SparseDoubleLinkedMatrixElement*> elements(lines-2);
 
     std::getline(input,lineString);
     std::vector<std::string> line = split(lineString, DLSMDelimiter);

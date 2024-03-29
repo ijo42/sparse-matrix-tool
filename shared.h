@@ -8,7 +8,7 @@ struct SparseDoubleLinkedMatrixElement {
 
 class SparseDoubleLinkedMatrix {
 public:
-    std::vector<SparseDoubleLinkedMatrixElement*> linePointer{}, columnPointer{};
+    std::vector<SparseDoubleLinkedMatrixElement*> linePointer, columnPointer;
 };
 
 constexpr char DLSMDelimiter = ';';
