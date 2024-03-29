@@ -3,6 +3,7 @@
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
+    srand(time(0));
 
     auto matrix = generateRnd(3, 4);
 

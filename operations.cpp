@@ -20,7 +20,6 @@ SparseDoubleLinkedMatrixElement *initElement(const double value) {
  */
 SparseDoubleLinkedMatrix generateRnd(const int n, const int m) {
     int k = n * m / 10; // максимальное кол-во ненулевых
-    srand(time(0));
 
     auto matrix = SparseDoubleLinkedMatrix{};
     matrix.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(n);
