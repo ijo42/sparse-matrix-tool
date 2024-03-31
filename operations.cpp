@@ -156,61 +156,47 @@ SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMa
         return output;
     }
 
-    // нули авто иницилизированы, т.к. без счётчика не обойтись
-    output.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix1.columnPointer.size(), nullptr);
-    output.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>{};
-    output.linePointer.reserve(matrix1.linePointer.size());           // нули будут заполнены вручную, что бы не вводить счетчик
+    output = deepCopy(matrix1);
 
     std::vector<SparseDoubleLinkedMatrixElement*>
-                columnTail(matrix1.columnPointer.size()),
-                columnTail1(matrix1.columnPointer.size()),
+                columnTail(output.columnPointer.size()),
                 columnTail2(matrix2.columnPointer.size());
 
-    std::ranges::copy(matrix1.columnPointer, columnTail1.begin());
+    std::ranges::copy(output.columnPointer, columnTail.begin());
     std::ranges::copy(matrix2.columnPointer, columnTail2.begin());
 
     for (int i = 0; i < matrix1.linePointer.size(); i++) {
-        auto lineTail = static_cast<SparseDoubleLinkedMatrixElement *>(nullptr),
-            lineTail1 = matrix1.linePointer[i],
-            lineTail2 = matrix2.linePointer[i];
+        auto lineTail = output.linePointer[i],
+             lineTail2 = matrix2.linePointer[i];
 
         for (int j = 0; j < output.columnPointer.size(); ++j) {
-            double value = 0.0;
-            if(lineTail1 && lineTail1 == columnTail1[j]) {
-                value = accumulateFunc(value, lineTail1->value);
-                lineTail1 = lineTail1->nextLine;
-                columnTail1[j] = columnTail1[j]->nextColumn;
-            }
             if(lineTail2 && lineTail2 == columnTail2[j]) {
-                value = accumulateFunc(value, lineTail2->value);
+                SparseDoubleLinkedMatrixElement *element;
+                if(lineTail && lineTail == columnTail[j]) { // элемент есть в обоих матрицах
+                    element = lineTail;
+                } else {    // элемент есть только в 2 матрице
+                    element = initElement(0.0);
+                    if(lineTail) { // не первый элемент в строке, связываем
+                        lineTail->nextLine = element;
+                    } else {       // первый элемент в строке, сохраняем
+                        output.linePointer[i] = element;
+                    }
+                    lineTail = element;
+
+                    if(columnTail[j]) {
+                        columnTail[j]->nextColumn = element;
+                    } else {
+                        output.columnPointer[j] = element;
+                    }
+                    columnTail[j] = element;
+                }
+
+
+                element->value = accumulateFunc(element->value, lineTail2->value);
                 lineTail2 = lineTail2->nextLine;
                 columnTail2[j] = columnTail2[j]->nextColumn;
             }
-
-
-            if(value != 0.0) {
-                auto element = initElement(value);
-
-                if(lineTail) { // не первый элемент в строке, связываем
-                    lineTail->nextLine = element;
-                } else {       // первый элемент в строке, сохраняем
-                    output.linePointer.push_back(element);
-                }
-                lineTail = element;
-
-                if(columnTail[j]) {
-                    columnTail[j]->nextColumn = element;
-                } else {
-                    output.columnPointer[j] = element;
-                }
-                columnTail[j] = element;
-
-            }
         }
-        if(!lineTail) { // пустая строка
-            output.linePointer.push_back(lineTail);
-        }
-
     }
     return output;
 }
