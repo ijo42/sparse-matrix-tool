@@ -1,6 +1,7 @@
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
-
+#define MIN_ZNACH 1e-15 //почти ноль
+#define MORE_THEN_MIN_ZNACH 1e-10 //почти ноль
 #include "main.h"
 void printMatrix(const SparseDoubleLinkedMatrix& matrix);
 SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& matrix);
