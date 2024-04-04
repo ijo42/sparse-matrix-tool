@@ -74,47 +74,49 @@ void printMatrix(const SparseDoubleLinkedMatrix& matrix) {
 }
 
 
-SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& matrix) {
-    auto newMatrix = SparseDoubleLinkedMatrix{};
+SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& input) {
+    auto output = SparseDoubleLinkedMatrix();
 
-    // нули авто иницилизированы, т.к. без счётчика не обойтись
-    newMatrix.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix.columnPointer.size(), nullptr);
-    newMatrix.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>{};
-    newMatrix.linePointer.reserve(matrix.linePointer.size());           // нули будут заполнены вручную, что бы не вводить счетчик
+    output.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(input.columnPointer.size(), nullptr);
+    output.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>{};
+    output.linePointer.reserve(input.linePointer.size());
 
-    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer.size());
-    std::ranges::copy(matrix.columnPointer, columnPointer.begin());
+    std::vector<SparseDoubleLinkedMatrixElement*> inputColumnTails(input.columnPointer.size());
+    std::ranges::copy(input.columnPointer, inputColumnTails.begin());
 
-    std::vector<SparseDoubleLinkedMatrixElement*> newColumnPointer(matrix.columnPointer.size(), nullptr);
+    std::vector<SparseDoubleLinkedMatrixElement*> outputColumnTails(input.columnPointer.size(), nullptr);
 
-    for (const auto linePointer: matrix.linePointer) {
-        SparseDoubleLinkedMatrixElement* newLineTail = nullptr;
-        unsigned int columnI = 0;
-        for (auto & columnTail : columnPointer) {
-            if(linePointer && linePointer == columnTail) {
-                auto element = initElement(columnTail->value);
-                if(newLineTail) {   // если первый элемент в строке существует связываем предыдущий элемент с текущим
-                    newLineTail->nextLine = element;
-                } else {            // если это первый элемент в строке, записываем в указатели
-                    newMatrix.linePointer.push_back(element);
+    for (auto lineHead : input.linePointer) {
+        if (lineHead != nullptr) {
+            auto outputLineTail = (SparseDoubleLinkedMatrixElement *) nullptr,
+                inputLineTail = lineHead;
+            for (int j = 0; j < inputColumnTails.size(); ++j) {
+                if (inputColumnTails[j] && inputColumnTails[j] == inputLineTail){
+                    auto element = initElement(inputLineTail->value);
+
+                    if(outputLineTail) {
+                        outputLineTail->nextLine = element;
+                    } else {
+                        output.linePointer.push_back(element);
+                    }
+
+                    if (outputColumnTails[j]) {
+                        outputColumnTails[j]->nextColumn = element;
+                    } else {
+                        output.columnPointer[j] = element;
+                    }
+
+                    outputLineTail = outputColumnTails[j] = element;
+                    inputLineTail = inputLineTail->nextLine;
+                    inputColumnTails[j] = inputColumnTails[j]->nextColumn;
                 }
-                newLineTail = element; // двигаем хвост строк
-
-                if(!newColumnPointer[columnI]) { // если это первый элемент в столбце, записываем в указатели
-                    newMatrix.columnPointer[columnI] = newColumnPointer[columnI] = element;
-                } else {                         // если первый элемент в столбце существует, связываем с предыдущим
-                    newColumnPointer[columnI]->nextColumn = element;
-                }
-                newColumnPointer[columnI] = element; // двигаем хвост столбца
-
-                columnTail = columnTail->nextColumn; // двигаем хвост оригинальной матрицы
             }
-            columnI++;
+        } else {
+            output.linePointer.push_back(nullptr);
         }
-        if(!newLineTail)    // сохранение пустой строки
-            newMatrix.linePointer.push_back(newLineTail);
     }
-    return newMatrix;
+
+    return output;
 }
 
 unsigned int countElement(const SparseDoubleLinkedMatrix &matrix) {
