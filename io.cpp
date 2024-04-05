@@ -76,7 +76,7 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
 }
 
 void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix) {
-    std::vector<SparseDoubleLinkedMatrixElement*> elements(matrix.linePointer.size()*matrix.columnPointer.size() / 10);
+    std::vector<SparseDoubleLinkedMatrixElement*> elements(maxElements(matrix.linePointer.size(), matrix.columnPointer.size()));
     std::vector<size_t> lineIds(matrix.linePointer.size(), 0), columnIds(matrix.columnPointer.size(), 0);
     size_t k = 1, i = 0;
 

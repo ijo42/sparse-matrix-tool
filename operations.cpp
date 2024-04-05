@@ -19,7 +19,7 @@ SparseDoubleLinkedMatrixElement *initElement(const double value) {
  * n - кол-во столбцов, m - кол-во строк
  */
 SparseDoubleLinkedMatrix generateRnd(const int n, const int m) {
-    int k = n * m / 10; // максимальное кол-во ненулевых
+    int k = maxElements(n,m); // максимальное кол-во ненулевых
 
     auto matrix = SparseDoubleLinkedMatrix{};
     matrix.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(n);
