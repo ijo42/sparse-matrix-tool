@@ -151,49 +151,90 @@ void deepDelete(SparseDoubleLinkedMatrix& matrix) {
 
 SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2, const std::function<double(double,double)> &accumulateFunc) {
     SparseDoubleLinkedMatrix output{};
-    if(matrixSize(matrix1) != matrixSize(matrix2)) { // неквадратные матрицы нельзя складывать
+    if(matrixSize(matrix1) != matrixSize(matrix2)) { // неквадратные матрицы нельзя складывать / вычитать
         return output;
     }
 
     output = deepCopy(matrix1);
 
     std::vector<SparseDoubleLinkedMatrixElement*>
-                columnTail(output.columnPointer.size()),
-                columnTail2(matrix2.columnPointer.size());
+                outputColumnTail(output.columnPointer.size()),
+                outputColumnPrevTail(output.columnPointer.size()),
+                input2ColumnTail(matrix2.columnPointer.size());
 
-    std::ranges::copy(output.columnPointer, columnTail.begin());
-    std::ranges::copy(matrix2.columnPointer, columnTail2.begin());
+    std::ranges::copy(output.columnPointer, outputColumnTail.begin());
+    std::ranges::copy(output.columnPointer, outputColumnPrevTail.begin());
+    std::ranges::copy(matrix2.columnPointer, input2ColumnTail.begin());
 
     for (int i = 0; i < matrix1.linePointer.size(); i++) {
-        auto lineTail = output.linePointer[i],
-             lineTail2 = matrix2.linePointer[i];
+        auto input2LineTail = matrix2.linePointer[i],
+             outputLinePrevTail = output.linePointer[i],    // хвост отстающий
+             outputLineTail = outputLinePrevTail; // хвост строки
 
-        for (int j = 0; j < output.columnPointer.size(); ++j) {
-            if(lineTail2 && lineTail2 == columnTail2[j]) {
-                SparseDoubleLinkedMatrixElement *element;
-                if(lineTail && lineTail == columnTail[j]) { // элемент есть в обоих матрицах
-                    element = lineTail;
-                } else {    // элемент есть только в 2 матрице
-                    element = initElement(0.0);
-                    if(lineTail) { // не первый элемент в строке, связываем
-                        lineTail->nextLine = element;
-                    } else {       // первый элемент в строке, сохраняем
-                        output.linePointer[i] = element;
+        if (input2LineTail == nullptr && outputLineTail) {
+            /* для пустой строки matrix2 необходимо пропустить указатели данной строки для matrix1 */
+            for (int j = 0; j < output.columnPointer.size(); ++j) {
+                if (outputLineTail && outputLineTail == outputColumnTail[j]) {
+                    if (outputColumnTail[j] != outputColumnPrevTail[j]) {
+                        outputColumnPrevTail[j] = outputColumnPrevTail[j]->nextColumn;
                     }
-                    lineTail = element;
-
-                    if(columnTail[j]) {
-                        columnTail[j]->nextColumn = element;
-                    } else {
-                        output.columnPointer[j] = element;
-                    }
-                    columnTail[j] = element;
+                    outputColumnTail[j] = outputColumnTail[j]->nextColumn;
+                    outputLineTail = outputLineTail->nextLine;
                 }
+            }
+        } else {
+            for (int j = 0; j < output.columnPointer.size(); ++j) {
+                bool flag = false;
+                // есть элемент в 2 матрице
+                if (input2LineTail && input2LineTail == input2ColumnTail[j]) {
+                    flag = true;
+                    SparseDoubleLinkedMatrixElement *element;
+                    if (outputLineTail && outputLineTail == outputColumnTail[j]) { // элемент есть в обоих матрицах
+                        element = outputLineTail;
+                    } else {    // элемент есть только в 2 матрице
+                        element = initElement(0.0);
+                        /* 3 сценария: до головы С/С; между отстающим и хвостом; после хвоста*/
+                        if (outputLinePrevTail == nullptr ||
+                            outputLinePrevTail == outputLineTail) { // до отстающей головы
+                            element->nextLine = output.linePointer[i];
+                            output.linePointer[i] = element;
+                        } else {
+                            outputLinePrevTail->nextLine = element;
+                            element->nextLine = outputLineTail;
+                        }
+                        outputLinePrevTail = outputLineTail = element;
 
+                        if (outputColumnPrevTail[j] == nullptr || outputColumnPrevTail[j] == outputColumnTail[j]) {
+                            element->nextColumn = output.columnPointer[j];
+                            output.columnPointer[j] = element;
+                        } else {
+                            outputColumnPrevTail[j]->nextColumn = element;
+                            element->nextColumn = outputColumnTail[j];
+                        }
+                        outputColumnPrevTail[j] = outputColumnTail[j] = element;
 
-                element->value = accumulateFunc(element->value, lineTail2->value);
-                lineTail2 = lineTail2->nextLine;
-                columnTail2[j] = columnTail2[j]->nextColumn;
+                    }
+                    element->value = accumulateFunc(element->value, input2LineTail->value);
+
+                    input2LineTail = input2LineTail->nextLine;
+                    input2ColumnTail[j] = input2ColumnTail[j]->nextColumn;
+
+                }
+                if (flag || (outputLineTail && outputLineTail == outputColumnTail[j])) {
+                    // сдвиг хвостов при обработке элементов matrix2 / при пропуске элементов matrix1
+                    if (outputLineTail) {
+                        if (outputLinePrevTail != outputLineTail) {
+                            outputLinePrevTail = outputLineTail;
+                        }
+                        outputLineTail = outputLineTail->nextLine;
+                    }
+                    if (outputColumnTail[j]) {
+                        if (outputColumnPrevTail[j] != outputColumnTail[j]) {
+                            outputColumnPrevTail[j] = outputColumnTail[j];
+                        }
+                        outputColumnTail[j] = outputColumnTail[j]->nextColumn;
+                    }
+                }
             }
         }
     }
