@@ -119,11 +119,11 @@ SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& input) {
     return output;
 }
 
-unsigned int countElement(const SparseDoubleLinkedMatrix &matrix) {
+size_t countElement(const SparseDoubleLinkedMatrix &matrix) {
     return matrix.columnPointer.size() * matrix.linePointer.size();
 }
 
-std::pair<long long unsigned int, long long unsigned int> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
+std::pair<size_t, size_t> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
     return std::pair{matrix.columnPointer.size(), matrix.linePointer.size()};
 }
 

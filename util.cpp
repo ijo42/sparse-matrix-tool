@@ -12,7 +12,7 @@ std::vector<std::string> split(const std::string &s, char delim) {
 
 
 
-std::string join(const std::vector<unsigned int> &lst, const char delim) {
+std::string join(const std::vector<size_t> &lst, const char delim) {
     std::string ret;
     for(const auto &s : lst) {
         if(!ret.empty())
@@ -25,8 +25,8 @@ std::string join(const std::vector<unsigned int> &lst, const char delim) {
 /*
  * возвращает кол-во строк в файле
  */
-unsigned int countLines(const std::string& path) {
-    unsigned int k = 0;
+size_t countLines(const std::string& path) {
+    size_t k = 0;
     std::ifstream input(path);
     std::string line;
     while(std::getline(input,line)) {
