@@ -132,17 +132,14 @@ std::pair<long long unsigned int, long long unsigned int> matrixSize(const Spars
  * после операции класс матрицы имеет нулевые векторы
  */
 void deepDelete(SparseDoubleLinkedMatrix& matrix) {
-    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer.size());
-    std::ranges::copy(matrix.columnPointer, columnPointer.begin());
-    unsigned int i = 0;
-    for(auto lineHead = matrix.linePointer.begin(); lineHead != matrix.linePointer.end(); ++i, ++lineHead){
-        auto lineTail = *lineHead;
-        unsigned int j = 0;
-        for (auto columnHead = columnPointer.begin(); columnHead != columnPointer.end(); ++j, ++columnHead) {
-            if(lineTail && lineTail == *columnHead) {
+    std::vector<SparseDoubleLinkedMatrixElement*> columnHeads(matrix.columnPointer.size());
+    std::ranges::copy(matrix.columnPointer, columnHeads.begin());
+    for(auto lineTail : matrix.linePointer){
+        for (auto & columnHead : columnHeads) {
+            if(lineTail && lineTail == columnHead) {
                 auto element = lineTail;
                 lineTail = lineTail->nextLine;
-                *columnHead = (*columnHead)->nextColumn;
+                columnHead = columnHead->nextColumn;
                 element->nextColumn = element->nextLine = nullptr;
                 delete element;
             }
