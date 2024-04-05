@@ -102,8 +102,8 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
     elements.resize(k-1);
     auto outputText = std::vector<std::string>(elements.size() + 2);
 
-    outputText[0] = join(columnIds, DLSMDelimiter);
-    outputText[1] =  join(lineIds, DLSMDelimiter);
+    outputText[0] =  join(lineIds, DLSMDelimiter);
+    outputText[1] = join(columnIds, DLSMDelimiter);
 
     k = 1;
     for (auto current = elements.begin(); current != elements.end(); ++current, ++k) {
