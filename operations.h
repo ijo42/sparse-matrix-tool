@@ -13,5 +13,7 @@ SparseDoubleLinkedMatrix sub(const SparseDoubleLinkedMatrix& matrix1, const Spar
 SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix);
 void joinMatrix(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& matrix2);
 SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& matrix2);
+SparseDoubleLinkedMatrix generateUnitMatrix(size_t n);
+SparseDoubleLinkedMatrix inverseMatrixSecondMethod(SparseDoubleLinkedMatrix& mainMatrix);
 
 #endif //OPERATIONS_H
