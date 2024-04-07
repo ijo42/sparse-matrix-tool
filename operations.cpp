@@ -597,7 +597,7 @@ SparseDoubleLinkedMatrix inverseMatrixSecondMethod(SparseDoubleLinkedMatrix& mai
     matrix = mainMatrix; // нужно закомментировать
 
     auto UnitMatrix = generateUnitMatrix(matrix.linePointer.size());
-    joinmatrix(matrix, UnitMatrix);
+    joinMatrix(matrix, UnitMatrix);
 
     int temp = 0;
     SparseDoubleLinkedMatrixElement* prevlineTail, * lineTail, * lineHead;
@@ -975,7 +975,8 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
                 matrix1LineEls[column] = 0;
             }
         }
-
+        reslineTail = output.linePointer[rowit];
+        prevreslineTail = reslineTail;
         std::ranges::copy(matrix2.linePointer, lineTails.begin());
         for (size_t columnit = 0; columnit < matrix2.columnPointer.size(); columnit++) {
 
