@@ -149,7 +149,38 @@ void deepDelete(SparseDoubleLinkedMatrix& matrix) {
     matrix.linePointer.clear();
 }
 
-SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2, const std::function<double(double,double)> &accumulateFunc) {
+void addElement(int i, int j, SparseDoubleLinkedMatrix &output, std::vector<SparseDoubleLinkedMatrixElement *> &outputColumnTail,
+           std::vector<SparseDoubleLinkedMatrixElement *> &outputColumnPrevTail,
+           SparseDoubleLinkedMatrixElement *&outputLinePrevTail, SparseDoubleLinkedMatrixElement *&outputLineTail,
+           SparseDoubleLinkedMatrixElement *&element) {
+
+    if (outputLineTail && outputLineTail == outputColumnTail[j]) { // элемент есть в обоих матрицах
+        element = outputLineTail;
+    } else {    // элемент есть только в 2 матрице
+        element = initElement(0.0);
+        /* 3 сценария: до головы С/С; между отстающим и хвостом; после хвоста*/
+        if (outputLinePrevTail == nullptr ||
+            outputLinePrevTail == outputLineTail) { // до отстающей головы
+            element->nextLine = output.linePointer[i];
+            output.linePointer[i] = element;
+        } else {
+            outputLinePrevTail->nextLine = element;
+            element->nextLine = outputLineTail;
+        }
+        outputLinePrevTail = outputLineTail = element;
+
+        if (outputColumnPrevTail[j] == nullptr || outputColumnPrevTail[j] == outputColumnTail[j]) {
+            element->nextColumn = output.columnPointer[j];
+            output.columnPointer[j] = element;
+        } else {
+            outputColumnPrevTail[j]->nextColumn = element;
+            element->nextColumn = outputColumnTail[j];
+        }
+        outputColumnPrevTail[j] = outputColumnTail[j] = element;
+    }
+}
+
+SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2, const std::function<double(double, double)> &accumulateFunc) {
     SparseDoubleLinkedMatrix output{};
     if(matrixSize(matrix1) != matrixSize(matrix2)) { // неквадратные матрицы нельзя складывать / вычитать
         return output;
@@ -189,31 +220,8 @@ SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMa
                 if (input2LineTail && input2LineTail == input2ColumnTail[j]) {
                     flag = true;
                     SparseDoubleLinkedMatrixElement *element;
-                    if (outputLineTail && outputLineTail == outputColumnTail[j]) { // элемент есть в обоих матрицах
-                        element = outputLineTail;
-                    } else {    // элемент есть только в 2 матрице
-                        element = initElement(0.0);
-                        /* 3 сценария: до головы С/С; между отстающим и хвостом; после хвоста*/
-                        if (outputLinePrevTail == nullptr ||
-                            outputLinePrevTail == outputLineTail) { // до отстающей головы
-                            element->nextLine = output.linePointer[i];
-                            output.linePointer[i] = element;
-                        } else {
-                            outputLinePrevTail->nextLine = element;
-                            element->nextLine = outputLineTail;
-                        }
-                        outputLinePrevTail = outputLineTail = element;
-
-                        if (outputColumnPrevTail[j] == nullptr || outputColumnPrevTail[j] == outputColumnTail[j]) {
-                            element->nextColumn = output.columnPointer[j];
-                            output.columnPointer[j] = element;
-                        } else {
-                            outputColumnPrevTail[j]->nextColumn = element;
-                            element->nextColumn = outputColumnTail[j];
-                        }
-                        outputColumnPrevTail[j] = outputColumnTail[j] = element;
-
-                    }
+                    addElement(i, j, output, outputColumnTail, outputColumnPrevTail, outputLinePrevTail, outputLineTail,
+                               element);
                     element->value = accumulateFunc(element->value, input2LineTail->value);
 
                     input2LineTail = input2LineTail->nextLine;
