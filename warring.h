@@ -15,6 +15,11 @@ public:
     explicit warring(QWidget *parent = nullptr);
     ~warring();
 
+private slots:
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::warring *ui;
 };

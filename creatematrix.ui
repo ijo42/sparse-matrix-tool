@@ -26,7 +26,7 @@
     <string>заполнить случайно</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="Stroka">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -36,10 +36,10 @@
     </rect>
    </property>
    <property name="text">
-    <string/>
+    <string>10000</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="Stolbec">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -49,7 +49,7 @@
     </rect>
    </property>
    <property name="text">
-    <string/>
+    <string>10000</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
