@@ -15,5 +15,6 @@ void joinMatrix(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& mat
 SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& matrix2);
 SparseDoubleLinkedMatrix generateUnitMatrix(size_t n);
 SparseDoubleLinkedMatrix inverseMatrixSecondMethod(SparseDoubleLinkedMatrix& mainMatrix);
+SparseDoubleLinkedMatrix generateRndFifty(const int n, const int m);
 
 #endif //OPERATIONS_H
