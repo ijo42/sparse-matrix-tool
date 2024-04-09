@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "inmatrix.h"
+#include "explorer.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,7 +40,9 @@ void MainWindow::on_pushButton_8_clicked()//сохранить мартицу А
 
 void MainWindow::on_pushButton_9_clicked()//сохранить матрицу Б
 {
-
+    explorer w3;
+    w3.setModal(true);
+    w3.exec();
 }
 
 

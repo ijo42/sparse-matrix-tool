@@ -1,5 +1,6 @@
 #include "warring.h"
 #include "ui_warring.h"
+#include "explorer.h"
 
 warring::warring(QWidget *parent)
     : QDialog(parent)

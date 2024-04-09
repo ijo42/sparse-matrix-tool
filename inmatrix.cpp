@@ -1,6 +1,7 @@
 #include "inmatrix.h"
 #include "ui_inmatrix.h"
 #include "creatematrix.h"
+#include "explorer.h"
 
 inmatrix::inmatrix(QWidget *parent)
     : QDialog(parent)
