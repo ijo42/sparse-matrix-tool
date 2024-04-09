@@ -356,7 +356,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
     bool found, stopflag, sw1, sw2;
 
-    size_t counter, columnit, column1it, doprowit, dopcolumnit, count;
+    size_t counter, columnit, column1it, doprowit, dopcolumnit, count, i;
 
     std::ranges::copy(matrix.columnPointer, midColumnTail.begin());
     std::ranges::copy(columnTail, midPrevColumnTail.begin());
@@ -421,7 +421,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
         if (stopflag) { //если на главной диагонали не было то нам нужно прибавить одну строку на другую, которую мы нашли в предидущем цикле
             blyatskiy = matrix.linePointer[counter];
             prevblyatskiy = blyatskiy;
-            for (size_t i = 0; i < columnTail.size(); i++) {
+            for (i = 0; i < columnTail.size(); i++) {
                 if (blyatskiy && blyatskiy == columnTail[i]) {// если элемент найден  
                     blyatskiy->value = (blyatskiy->value + columnTailDopAvEl[i]) / delitel;
                     columnTailAvEl[i] = blyatskiy->value;
@@ -461,22 +461,27 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
             }
         }
 
-
-        for (rowit = counter; rowit < matrix.linePointer.size(); rowit++) {
-            
-
-            if (rowit == counter + 1) {
-                std::ranges::copy(columnTail, midColumnTail.begin());
-                std::ranges::copy(prevColumnTail, midPrevColumnTail.begin());
+        lineTail = matrix.linePointer[counter];
+        for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
+            if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден  
+                lineTail = lineTail->nextLine;
+                prevColumnTail[columnit] = columnTail[columnit];
+                columnTail[columnit] = columnTail[columnit]->nextColumn;
             }
+        }
 
+        std::ranges::copy(columnTail, midColumnTail.begin());
+        std::ranges::copy(prevColumnTail, midPrevColumnTail.begin());
+
+
+        for (rowit = counter + 1; rowit < matrix.linePointer.size(); rowit++) {
 
             koef = 0;
             lineTail = matrix.linePointer[rowit];
             prevlineTail = matrix.linePointer[rowit];
             for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
                 if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден  
-                    if (rowit > counter && columnit == counter) {
+                    if (columnit == counter) {
                         koef = columnTail[columnit]->value / columnTailAvEl[columnit];
                     }
                     lineTail->value -= koef * columnTailAvEl[columnit];
@@ -486,34 +491,32 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
                     columnTail[columnit] = columnTail[columnit]->nextColumn;
                 }
                 else {
-                    if (rowit > counter) {
-                        if (koef && columnTailAvEl[columnit]) {
-                            element = initElement(-columnTailAvEl[columnit] * koef);
-                            if (lineTail != matrix.linePointer[rowit]) { // не первый элемент в строке, связываем
-                                element->nextLine = lineTail;
-                                prevlineTail->nextLine = element;
-                            }
-                            else {       // первый элемент в строке, сохраняем
-                                element->nextLine = matrix.linePointer[rowit];
-                                matrix.linePointer[rowit] = element;
-                            }
-                            lineTail = element;
-
-                            if (columnTail[columnit] != matrix.columnPointer[columnit]) {
-                                element->nextColumn = columnTail[columnit];
-                                prevColumnTail[columnit]->nextColumn = element;
-                            }
-                            else {
-                                element->nextColumn = matrix.columnPointer[columnit];
-                                matrix.columnPointer[columnit] = element;
-                            }
-
-                            prevColumnTail[columnit] = element;
-                            columnTail[columnit] = element->nextColumn;
-                            prevlineTail = lineTail;
-                            lineTail = lineTail->nextLine;
-                            midColumnTail[columnit] = midPrevColumnTail[columnit]->nextColumn;
+                    if (columnTailAvEl[columnit]) {
+                        element = initElement(-columnTailAvEl[columnit] * koef);
+                        if (lineTail != matrix.linePointer[rowit]) { // не первый элемент в строке, связываем
+                            element->nextLine = lineTail;
+                            prevlineTail->nextLine = element;
                         }
+                        else {       // первый элемент в строке, сохраняем
+                            element->nextLine = matrix.linePointer[rowit];
+                            matrix.linePointer[rowit] = element;
+                        }
+                        lineTail = element;
+
+                        if (columnTail[columnit] != matrix.columnPointer[columnit]) {
+                            element->nextColumn = columnTail[columnit];
+                            prevColumnTail[columnit]->nextColumn = element;
+                        }
+                        else {
+                            element->nextColumn = matrix.columnPointer[columnit];
+                            matrix.columnPointer[columnit] = element;
+                        }
+
+                        prevColumnTail[columnit] = element;
+                        columnTail[columnit] = element->nextColumn;
+                        prevlineTail = lineTail;
+                        lineTail = lineTail->nextLine;
+                        midColumnTail[columnit] = midPrevColumnTail[columnit]->nextColumn;
                     }
                 }
             }
