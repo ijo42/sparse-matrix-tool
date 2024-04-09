@@ -349,111 +349,127 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
     std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.size()),
         prevColumnTail(matrix.columnPointer.size()),
         dopColumnTail(matrix.columnPointer.size()),
-        SkibidiColumnTail(matrix.columnPointer.size());
-    double koef;
+        SkibidiColumnTail(matrix.columnPointer.size()),
+        midColumnTail(matrix.columnPointer.size()),
+        midPrevColumnTail(matrix.columnPointer.size());
+    double koef, delitelexist, delitel;
 
     bool found, stopflag, sw1, sw2;
 
     size_t counter, columnit, column1it, doprowit, dopcolumnit, count;
 
+    std::ranges::copy(matrix.columnPointer, midColumnTail.begin());
+    std::ranges::copy(columnTail, midPrevColumnTail.begin());
+
     for (counter = 0; counter < matrix.linePointer.size(); counter++) {
 
-        std::ranges::copy(matrix.columnPointer, columnTail.begin());
-        std::ranges::copy(columnTail, prevColumnTail.begin());
-        found = true;
-        for (rowit = 0; rowit < matrix.linePointer.size(); rowit++) {
-            stopflag = false;
-            lineHead = matrix.linePointer[rowit];
-            if (rowit == counter) { //здесь мы проходимся по главной строке элементы которой мы будем вычитать из каждой последующей
-                for (column1it = 0; column1it < matrix.columnPointer.size(); column1it++) {
-                    if ((lineHead && lineHead == columnTail[column1it]) && lineHead->value != 0) {// если элемент найден 
-                        columnTailAvEl[column1it] = lineHead->value;
-                        lineHead = lineHead->nextLine;
-                    }
-                    else {
-                        if ((lineHead && lineHead == columnTail[column1it]) && lineHead -> value== 0) {
-                            lineHead = lineHead->nextLine;
-                            columnTailAvEl[column1it] = 0.0;
-                        }
-                        if (column1it == counter) { // если диагональный элемент отсутсвует то ищем ниже
-                            found = false;
-                            searchedElement = columnTail[counter];
-                            while (searchedElement && !found) {
-                                if (searchedElement->value != 0.0) found = true;
-                                else searchedElement = searchedElement->nextColumn;
-                            }
+        std::ranges::copy(midColumnTail, columnTail.begin());
+        std::ranges::copy(midPrevColumnTail, prevColumnTail.begin());
 
-                            if (!found) { deepDelete(matrix); return mainMatrix; }
-
-                            std::ranges::copy(columnTail, dopColumnTail.begin());
-                            doprowit = counter;
-                            while (doprowit < matrix.linePointer.size() && !stopflag) {
-                                doplineTail = matrix.linePointer[doprowit];
-                                dopcolumnit = 0;
-                                while (dopcolumnit < matrix.columnPointer.size()) {
-                                    if (doplineTail && doplineTail == dopColumnTail[dopcolumnit]) {
-                                        if (doplineTail == searchedElement) stopflag = true;
-                                        columnTailDopAvEl[dopcolumnit] = doplineTail->value;
-                                        doplineTail = doplineTail->nextLine;
-                                        dopColumnTail[dopcolumnit] = dopColumnTail[dopcolumnit]->nextColumn;
-                                    }
-                                    else {
-                                        columnTailDopAvEl[dopcolumnit] = 0.0;
-                                    }
-                                    dopcolumnit++;
-                                }
-                                doprowit++;
-                            }
-                        }
-
-                    }
-
-                }
+        stopflag = false;
+        lineHead = matrix.linePointer[counter];
+        delitelexist = 1;
+        for (column1it = 0; column1it < matrix.columnPointer.size(); column1it++) {
+            if ((lineHead && lineHead == columnTail[column1it]) && fabs(lineHead->value) != 0) {// если элемент найден 
+                if (counter == column1it) delitelexist = lineHead->value;
+                lineHead->value /= delitelexist;
+                columnTailAvEl[column1it] = lineHead->value;
+                lineHead = lineHead->nextLine;
             }
-
-
-            if (stopflag) { //если на главной диагонали не было то нам нужно прибавить одну строку на другую, которую мы нашли в предидущем цикле
-                blyatskiy = matrix.linePointer[rowit];
-                prevblyatskiy = blyatskiy;
-                for (size_t i = 0; i < columnTail.size(); i++) {
-                    if (blyatskiy && blyatskiy == columnTail[i]) {// если элемент найден  
-                        blyatskiy->value += columnTailDopAvEl[i];
-                        columnTailAvEl[i] = blyatskiy->value;
-                        prevblyatskiy = blyatskiy;
-                        blyatskiy = blyatskiy->nextLine;
-
+            else {
+                if ((lineHead && lineHead == columnTail[column1it]) && fabs(lineHead->value) == 0) {
+                    lineHead = lineHead->nextLine;
+                    columnTailAvEl[column1it] = 0.0;
+                }
+                if (column1it == counter) { // если диагональный элемент отсутсвует то ищем ниже
+                    found = false;
+                    searchedElement = columnTail[counter];
+                    while (searchedElement && !found) {
+                        if (searchedElement->value != 0.0) found = true;
+                        else searchedElement = searchedElement->nextColumn;
                     }
-                    else {
-                        if (columnTailDopAvEl[i] != 0.0) {
-                            element = initElement(columnTailDopAvEl[i]);
-                            if (blyatskiy != matrix.linePointer[rowit]) { // не первый элемент в строке, связываем
-                                element->nextLine = blyatskiy;
-                                prevblyatskiy->nextLine = element;
-                            }
-                            else {       // первый элемент в строке, сохраняем
-                                element->nextLine = matrix.linePointer[rowit];
-                                matrix.linePointer[rowit] = element;
-                            }
-                            blyatskiy = element;
 
-                            if (columnTail[i] != matrix.columnPointer[i]) {
-                                element->nextColumn = columnTail[i];
-                                prevColumnTail[i]->nextColumn = element;
+                    if (!found) { deepDelete(matrix); return mainMatrix; } //определитель равен нулю удобная проверка
+
+                    delitel = searchedElement->value;
+
+                    std::ranges::copy(columnTail, dopColumnTail.begin());
+                    doprowit = counter;
+                    while (doprowit < matrix.linePointer.size() && !stopflag) {
+                        doplineTail = matrix.linePointer[doprowit];
+                        dopcolumnit = 0;
+                        while (dopcolumnit < matrix.columnPointer.size()) {
+                            if (doplineTail && doplineTail == dopColumnTail[dopcolumnit]) {
+                                if (doplineTail == searchedElement) stopflag = true;
+                                columnTailDopAvEl[dopcolumnit] = doplineTail->value;
+                                doplineTail = doplineTail->nextLine;
+                                dopColumnTail[dopcolumnit] = dopColumnTail[dopcolumnit]->nextColumn;
                             }
                             else {
-                                element->nextColumn = matrix.columnPointer[i];
-                                matrix.columnPointer[i] = element;
+                                columnTailDopAvEl[dopcolumnit] = 0.0;
                             }
-                            columnTailAvEl[i] = blyatskiy->value;
-                            columnTail[i] = element;
-                            prevblyatskiy = blyatskiy;
-                            blyatskiy = blyatskiy->nextLine;
+                            dopcolumnit++;
                         }
-                        else
-                            columnTailAvEl[i] = 0;
+                        doprowit++;
                     }
                 }
+
             }
+
+        }
+
+        if (stopflag) { //если на главной диагонали не было то нам нужно прибавить одну строку на другую, которую мы нашли в предидущем цикле
+            blyatskiy = matrix.linePointer[counter];
+            prevblyatskiy = blyatskiy;
+            for (size_t i = 0; i < columnTail.size(); i++) {
+                if (blyatskiy && blyatskiy == columnTail[i]) {// если элемент найден  
+                    blyatskiy->value = (blyatskiy->value + columnTailDopAvEl[i]) / delitel;
+                    columnTailAvEl[i] = blyatskiy->value;
+                    prevblyatskiy = blyatskiy;
+                    blyatskiy = blyatskiy->nextLine;
+
+                }
+                else {
+                    if (columnTailDopAvEl[i] != 0.0) {
+                        element = initElement(columnTailDopAvEl[i] / delitel);
+                        if (blyatskiy != matrix.linePointer[counter]) { // не первый элемент в строке, связываем
+                            element->nextLine = blyatskiy;
+                            prevblyatskiy->nextLine = element;
+                        }
+                        else {       // первый элемент в строке, сохраняем
+                            element->nextLine = matrix.linePointer[counter];
+                            matrix.linePointer[counter] = element;
+                        }
+                        blyatskiy = element;
+
+                        if (columnTail[i] != matrix.columnPointer[i]) {
+                            element->nextColumn = columnTail[i];
+                            prevColumnTail[i]->nextColumn = element;
+                        }
+                        else {
+                            element->nextColumn = matrix.columnPointer[i];
+                            matrix.columnPointer[i] = element;
+                        }
+                        columnTailAvEl[i] = blyatskiy->value;
+                        columnTail[i] = element;
+                        prevblyatskiy = blyatskiy;
+                        blyatskiy = blyatskiy->nextLine;
+                    }
+                    else
+                        columnTailAvEl[i] = 0;
+                }
+            }
+        }
+
+
+        for (rowit = counter; rowit < matrix.linePointer.size(); rowit++) {
+            
+
+            if (rowit == counter + 1) {
+                std::ranges::copy(columnTail, midColumnTail.begin());
+                std::ranges::copy(prevColumnTail, midPrevColumnTail.begin());
+            }
+
 
             koef = 0;
             lineTail = matrix.linePointer[rowit];
@@ -496,6 +512,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
                             columnTail[columnit] = element->nextColumn;
                             prevlineTail = lineTail;
                             lineTail = lineTail->nextLine;
+                            midColumnTail[columnit] = midPrevColumnTail[columnit]->nextColumn;
                         }
                     }
                 }
@@ -592,27 +609,6 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
     }
 
 
-    //делим
-    std::ranges::copy(matrix.columnPointer, columnTail.begin());
-    count = 0;
-    for (rowit = 0; rowit < matrix.linePointer.size(); rowit++) {
-
-        lineHead = matrix.linePointer[rowit];
-        for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
-            if (lineHead && lineHead == columnTail[columnit]) { // если элемент найден  
-                if (rowit == columnit) {
-                    koef = lineHead->value;
-                    lineTail = matrix.linePointer[rowit];
-                    while (lineTail) {
-                        lineTail->value /= koef;
-                        lineTail = lineTail->nextLine;
-                    }
-                }
-                lineHead = lineHead->nextLine;
-                columnTail[columnit] = columnTail[columnit]->nextColumn;
-            }
-        }
-    }
 
     //обрезаем лишнее
     std::ranges::copy(matrix.columnPointer, columnTail.begin());
@@ -629,7 +625,8 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
     }
 
 
-    //удаляем нули
+    //удаляем нули (почему мы убираем только в самом конце)
+    //если убирать походу программы будут постоянно возникать нули и на эти нули записываться элементы по несколько раз что скажется на производительности
     std::ranges::copy(UnitMatrix.columnPointer, columnTail.begin());
     std::ranges::copy(UnitMatrix.columnPointer, prevColumnTail.begin());
     for (rowit = 0; rowit < UnitMatrix.linePointer.size(); rowit++) {
@@ -639,7 +636,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
             sw1 = 0;
             sw2 = 0;
             if (lineTail && lineTail == columnTail[columnit]) {
-                if (lineTail->value == 0.0) {
+                if (lineTail->value * lineTail->value < MIN_ZNACH) {
                     if (prevlineTail != lineTail) prevlineTail->nextLine = lineTail->nextLine;
                     else { UnitMatrix.linePointer[rowit] = lineTail->nextLine; prevlineTail = UnitMatrix.linePointer[rowit]; sw1 = 1; }
                     if (prevColumnTail[columnit] != columnTail[columnit]) prevColumnTail[columnit]->nextColumn = columnTail[columnit]->nextColumn;
