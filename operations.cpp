@@ -678,8 +678,8 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
     if (matrixSize(matrix1).second != matrixSize(matrix2).first) return matrix1; // вот мне не нравится как тут ошибка выводится, мб написать функцию которая делает пустую матрицу?
 
     auto output = SparseDoubleLinkedMatrix{};
-    output.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix1.columnPointer.size(), nullptr);
-    output.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix2.linePointer.size(), nullptr);
+    output.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix1.linePointer.size(), nullptr);
+    output.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix2.columnPointer.size(), nullptr);
 
     std::vector<SparseDoubleLinkedMatrixElement*> columnTails(matrix1.columnPointer.size()),
         lineTails(matrix2.linePointer.size()),
@@ -698,7 +698,7 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
     size_t rowit, columnit, column, line;
     std::ranges::copy(matrix1.columnPointer, columnTails.begin());
 
-    for (rowit = 0; rowit < matrix1.linePointer.size(); rowit++) {
+    for (rowit = 0; rowit < output.linePointer.size(); rowit++) {
 
         lineTail = matrix1.linePointer[rowit];
         reslineTail = nullptr;
@@ -716,7 +716,7 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
         }
 
         std::ranges::copy(matrix2.linePointer, lineTails.begin());
-        for (columnit = 0; columnit < matrix2.columnPointer.size(); columnit++) {
+        for (columnit = 0; columnit < output.columnPointer.size(); columnit++) {
 
             columnTail = matrix2.columnPointer[columnit];
             elValue = 0.0;
@@ -730,7 +730,7 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
             }
 
 
-            if (elValue != 0) {
+            if (elValue != 0.0) {
                 element = initElement(elValue);
                 if (reslineTail != output.linePointer[rowit]) { // не первый элемент в строке, связываем
                     element->nextLine = lineTail;
