@@ -43,10 +43,13 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../sparse-matrix-consoleline/cmake-build-release/ -llibSparseMatrix.dll
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../sparse-matrix-consoleline/cmake-build-debug/ -llibSparseMatrix.dll
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/library/cmake-build-release/ -llibSparseMatrix.dll
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/library/cmake-build-debug/ -llibSparseMatrix.dll
 
-INCLUDEPATH += $$PWD/../../sparse-matrix-consoleline
-DEPENDPATH += $$PWD/../../sparse-matrix-consoleline
+INCLUDEPATH += $$PWD/library/headers
+DEPENDPATH += $$PWD/library/headers
 
-DISTFILES +=
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/library/release/liblibSparseMatrix.dll.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/library/debug/liblibSparseMatrix.dll.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/library/release/libSparseMatrix.dll.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/library/debug/libSparseMatrix.dll.lib
