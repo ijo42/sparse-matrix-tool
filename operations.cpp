@@ -190,12 +190,12 @@ void deepDelete(SparseDoubleLinkedMatrix& matrix) {
 
 }
 
-void addElement(int i, int j, SparseDoubleLinkedMatrix &output, std::vector<SparseDoubleLinkedMatrixElement *> &outputColumnTail,
-           std::vector<SparseDoubleLinkedMatrixElement *> &outputColumnPrevTail,
+void addElement(int i, int j, SparseDoubleLinkedMatrix &output, SparseDoubleLinkedMatrixElement *&outputColumnTail,
+           SparseDoubleLinkedMatrixElement *&outputColumnPrevTail,
            SparseDoubleLinkedMatrixElement *&outputLinePrevTail, SparseDoubleLinkedMatrixElement *&outputLineTail,
            SparseDoubleLinkedMatrixElement *&element) {
 
-    if (outputLineTail && outputLineTail == outputColumnTail[j]) { // элемент есть в обоих матрицах
+    if (outputLineTail && outputLineTail == outputColumnTail) { // элемент есть в обоих матрицах
         element = outputLineTail;
     } else {    // элемент есть только в 2 матрице
         element = initElement(0.0);
@@ -210,14 +210,14 @@ void addElement(int i, int j, SparseDoubleLinkedMatrix &output, std::vector<Spar
         }
         outputLinePrevTail = outputLineTail = element;
 
-        if (outputColumnPrevTail[j] == nullptr || outputColumnPrevTail[j] == outputColumnTail[j]) {
+        if (outputColumnPrevTail == nullptr || outputColumnPrevTail == outputColumnTail) {
             element->nextColumn = output.columnPointer[j];
             output.columnPointer[j] = element;
         } else {
-            outputColumnPrevTail[j]->nextColumn = element;
-            element->nextColumn = outputColumnTail[j];
+            outputColumnPrevTail->nextColumn = element;
+            element->nextColumn = outputColumnTail;
         }
-        outputColumnPrevTail[j] = outputColumnTail[j] = element;
+        outputColumnPrevTail = outputColumnTail = element;
     }
 }
 
@@ -257,8 +257,8 @@ SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMa
                 if (input2LineTail && input2LineTail == input2ColumnTail[j]) {
                     flag = true;
                     SparseDoubleLinkedMatrixElement *element;
-                    addElement(i, j, output, outputColumnTail, outputColumnPrevTail, outputLinePrevTail, outputLineTail,
-                               element);
+                    addElement(i, j, output, outputColumnTail[j], outputColumnPrevTail[j], outputLinePrevTail,
+                               outputLineTail,element);
                     element->value = accumulateFunc(element->value, input2LineTail->value);
 
                     input2LineTail = input2LineTail->nextLine;
