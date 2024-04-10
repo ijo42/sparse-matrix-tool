@@ -54,10 +54,10 @@ void loadElement(const std::vector<std::string>& line, std::unordered_map<size_t
 
 }
 
-SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
+SparseDoubleLinkedMatrix *loadFromFile(const std::string &path) {
     std::ifstream input(path);
     std::string lineString;
-    SparseDoubleLinkedMatrix matrix{};
+    auto *matrix = new SparseDoubleLinkedMatrix{};
     const auto lines = countLines(path);
     if(lines < 3)
         return matrix;
@@ -66,11 +66,11 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
     std::getline(input,lineString);
     std::vector<std::string> line = split(lineString, DLSMDelimiter);
 
-    loadPointers(line, elements, matrix.linePointer);    // загрузка указателей на строки
+    loadPointers(line, elements, matrix->linePointer);    // загрузка указателей на строки
 
     std::getline(input,lineString);
     line = split(lineString, DLSMDelimiter);
-    loadPointers(line, elements, matrix.columnPointer);  // загрузка указателей на столбцы
+    loadPointers(line, elements, matrix->columnPointer);  // загрузка указателей на столбцы
 
 
     for(int i = 1; std::getline(input,lineString); i++) {
@@ -194,37 +194,30 @@ bool is_integerpositive(const std::string& s)
     return !s.empty() && it == s.end();
 }
 
-SparseDoubleLinkedMatrix loadFromFileValidate(bool& isSuccess, std::string& path) {
+SparseDoubleLinkedMatrix *loadFromFileValidate(bool& isSuccess, std::string& path) {
     std::ifstream input(path);
     std::string lineString;
-    SparseDoubleLinkedMatrix matrix{};
     size_t i;
     const auto lines = countLines(path);
     if (lines < 3) {
-        isSuccess = false; return matrix;
+        isSuccess = false; return nullptr;
     }
 
     std::getline(input, lineString);
     std::vector<std::string> line = split(lineString, DLSMDelimiter);
     for (i = 1; i < line.size(); i++) {
-        if (line[i] < line[i - 1]) {
-            isSuccess = false; return matrix;
+        if (std::stoi(line[i]) < std::stoi(line[i - 1])) {
+            isSuccess = false; return nullptr;
         }
     }
 
     std::getline(input, lineString);
-    line = split(lineString, DLSMDelimiter);
-
-    for (i = 1; i < line.size(); i++) {
-        if (line[i] < line[i - 1]) {
-            isSuccess = false; return matrix;
-        }
-    }
+    //line = split(lineString, DLSMDelimiter);
 
     while (std::getline(input, lineString)) {
         line = split(lineString, DLSMDelimiter);
         if (!((is_chislo(line[0]) && is_integerpositive(line[1]) && is_integerpositive(line[2])))) {
-            isSuccess = false; return matrix;
+            isSuccess = false; return nullptr;
         }
     }
 

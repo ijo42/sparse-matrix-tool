@@ -7,8 +7,7 @@
 
 #include "main.h"
 
-SparseDoubleLinkedMatrix loadFromFileValidate(bool &isSuccess, std::string &path);
-SparseDoubleLinkedMatrix loadFromFile(const std::string &path);
+SparseDoubleLinkedMatrix *loadFromFileValidate(bool &isSuccess, std::string &path);
+SparseDoubleLinkedMatrix *loadFromFile(const std::string &path);
 void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix);
-SparseDoubleLinkedMatrix loadFromFileValidate(bool& isSuccess, std::string& path);
 #endif //IO_H

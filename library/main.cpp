@@ -7,8 +7,11 @@ int main() {
     srand(time(0));
 
     auto l = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()).time_since_epoch().count();
+    bool a;
+//    std::string path = R"(E:\examples\ex500.dlsm)";
+//    auto matrix1 = loadFromFileValidate(a,  path);
     auto matrix1 = generateRnd(500, 500);
-//    auto matrix2 = generateRnd(4, 4);
+    auto matrix2 = generateRnd(500, 500);
 //    auto matrix3 = generateRnd(4, 4);
 
 
@@ -16,11 +19,11 @@ int main() {
 //    printMatrix(matrix1);
 //    printMatrix(matrix2);
 //    printMatrix(matrix3);
-//    auto matrix = add(matrix1,matrix2);
-//    printMatrix(matrix);
+    auto matrix = add(*matrix1,*matrix2);
+    printMatrix(matrix);
 //    auto matrix0 = sub(matrix1,matrix3);
 //    printMatrix(matrix0);
-    saveToFile(R"(E:\examples\ex500.dlsm)", matrix1);
+//    saveToFile(R"(E:\examples\ex500.dlsm)", matrix1);
 //    std::cout << std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()).time_since_epoch().count() - l;
 
     return 0;

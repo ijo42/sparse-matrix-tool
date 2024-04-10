@@ -6,8 +6,8 @@ struct SparseDoubleLinkedMatrixElement {
     SparseDoubleLinkedMatrixElement *nextLine, *nextColumn;
 };
 
-class SparseDoubleLinkedMatrix {
-public:
+struct SparseDoubleLinkedMatrix {
+    std::string name;
     std::vector<SparseDoubleLinkedMatrixElement*> linePointer, columnPointer;
 };
 
