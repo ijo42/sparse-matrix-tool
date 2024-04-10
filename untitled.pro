@@ -23,6 +23,8 @@ HEADERS += \
     explorer.h \
     inmatrix.h \
     mainwindow.h \
+    operations.h \
+    shared.h \
     warring.h
 
 FORMS += \
@@ -37,3 +39,14 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../release/ -lSparseMatrix
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../debug/ -lSparseMatrix
+
+INCLUDEPATH += $$PWD/.
+DEPENDPATH += $$PWD/.
+
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../release/libSparseMatrix.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../debug/libSparseMatrix.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../release/SparseMatrix.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../debug/SparseMatrix.lib

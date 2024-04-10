@@ -1,8 +1,9 @@
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
-#define MIN_ZNACH 1e-15 //����� ����
-#define MORE_THEN_MIN_ZNACH 1e-10 //����� ����
-#include "main.h"
+
+#include "shared.h"
+
+#define MIN_ZNACH 1e-30
 void printMatrix(const SparseDoubleLinkedMatrix& matrix);
 SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& input);
 void deepDelete(SparseDoubleLinkedMatrix& matrix);
@@ -13,7 +14,7 @@ SparseDoubleLinkedMatrix sub(const SparseDoubleLinkedMatrix& matrix1, const Spar
 SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix);
 void joinMatrix(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& matrix2);
 SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& matrix2);
-SparseDoubleLinkedMatrix generateUnitMatrix(size_t n);
-SparseDoubleLinkedMatrix inverseMatrixSecondMethod(SparseDoubleLinkedMatrix& mainMatrix);
+SparseDoubleLinkedMatrix generateUnitMatrix(std::size_t n);
+SparseDoubleLinkedMatrix generateRndFifty(const int n, const int m);
 
 #endif //OPERATIONS_H

@@ -1,6 +1,9 @@
 #ifndef SHARED_H
 #define SHARED_H
 
+#include <vector>
+
+
 struct SparseDoubleLinkedMatrixElement {
     double value;
     SparseDoubleLinkedMatrixElement *nextLine, *nextColumn;

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "shared.h"
 #include "ui_mainwindow.h"
 #include "inmatrix.h"
 #include "explorer.h"
@@ -9,6 +10,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    auto matrix = SparseDoubleLinkedMatrix();
+
 }
 
 MainWindow::~MainWindow()
