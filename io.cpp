@@ -229,6 +229,6 @@ SparseDoubleLinkedMatrix loadFromFileValidate(bool& isSuccess, std::string& path
     }
 
     isSuccess = true;
-    return matrix;
+    return loadFromFile(path);
 }
 
