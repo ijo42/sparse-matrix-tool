@@ -169,3 +169,66 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
         fut.wait();
     }
 }
+
+
+bool is_chislo(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    bool b = true, a = true;
+    while (it != s.end() && a) {
+        if (!std::isdigit(*it)) a = false;
+        if ((*it) == '.') {
+            a = true;
+            if (!b) a = false;
+            b = false;
+        }
+        ++it;
+    }
+    return !s.empty() && it == s.end();
+}
+
+bool is_integerpositive(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+SparseDoubleLinkedMatrix loadFromFileValidate(bool& isSuccess, std::string& path) {
+    std::ifstream input(path);
+    std::string lineString;
+    SparseDoubleLinkedMatrix matrix{};
+    size_t i;
+    const auto lines = countLines(path);
+    if (lines < 3) {
+        isSuccess = false; return matrix;
+    }
+
+    std::getline(input, lineString);
+    std::vector<std::string> line = split(lineString, DLSMDelimiter);
+    for (i = 1; i < line.size(); i++) {
+        if (line[i] < line[i - 1]) {
+            isSuccess = false; return matrix;
+        }
+    }
+
+    std::getline(input, lineString);
+    line = split(lineString, DLSMDelimiter);
+
+    for (i = 1; i < line.size(); i++) {
+        if (line[i] < line[i - 1]) {
+            isSuccess = false; return matrix;
+        }
+    }
+
+    while (std::getline(input, lineString)) {
+        line = split(lineString, DLSMDelimiter);
+        if (!((is_chislo(line[0]) && is_integerpositive(line[1]) && is_integerpositive(line[2])))) {
+            isSuccess = false; return matrix;
+        }
+    }
+
+    isSuccess = true;
+    return loadFromFile(path);
+}
+
