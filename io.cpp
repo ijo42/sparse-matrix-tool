@@ -171,6 +171,29 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
 }
 
 
+bool is_chislo(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    bool b = true, a = true;
+    while (it != s.end() && a) {
+        if (!std::isdigit(*it)) a = false;
+        if ((*it) == '.') {
+            a = true;
+            if (!b) a = false;
+            b = false;
+        }
+        ++it;
+    }
+    return !s.empty() && it == s.end();
+}
+
+bool is_integerpositive(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
 SparseDoubleLinkedMatrix loadFromFileValidate(bool& isSuccess, std::string& path) {
     std::ifstream input(path);
     std::string lineString;
@@ -206,28 +229,6 @@ SparseDoubleLinkedMatrix loadFromFileValidate(bool& isSuccess, std::string& path
     }
 
     isSuccess = true;
+    return matrix;
 }
 
-
-bool is_chislo(const std::string& s)
-{
-    std::string::const_iterator it = s.begin();
-    bool b = true, a = true;
-    while (it != s.end() && a) {
-        if (!std::isdigit(*it)) a = false;
-        if ((*it) == '.') {
-            a = true;
-            if (!b) a = false;
-            b = false;
-        }
-        ++it;
-    }
-    return !s.empty() && it == s.end();
-}
-
-bool is_integerpositive(const std::string& s)
-{
-    std::string::const_iterator it = s.begin();
-    while (it != s.end() && std::isdigit(*it)) ++it;
-    return !s.empty() && it == s.end();
-}
