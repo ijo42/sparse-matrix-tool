@@ -79,30 +79,30 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
 }
 
 void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix) {
-    std::vector<SparseDoubleLinkedMatrixElement*> elements;
-    elements.reserve(maxElements(matrix.linePointer.size(), matrix.columnPointer.size()));
+    std::vector<SparseDoubleLinkedMatrixElement*> elements(maxElements(matrix.linePointer.size(), matrix.columnPointer.size()));
+    std::vector<size_t> lineIds(matrix.linePointer.size(), 0), columnIds(matrix.columnPointer.size(), 0);
+    size_t k = 1, i = 0;
 
-    std::vector<size_t> lineIds(matrix.linePointer.size(), 0);
-    std::vector<size_t> columnIds(matrix.columnPointer.size(), 0);
+    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer);
 
-    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer = matrix.columnPointer;
-    size_t k = 1;
-
-    for (size_t i = 0; i < matrix.linePointer.size(); ++i) {
-        auto lineTail = matrix.linePointer[i];
-        for (size_t j = 0; j < columnPointer.size(); ++j) {
-            if (lineTail && lineTail == columnPointer[j]) {
-                elements.push_back(columnPointer[j]);
+    for(auto lineHead = matrix.linePointer.begin(); lineHead != matrix.linePointer.end(); ++i, ++lineHead){
+        auto lineTail = *lineHead;
+        size_t j = 0;
+        for (auto columnHead = columnPointer.begin(); columnHead != columnPointer.end(); ++j, ++columnHead) {
+            if(lineTail && lineTail == *columnHead) {
+                elements[k-1] = (*columnHead);
                 lineTail = lineTail->nextLine;
-                columnPointer[j] = columnPointer[j]->nextColumn;
-
-                if (columnIds[j] == 0) columnIds[j] = k;
-                if (lineIds[i] == 0) lineIds[i] = k;
+                *columnHead = (*columnHead)->nextColumn;
+                if(columnIds[j] == 0)
+                    columnIds[j] = k;
+                if(lineIds[i] == 0)
+                    lineIds[i] = k;
                 k++;
             }
         }
     }
 
+    elements.resize(k-1);
     // Использование строкового потока для формирования итогового текста
     std::ostringstream oss;
     oss.precision(6);
@@ -119,15 +119,13 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
     vectorToStream(oss, lineIds);
     vectorToStream(oss, columnIds);
 
-    // Добавление элементов
-    for (size_t index = 0; index < elements.size(); ++index) {
-        const auto& elem = elements[index];
-        oss << std::fixed << elem->value << ";";
-        oss << (elem->nextLine ? std::to_string(index + 2) : "0") << ";";
-        oss << (elem->nextColumn ? std::to_string(index + 2) : "0") << "\n";
+    k = 1;
+    for (auto current = elements.begin(); current != elements.end(); ++current, ++k) {
+        oss << std::fixed << (*current)->value << DLSMDelimiter
+            << ((*current)->nextLine ? k+1 : 0) << DLSMDelimiter
+            << ((*current)->nextColumn ? k + findElementNext(current, (*current)->nextColumn) : 0) << "\n";
     }
 
-    // Запись в файл
     std::ofstream output(path, std::ios::trunc);
     if (output) {
         output << oss.str();
