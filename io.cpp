@@ -1,3 +1,5 @@
+#include <mutex>
+#include <future>
 #include "io.h"
 
 /*
@@ -78,6 +80,17 @@ SparseDoubleLinkedMatrix loadFromFile(const std::string &path) {
     return matrix;
 }
 
+std::mutex file_mutex; // Мьютекс для синхронизации записи в файл
+
+// Функция асинхронной записи данных в файл
+void asyncWrite(std::string path, const std::string& data) {
+    std::lock_guard<std::mutex> lock(file_mutex); // Захват мьютекса на время записи в файл
+    std::ofstream output(path, std::ios::app); // Открываем файл в режиме добавления
+    if (output) {
+        output << data;
+    }
+}
+
 void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix) {
     std::vector<SparseDoubleLinkedMatrixElement*> elements(maxElements(matrix.linePointer.size(), matrix.columnPointer.size()));
     std::vector<size_t> lineIds(matrix.linePointer.size(), 0), columnIds(matrix.columnPointer.size(), 0);
@@ -102,10 +115,20 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
         }
     }
 
+    std::ofstream clear_file(path, std::ios::trunc); // Очищаем файл перед началом записи
+    clear_file.close();
+
     elements.resize(k-1);
     // Использование строкового потока для формирования итогового текста
     std::ostringstream oss;
     oss.precision(6);
+
+    std::vector<std::future<void>> futures; // Для управления асинхронными задачами
+
+    int N = 5000; // Количество элементов после которых выполняется сброс
+    int count = 2; // Счетчик элементов
+
+
     // Функция для преобразования векторов в строку с разделителем ";"
     auto vectorToStream = [](std::ostringstream& oss, const std::vector<size_t>& ids) {
         for (size_t i = 0; i < ids.size(); ++i) {
@@ -120,14 +143,29 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
     vectorToStream(oss, columnIds);
 
     k = 1;
-    for (auto current = elements.begin(); current != elements.end(); ++current, ++k) {
+    for (auto current = elements.begin(); current != elements.end(); ++current, ++count, ++k) {
+        if (count % N == 0 && count > 0) {
+            // Асинхронная запись в файл когда count достигает N
+            std::string data_to_write = oss.str();
+            futures.push_back(std::async(std::launch::async, asyncWrite, path, data_to_write));
+            oss.str(""); // Очистка oss после каждого сброса
+            oss.clear();
+        }
+
+        // Добавление данных в oss
         oss << std::fixed << (*current)->value << DLSMDelimiter
             << ((*current)->nextLine ? k+1 : 0) << DLSMDelimiter
             << ((*current)->nextColumn ? k + findElementNext(current, (*current)->nextColumn) : 0) << "\n";
     }
 
-    std::ofstream output(path, std::ios::trunc);
-    if (output) {
-        output << oss.str();
+    // Не забываем записать оставшиеся данные после цикла
+    if (!oss.str().empty()) {
+        std::string data_to_write = oss.str();
+        futures.push_back(std::async(std::launch::async, asyncWrite, path, data_to_write));
+    }
+
+    // Ожидание завершения всех асинхронных задач
+    for (auto& fut : futures) {
+        fut.wait();
     }
 }
