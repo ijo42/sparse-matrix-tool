@@ -1,5 +1,5 @@
-#include "sparsematrixmodel.h"
 #include "io.h"
+#include <headers/sparsematrixmodel.h>
 
 SparseMatrixModel::SparseMatrixModel(const std::string &path, QObject* parent)
     : QAbstractTableModel(parent), _matrix() {

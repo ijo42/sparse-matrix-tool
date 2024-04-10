@@ -9,34 +9,33 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    MatrixManager.cpp \
-    creatematrix.cpp \
-    error.cpp \
-    inmatrix.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    preview.cpp \
-    sparsematrixmodel.cpp \
-    warring.cpp
+    src/creatematrix.cpp \
+    src/error.cpp \
+    src/inmatrix.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/preview.cpp \
+    src/sparsematrixmodel.cpp \
+    src/warring.cpp
 
 HEADERS += \
-    creatematrix.h \
-    error.h \
-    explorer.h \
-    inmatrix.h \
-    mainwindow.h \
-    preview.h \
-    sparsematrixmodel.h \
-    warring.h
+    headers/creatematrix.h \
+    headers/error.h \
+    headers/explorer.h \
+    headers/inmatrix.h \
+    headers/mainwindow.h \
+    headers/preview.h \
+    headers/sparsematrixmodel.h \
+    headers/warring.h
 
 FORMS += \
-    creatematrix.ui \
-    error.ui \
-    explorer.ui \
-    inmatrix.ui \
-    mainwindow.ui \
-    preview.ui \
-    warring.ui
+    ui/creatematrix.ui \
+    ui/error.ui \
+    ui/explorer.ui \
+    ui/inmatrix.ui \
+    ui/mainwindow.ui \
+    ui/preview.ui \
+    ui/warring.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -48,8 +47,3 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/library/cmake-build-deb
 
 INCLUDEPATH += $$PWD/library/headers
 DEPENDPATH += $$PWD/library/headers
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/library/release/liblibSparseMatrix.dll.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/library/debug/liblibSparseMatrix.dll.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/library/release/libSparseMatrix.dll.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/library/debug/libSparseMatrix.dll.lib
