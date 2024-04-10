@@ -88,22 +88,25 @@ SparseDoubleLinkedMatrix generateRndFifty(const int n, const int m) {
 }
 
 void printMatrix(const SparseDoubleLinkedMatrix& matrix) {
-    if (matrix.columnPointer.empty())
-        std::cout << "Matrix is empty";
+    if (matrix.columnPointer.empty()) {
+        std::cout << "Matrix is empty" << std::endl;
+        return;
+    }
 
-    std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.size());
-    std::ranges::copy(matrix.columnPointer, columnTail.begin());
-    for (const auto lineHead: matrix.linePointer) {
+    std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.begin(), matrix.columnPointer.end());
+
+    for (const auto lineHead : matrix.linePointer) {
         auto lineTail = lineHead;
-        for (auto & i : columnTail) {
-            if(lineTail && lineTail == i) {
-                std::cout << std::format("{:6.2f}", i->value);
+        for (auto& i : columnTail) {
+            if (lineTail && lineTail == i) {
+                std::cout << std::setw(6) << std::fixed << std::setprecision(2) << i->value;
                 lineTail = lineTail->nextLine;
                 i = i->nextColumn;
-            } else
-                std::cout << std::format("{:6.0f}", 0.0);
+            } else {
+                std::cout << std::setw(6) << std::setprecision(0) << 0.0;
+            }
         }
-        std::cout << "\n";
+        std::cout << std::endl;
     }
     std::cout << std::endl;
 }
@@ -117,7 +120,7 @@ SparseDoubleLinkedMatrix deepCopy(const SparseDoubleLinkedMatrix& input) {
     output.linePointer.reserve(input.linePointer.size());
 
     std::vector<SparseDoubleLinkedMatrixElement*> inputColumnTails(input.columnPointer.size());
-    std::ranges::copy(input.columnPointer, inputColumnTails.begin());
+    std::copy(input.columnPointer.begin(), input.columnPointer.end(), inputColumnTails.begin());
 
     std::vector<SparseDoubleLinkedMatrixElement*> outputColumnTails(input.columnPointer.size(), nullptr);
 
@@ -168,7 +171,7 @@ std::pair<size_t, size_t> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
  */
 void deepDelete(SparseDoubleLinkedMatrix& matrix) {
     std::vector<SparseDoubleLinkedMatrixElement*> columnHeads(matrix.columnPointer.size());
-    std::ranges::copy(matrix.columnPointer, columnHeads.begin());
+    std::copy(matrix.columnPointer.begin(),matrix.columnPointer.end(), columnHeads.begin());
     for(auto lineTail : matrix.linePointer){
         for (auto & columnHead : columnHeads) {
             if(lineTail && lineTail == columnHead) {
@@ -227,13 +230,9 @@ SparseDoubleLinkedMatrix twoMatrixAccumulateOperation(const SparseDoubleLinkedMa
     output = deepCopy(matrix1);
 
     std::vector<SparseDoubleLinkedMatrixElement*>
-                outputColumnTail(output.columnPointer.size()),
-                outputColumnPrevTail(output.columnPointer.size()),
-                input2ColumnTail(matrix2.columnPointer.size());
-
-    std::ranges::copy(output.columnPointer, outputColumnTail.begin());
-    std::ranges::copy(output.columnPointer, outputColumnPrevTail.begin());
-    std::ranges::copy(matrix2.columnPointer, input2ColumnTail.begin());
+                outputColumnTail(output.columnPointer),
+                outputColumnPrevTail(output.columnPointer),
+                input2ColumnTail(matrix2.columnPointer);
 
     for (int i = 0; i < matrix1.linePointer.size(); i++) {
         auto input2LineTail = matrix2.linePointer[i],
@@ -350,27 +349,24 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
         prevColumnTail(matrix.columnPointer.size()),
         dopColumnTail(matrix.columnPointer.size()),
         SkibidiColumnTail(matrix.columnPointer.size()),
-        midColumnTail(matrix.columnPointer.size()),
-        midPrevColumnTail(matrix.columnPointer.size());
+        midColumnTail(matrix.columnPointer),
+        midPrevColumnTail(columnTail);
     double koef, delitelexist, delitel;
 
     bool found, stopflag, sw1, sw2;
 
     size_t counter, columnit, column1it, doprowit, dopcolumnit, count, i;
 
-    std::ranges::copy(matrix.columnPointer, midColumnTail.begin());
-    std::ranges::copy(columnTail, midPrevColumnTail.begin());
-
     for (counter = 0; counter < matrix.linePointer.size(); counter++) {
 
-        std::ranges::copy(midColumnTail, columnTail.begin());
-        std::ranges::copy(midPrevColumnTail, prevColumnTail.begin());
+        std::copy(midColumnTail.begin(),midColumnTail.end(), columnTail.begin());
+        std::copy(midPrevColumnTail.begin(),midPrevColumnTail.end(), prevColumnTail.begin());
 
         stopflag = false;
         lineHead = matrix.linePointer[counter];
         delitelexist = 1;
         for (column1it = 0; column1it < matrix.columnPointer.size(); column1it++) {
-            if ((lineHead && lineHead == columnTail[column1it]) && fabs(lineHead->value) != 0) {// если элемент найден 
+            if ((lineHead && lineHead == columnTail[column1it]) && fabs(lineHead->value) != 0) {// если элемент найден
                 if (counter == column1it) delitelexist = lineHead->value;
                 lineHead->value /= delitelexist;
                 columnTailAvEl[column1it] = lineHead->value;
@@ -393,7 +389,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
                     delitel = searchedElement->value;
 
-                    std::ranges::copy(columnTail, dopColumnTail.begin());
+                    std::copy(columnTail.begin(),columnTail.end(), dopColumnTail.begin());
                     doprowit = counter;
                     while (doprowit < matrix.linePointer.size() && !stopflag) {
                         doplineTail = matrix.linePointer[doprowit];
@@ -422,7 +418,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
             blyatskiy = matrix.linePointer[counter];
             prevblyatskiy = blyatskiy;
             for (i = 0; i < columnTail.size(); i++) {
-                if (blyatskiy && blyatskiy == columnTail[i]) {// если элемент найден  
+                if (blyatskiy && blyatskiy == columnTail[i]) {// если элемент найден
                     blyatskiy->value = (blyatskiy->value + columnTailDopAvEl[i]) / delitel;
                     columnTailAvEl[i] = blyatskiy->value;
                     prevblyatskiy = blyatskiy;
@@ -463,15 +459,15 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
         lineTail = matrix.linePointer[counter];
         for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
-            if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден  
+            if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден
                 lineTail = lineTail->nextLine;
                 prevColumnTail[columnit] = columnTail[columnit];
                 columnTail[columnit] = columnTail[columnit]->nextColumn;
             }
         }
 
-        std::ranges::copy(columnTail, midColumnTail.begin());
-        std::ranges::copy(prevColumnTail, midPrevColumnTail.begin());
+        std::copy(columnTail.begin(),columnTail.end(), midColumnTail.begin());
+        std::copy(prevColumnTail.begin(),prevColumnTail.end(), midPrevColumnTail.begin());
 
 
         for (rowit = counter + 1; rowit < matrix.linePointer.size(); rowit++) {
@@ -480,7 +476,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
             lineTail = matrix.linePointer[rowit];
             prevlineTail = matrix.linePointer[rowit];
             for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
-                if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден  
+                if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден
                     if (columnit == counter) {
                         koef = columnTail[columnit]->value / columnTailAvEl[columnit];
                     }
@@ -528,11 +524,11 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
 
 
-    std::ranges::copy(matrix.columnPointer, dopColumnTail.begin());
+    std::copy(matrix.columnPointer.begin(),matrix.columnPointer.end(), dopColumnTail.begin());
 
     lineHead = matrix.linePointer[0];
     for (column1it = 0; column1it < matrix.columnPointer.size(); column1it++) {
-        if (lineHead && lineHead == dopColumnTail[column1it]) { // если элемент найден  
+        if (lineHead && lineHead == dopColumnTail[column1it]) { // если элемент найден
             columnTailAvEl[column1it] = lineHead->value;
             lineHead = lineHead->nextLine;
             dopColumnTail[column1it] = dopColumnTail[column1it]->nextColumn;
@@ -547,7 +543,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
         lineHead = matrix.linePointer[counter + 1];
         for (column1it = 0; column1it < matrix.columnPointer.size(); column1it++) {
-            if (lineHead && lineHead == dopColumnTail[column1it]) { // если элемент найден  
+            if (lineHead && lineHead == dopColumnTail[column1it]) { // если элемент найден
                 columnTailAvEl[column1it] = lineHead->value;
                 lineHead = lineHead->nextLine;
                 dopColumnTail[column1it] = dopColumnTail[column1it]->nextColumn;
@@ -558,15 +554,15 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
         }
 
 
-        std::ranges::copy(matrix.columnPointer, columnTail.begin());
-        std::ranges::copy(columnTail, prevColumnTail.begin());
+        std::copy(matrix.columnPointer.begin(),matrix.columnPointer.end(), columnTail.begin());
+        std::copy(columnTail.begin(),columnTail.end(), prevColumnTail.begin());
 
         for (rowit = 0; rowit < counter + 1; rowit++) {
             koef = 0;
             lineTail = matrix.linePointer[rowit];
             prevlineTail = matrix.linePointer[rowit];
             for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
-                if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден  
+                if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден
                     if (columnit == counter + 1 && columnTail[counter + 1]) {
                         if (columnTailAvEl[columnit] == 0) { deepDelete(matrix);  return mainMatrix; }
                         koef = columnTail[columnit]->value / columnTailAvEl[columnit];
@@ -614,7 +610,7 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
 
     //обрезаем лишнее
-    std::ranges::copy(matrix.columnPointer, columnTail.begin());
+    std::copy(matrix.columnPointer.begin(), matrix.columnPointer.end(), columnTail.begin());
     for (rowit = 0; rowit < matrix.linePointer.size(); rowit++) {
         lineTail = matrix.linePointer[rowit];
         for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
@@ -630,8 +626,8 @@ SparseDoubleLinkedMatrix inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { /
 
     //удаляем нули (почему мы убираем только в самом конце)
     //если убирать походу программы будут постоянно возникать нули и на эти нули записываться элементы по несколько раз что скажется на производительности
-    std::ranges::copy(UnitMatrix.columnPointer, columnTail.begin());
-    std::ranges::copy(UnitMatrix.columnPointer, prevColumnTail.begin());
+    std::copy(UnitMatrix.columnPointer.begin(),UnitMatrix.columnPointer.end(), columnTail.begin());
+    std::copy(UnitMatrix.columnPointer.begin(),UnitMatrix.columnPointer.end(), prevColumnTail.begin());
     for (rowit = 0; rowit < UnitMatrix.linePointer.size(); rowit++) {
         lineTail = UnitMatrix.linePointer[rowit];
         prevlineTail = lineTail;
@@ -684,7 +680,7 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
     output.columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix1.linePointer.size(), nullptr);
     output.linePointer = std::vector<SparseDoubleLinkedMatrixElement*>(matrix2.columnPointer.size(), nullptr);
 
-    std::vector<SparseDoubleLinkedMatrixElement*> columnTails(matrix1.columnPointer.size()),
+    std::vector<SparseDoubleLinkedMatrixElement*> columnTails(matrix1.columnPointer),
         lineTails(matrix2.linePointer.size()),
         resColumnTails(matrix2.columnPointer.size(), nullptr),
         resColumn1Tails(matrix2.columnPointer.size(), nullptr);
@@ -699,7 +695,6 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
     double elValue;
 
     size_t rowit, columnit, column, line;
-    std::ranges::copy(matrix1.columnPointer, columnTails.begin());
 
     for (rowit = 0; rowit < output.linePointer.size(); rowit++) {
 
@@ -718,7 +713,7 @@ SparseDoubleLinkedMatrix multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubl
             }
         }
 
-        std::ranges::copy(matrix2.linePointer, lineTails.begin());
+        std::copy(matrix2.linePointer.begin(),matrix2.linePointer.end(), lineTails.begin());
         for (columnit = 0; columnit < output.columnPointer.size(); columnit++) {
 
             columnTail = matrix2.columnPointer[columnit];
