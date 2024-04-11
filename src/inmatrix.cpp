@@ -32,7 +32,7 @@ QString getLastSubstringOrLastFive(const QString &input) {
     int lastSlashIndex = input.lastIndexOf('/');
     if (lastSlashIndex != -1) {
         // Если содержит, возвращаем подстроку после последнего символа "/"
-        return input.mid(lastSlashIndex + 1);
+        return input.mid(lastSlashIndex + 1, input.lastIndexOf(".") - (lastSlashIndex + 1));
     } else {
         // Если не содержит, возвращаем последние 5 символов
         if (input.length() > 5) {
