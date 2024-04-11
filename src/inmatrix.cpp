@@ -59,9 +59,7 @@ void inmatrix::on_pushButton_clicked()//открыть окно импорта
             v->refresh();
         }
     } else  {
-        warring w;
-        w.setModal(true);
-        w.exec();
+        QMessageBox::warning(this, "Предупреждение", "Данный файл не содержит матрицу");
     }
 }
 
