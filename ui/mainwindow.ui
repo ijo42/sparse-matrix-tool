@@ -131,7 +131,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../assets/++.png</normaloff>../assets/++.png</iconset>
+      <normaloff>../assets/plus.svg</normaloff>../assets/plus.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -154,7 +154,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../assets/explorer.png</normaloff>../assets/explorer.png</iconset>
+      <normaloff>../assets/explorer.svg</normaloff>../assets/explorer.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -177,7 +177,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../assets/^-1.png</normaloff>../assets/^-1.png</iconset>
+      <normaloff>../assets/inverse.svg</normaloff>../assets/inverse.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -200,7 +200,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../assets/X.png</normaloff>../assets/X.png</iconset>
+      <normaloff>../assets/multiply.svg</normaloff>../assets/multiply.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -223,7 +223,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../assets/-.png</normaloff>../assets/-.png</iconset>
+      <normaloff>../assets/minus.svg</normaloff>../assets/minus.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -246,7 +246,7 @@
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../assets/swap.png</normaloff>../assets/swap.png</iconset>
+      <normaloff>../assets/swap.svg</normaloff>../assets/swap.svg</iconset>
     </property>
     <property name="iconSize">
      <size>
