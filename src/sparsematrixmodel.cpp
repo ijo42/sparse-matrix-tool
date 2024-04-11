@@ -1,19 +1,18 @@
 #include "io.h"
 #include <headers/sparsematrixmodel.h>
 
-SparseMatrixModel::SparseMatrixModel(const std::string &path, QObject* parent)
-    : QAbstractTableModel(parent), _matrix() {
-    _matrix = loadFromFile(path);
+SparseMatrixModel::SparseMatrixModel(SparseDoubleLinkedMatrix *matrix, QObject* parent)
+    : QAbstractTableModel(parent), _matrix(matrix) {
 }
 
 int SparseMatrixModel::rowCount(const QModelIndex &parent) const {
     // Возвращает количество строк в матрице
-    return _matrix.linePointer.size();
+    return _matrix->linePointer.size();
 }
 
 int SparseMatrixModel::columnCount(const QModelIndex &parent) const {
     // Возвращает количество столбцов в матрице
-    return _matrix.columnPointer.size();
+    return _matrix->columnPointer.size();
 }
 
 QVariant SparseMatrixModel::data(const QModelIndex &index, int role) const {
@@ -21,11 +20,11 @@ QVariant SparseMatrixModel::data(const QModelIndex &index, int role) const {
         return QVariant();
 
     // Проверка существования элемента на пересечении строки и столбца
-    auto rowTail = _matrix.linePointer[index.row()];
+    auto rowTail = _matrix->linePointer[index.row()];
 
     while (rowTail != nullptr) {
         // Сброс columnTail на начало столбца для каждой новой строки
-        auto columnTail = _matrix.columnPointer[index.column()];
+        auto columnTail = _matrix->columnPointer[index.column()];
 
         while (columnTail != nullptr) {
             if (columnTail == rowTail) {
