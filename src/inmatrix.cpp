@@ -6,7 +6,6 @@
 
 #include <headers/explorer.h>
 #include <headers/preview.h>
-#include <headers/warring.h>
 
 inmatrix::inmatrix(QWidget *parent)
     : QDialog(parent)
