@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/details.cpp \
     src/preview.cpp \
     src/creatematrix.cpp \
     src/error.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     src/matrixitem.cpp
 
 HEADERS += \
+    headers/details.h \
     headers/creatematrix.h \
     headers/error.h \
     headers/explorer.h \
@@ -30,6 +32,7 @@ HEADERS += \
     headers/matrixitem.h
 
 FORMS += \
+    ui/details.ui \
     ui/preview.ui \
     ui/creatematrix.ui \
     ui/error.ui \
