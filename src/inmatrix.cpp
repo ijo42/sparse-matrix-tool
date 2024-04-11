@@ -22,7 +22,7 @@ inmatrix::~inmatrix()
 
 void inmatrix::on_pushButton_2_clicked()//открыть окно создания матрицы
 {
-    creatematrix w3;
+    creatematrix w3(this);
     w3.setModal(true);
     w3.exec();
 }
@@ -55,8 +55,9 @@ void inmatrix::on_pushButton_clicked()//открыть окно импорта
     if(isSuccess){
         matrix->name = getLastSubstringOrLastFive(filename).toStdString();
         explorer::getMatrixs().append(matrix);
-        Preview p = Preview(matrix, this);
-        p.show();
+        if(explorer* v = dynamic_cast<explorer*>(parent())) {
+            v->refresh();
+        }
     } else  {
         warring w;
         w.setModal(true);

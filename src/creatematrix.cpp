@@ -41,6 +41,9 @@ void creatematrix::on_pushButton_clicked()//создать матрицу
         auto matrix = !ui->checkBox->checkState() ? generateEmpty(row,column) : generateRnd(row, column);;
         matrix->name = QString("Матрица %1").arg(1+explorer::getMatrixs().size()).toStdString();
         explorer::getMatrixs().append(matrix);
+        if(explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
+            v->refresh();
+        }
     }
     else
     {
