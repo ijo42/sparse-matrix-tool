@@ -1,7 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "sparsematrixmodel.h"
+
 #include <QMainWindow>
+#include <shared.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -18,27 +21,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_7_clicked();
 
-    void on_pushButton_10_clicked();
+    void on_exlporerButton_clicked();
+
+    void on_matrixAButton_clicked();
 
     void on_pushButton_8_clicked();
 
     void on_pushButton_9_clicked();
 
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
-
-    void on_pushButton_3_clicked();
-
-    void on_pushButton_4_clicked();
-
-    void on_pushButton_5_clicked();
-
-    void on_pushButton_6_clicked();
-
 private:
     Ui::MainWindow *ui;
+    SparseDoubleLinkedMatrix *matrixA, *matrixB;
 };
 #endif // MAINWINDOW_H

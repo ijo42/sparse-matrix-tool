@@ -11,154 +11,16 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Калькулятор матриц</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>450</y>
-      <width>231</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>explorer.png</normaloff>explorer.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>80</width>
-      <height>80</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_2">
-    <property name="geometry">
-     <rect>
-      <x>240</x>
-      <y>450</y>
-      <width>231</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>swap.png</normaloff>swap.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>80</width>
-      <height>80</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_3">
-    <property name="geometry">
-     <rect>
-      <x>480</x>
-      <y>450</y>
-      <width>181</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>++.png</normaloff>++.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>80</width>
-      <height>80</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_4">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>470</y>
-      <width>161</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>-.png</normaloff>-.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>80</width>
-      <height>100</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_5">
-    <property name="geometry">
-     <rect>
-      <x>840</x>
-      <y>470</y>
-      <width>181</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>X.png</normaloff>X.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>80</width>
-      <height>80</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_6">
-    <property name="geometry">
-     <rect>
-      <x>1030</x>
-      <y>480</y>
-      <width>221</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>^-1.png</normaloff>^-1.png</iconset>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>80</width>
-      <height>80</height>
-     </size>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="matrixAButton">
     <property name="geometry">
      <rect>
       <x>200</x>
-      <y>140</y>
-      <width>291</width>
-      <height>241</height>
+      <y>160</y>
+      <width>300</width>
+      <height>200</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -195,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>920</x>
-      <y>30</y>
+      <y>20</y>
       <width>93</width>
       <height>29</height>
      </rect>
@@ -204,13 +66,13 @@
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_10">
+   <widget class="QPushButton" name="matrixBButton">
     <property name="geometry">
      <rect>
       <x>750</x>
       <y>160</y>
-      <width>331</width>
-      <height>211</height>
+      <width>300</width>
+      <height>200</height>
      </rect>
     </property>
     <property name="text">
@@ -227,6 +89,241 @@
      </size>
     </property>
    </widget>
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>430</y>
+      <width>1281</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="backgroundBrush">
+     <brush brushstyle="SolidPattern">
+      <color alpha="255">
+       <red>125</red>
+       <green>125</green>
+       <blue>125</blue>
+      </color>
+     </brush>
+    </property>
+    <property name="interactive">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sumButton">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>490</y>
+      <width>92</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../assets/++.png</normaloff>../assets/++.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>80</width>
+      <height>80</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="exlporerButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>490</y>
+      <width>92</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../assets/explorer.png</normaloff>../assets/explorer.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>80</width>
+      <height>80</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="reverseButton">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>490</y>
+      <width>92</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../assets/^-1.png</normaloff>../assets/^-1.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>80</width>
+      <height>80</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="multiplyButton">
+    <property name="geometry">
+     <rect>
+      <x>700</x>
+      <y>490</y>
+      <width>92</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../assets/X.png</normaloff>../assets/X.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>80</width>
+      <height>80</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="subButton">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>490</y>
+      <width>92</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../assets/-.png</normaloff>../assets/-.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>80</width>
+      <height>100</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="swapButton">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>490</y>
+      <width>92</width>
+      <height>86</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../assets/swap.png</normaloff>../assets/swap.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>80</width>
+      <height>80</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QTableView" name="matrixAView">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>620</width>
+      <height>370</height>
+     </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="showDropIndicator" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+   </widget>
+   <widget class="QTableView" name="matrixBView">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>50</y>
+      <width>620</width>
+      <height>370</height>
+     </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="tabKeyNavigation">
+     <bool>false</bool>
+    </property>
+    <property name="showDropIndicator" stdset="0">
+     <bool>false</bool>
+    </property>
+    <property name="dragDropOverwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="selectionMode">
+     <enum>QAbstractItemView::SingleSelection</enum>
+    </property>
+   </widget>
+   <zorder>graphicsView</zorder>
+   <zorder>sumButton</zorder>
+   <zorder>exlporerButton</zorder>
+   <zorder>reverseButton</zorder>
+   <zorder>multiplyButton</zorder>
+   <zorder>subButton</zorder>
+   <zorder>swapButton</zorder>
+   <zorder>matrixAButton</zorder>
+   <zorder>pushButton_8</zorder>
+   <zorder>pushButton_9</zorder>
+   <zorder>matrixBButton</zorder>
+   <zorder>matrixAView</zorder>
+   <zorder>matrixBView</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -234,7 +331,7 @@
      <x>0</x>
      <y>0</y>
      <width>1278</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
