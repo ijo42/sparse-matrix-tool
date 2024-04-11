@@ -9,14 +9,15 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/preview.cpp \
     src/creatematrix.cpp \
     src/error.cpp \
+    src/exporer.cpp \
     src/inmatrix.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/preview.cpp \
     src/sparsematrixmodel.cpp \
-    src/warring.cpp
+    src/matrixitem.cpp
 
 HEADERS += \
     headers/creatematrix.h \
@@ -26,16 +27,16 @@ HEADERS += \
     headers/mainwindow.h \
     headers/preview.h \
     headers/sparsematrixmodel.h \
-    headers/warring.h
+    headers/matrixitem.h
 
 FORMS += \
+    ui/preview.ui \
     ui/creatematrix.ui \
     ui/error.ui \
     ui/explorer.ui \
     ui/inmatrix.ui \
     ui/mainwindow.ui \
-    ui/preview.ui \
-    ui/warring.ui
+    ui/matrixitem.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
