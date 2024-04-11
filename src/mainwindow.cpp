@@ -6,6 +6,8 @@
 
 #include <headers/sparsematrixmodel.h>
 
+#include <Details.h>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -50,10 +52,7 @@ void MainWindow::on_pushButton_8_clicked()
 
 void MainWindow::on_pushButton_9_clicked()
 {
-    auto model = SparseMatrixModel(explorer::getMatrixs()[1]);
-    ui->matrixBView->setModel(&model);
-    ui->matrixBView->show();
-    ui->matrixAButton->hide();
-
+    auto detail = new Details(explorer::getMatrixs()[0]);
+    detail->show();
 }
 

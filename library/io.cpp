@@ -83,7 +83,7 @@ SparseDoubleLinkedMatrix *loadFromFile(const std::string &path) {
 std::mutex file_mutex; // Мьютекс для синхронизации записи в файл
 
 // Функция асинхронной записи данных в файл
-void asyncWrite(std::string path, const std::string& data) {
+void asyncWrite(const std::string& path, const std::string& data) {
     std::lock_guard<std::mutex> lock(file_mutex); // Захват мьютекса на время записи в файл
     std::ofstream output(path, std::ios::app); // Открываем файл в режиме добавления
     if (output) {
@@ -92,33 +92,13 @@ void asyncWrite(std::string path, const std::string& data) {
 }
 
 void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix) {
-    std::vector<SparseDoubleLinkedMatrixElement*> elements(maxElements(matrix.linePointer.size(), matrix.columnPointer.size()));
     std::vector<size_t> lineIds(matrix.linePointer.size(), 0), columnIds(matrix.columnPointer.size(), 0);
-    size_t k = 1, i = 0;
 
-    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer);
-
-    for(auto lineHead = matrix.linePointer.begin(); lineHead != matrix.linePointer.end(); ++i, ++lineHead){
-        auto lineTail = *lineHead;
-        size_t j = 0;
-        for (auto columnHead = columnPointer.begin(); columnHead != columnPointer.end(); ++j, ++columnHead) {
-            if(lineTail && lineTail == *columnHead) {
-                elements[k-1] = (*columnHead);
-                lineTail = lineTail->nextLine;
-                *columnHead = (*columnHead)->nextColumn;
-                if(columnIds[j] == 0)
-                    columnIds[j] = k;
-                if(lineIds[i] == 0)
-                    lineIds[i] = k;
-                k++;
-            }
-        }
-    }
+    auto elements = listElements(matrix, lineIds, columnIds);
 
     std::ofstream clear_file(path, std::ios::trunc); // Очищаем файл перед началом записи
     clear_file.close();
 
-    elements.resize(k-1);
     // Использование строкового потока для формирования итогового текста
     std::ostringstream oss;
     oss.precision(6);
@@ -142,7 +122,7 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix& matrix)
     vectorToStream(oss, lineIds);
     vectorToStream(oss, columnIds);
 
-    k = 1;
+    size_t k = 1;
     for (auto current = elements.begin(); current != elements.end(); ++current, ++count, ++k) {
         if (count % N == 0 && count > 0) {
             // Асинхронная запись в файл когда count достигает N
