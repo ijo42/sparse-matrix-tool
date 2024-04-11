@@ -11,6 +11,12 @@ SparseDoubleLinkedMatrixElement *initElement(const double value) {
     return element;
 }
 
+SparseDoubleLinkedMatrix *generateEmpty(const int n, const int m) {
+    auto matrix = new SparseDoubleLinkedMatrix;
+    matrix->columnPointer = std::vector<SparseDoubleLinkedMatrixElement*>(n, nullptr);
+    matrix->linePointer = std::vector<SparseDoubleLinkedMatrixElement*>(m, nullptr);
+    return matrix;
+}
 
 /*
  * генерирует матрицу

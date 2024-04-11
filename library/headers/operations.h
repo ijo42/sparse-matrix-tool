@@ -7,6 +7,7 @@ SparseDoubleLinkedMatrix *deepCopy(const SparseDoubleLinkedMatrix& input);
 void deepDelete(SparseDoubleLinkedMatrix& matrix);
 SparseDoubleLinkedMatrixElement *initElement(double value);
 SparseDoubleLinkedMatrix *generateRnd(int n, int m);
+SparseDoubleLinkedMatrix *generateEmpty(int n, int m);
 SparseDoubleLinkedMatrix *add(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2);
 SparseDoubleLinkedMatrix *sub(const SparseDoubleLinkedMatrix& matrix1, const SparseDoubleLinkedMatrix& matrix2);
 SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix);
