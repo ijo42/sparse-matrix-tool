@@ -66,28 +66,43 @@ void MainWindow::on_swapButton_clicked(){
     std::swap(matrixA, matrixB);
 }
 
-void MainWindow::on_sumButton_clicked(){
-    SparseDoubleLinkedMatrix * m = add(*matrixA, *matrixB);
-    m->name = m->name = matrixA->name + " + " + matrixB->name;
-    explorer::getMatrixs().append(m);
+void MainWindow::on_sumButton_clicked() {
+    if (!(matrixA && matrixB)) QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+    else {
+        SparseDoubleLinkedMatrix* m = add(*matrixA, *matrixB);
+        m->name = m->name = matrixA->name + " + " + matrixB->name;
+        explorer::getMatrixs().append(m);
+    }
 }
 
-void MainWindow::on_subButton_clicked(){
-    SparseDoubleLinkedMatrix * m = sub(*matrixA, *matrixB);
-    m->name = matrixA->name + " - " + matrixB->name;
-    explorer::getMatrixs().append(m);
+void MainWindow::on_subButton_clicked() {
+    if (!(matrixA && matrixB))
+        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+    else {
+        SparseDoubleLinkedMatrix* m = sub(*matrixA, *matrixB);
+        m->name = matrixA->name + " - " + matrixB->name;
+        explorer::getMatrixs().append(m);
+    }
 }
 
-void MainWindow::on_multiplyButton_clicked(){
-    SparseDoubleLinkedMatrix * m = multiply(*matrixA, *matrixB);
-    m->name = matrixA->name + " * " + matrixB->name;
-    explorer::getMatrixs().append(m);
+void MainWindow::on_multiplyButton_clicked() {
+    if (!(matrixA && matrixB)) QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+    else {
+        SparseDoubleLinkedMatrix* m = multiply(*matrixA, *matrixB);
+        m->name = matrixA->name + " * " + matrixB->name;
+        explorer::getMatrixs().append(m);
+    }
 }
 
-void MainWindow::on_reverseButton_clicked(){
-    SparseDoubleLinkedMatrix * m = inverseMatrix(*matrixA);
-    if (m == nullptr) std::cout << "error blya" << std::endl;
-    else{
+void MainWindow::on_reverseButton_clicked() {
+    SparseDoubleLinkedMatrix* m = nullptr;
+    if (matrixA) m = inverseMatrix(*matrixA);
+    else if (matrixB) m = inverseMatrix(*matrixB);
+    if (m == nullptr) {
+        if (matrixA || matrixB) QMessageBox::warning(this, "Предупреждение", "Определитель равен нулю");
+        else QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+    }
+    else {
         m->name = matrixA->name + " ^-1";
         explorer::getMatrixs().append(m);
     }
