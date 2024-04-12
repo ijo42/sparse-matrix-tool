@@ -22,7 +22,8 @@ class explorer : public QDialog
 
 public:
     explicit explorer(QWidget *parent = nullptr, QTableView* matrixPlace = nullptr,
-                      QPushButton* button = nullptr, SparseDoubleLinkedMatrix** matrix = nullptr);
+                      QPushButton* button = nullptr, QLabel *matrixLabel = nullptr,
+                      SparseDoubleLinkedMatrix** matrix = nullptr);
     ~explorer();
     static QList<SparseDoubleLinkedMatrix*>& getMatrixs() {
         static QList<SparseDoubleLinkedMatrix*> list;
@@ -42,6 +43,7 @@ private:
     QPushButton* btn;
     std::string* matrixName;
     SparseDoubleLinkedMatrix** matrix;
+    QLabel *matrixLabel;
     Ui::explorer *ui;
 };
 

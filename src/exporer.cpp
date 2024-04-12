@@ -7,16 +7,11 @@
 #include <qlabel.h>
 
 
-explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, SparseDoubleLinkedMatrix** Matrix)
-    : QDialog(parent)
-    , ui(new Ui::explorer)
+explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, QLabel *matrixLabel, SparseDoubleLinkedMatrix** Matrix)
+    : QDialog(parent), matrixLabel(matrixLabel), ui(new Ui::explorer)
 {
     ui->setupUi(this);
-    // auto *layout = new QVBoxLayout(this);
     auto listWidget = ui->listWidget;
-    // auto *btnRemove = new QPushButton("Удалить", this);
-    // auto *btnRename = new QPushButton("Переименовать", this);
-
     for (auto &matrix : explorer::getMatrixs()) {
         QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name));
         QVariant variant;
@@ -25,7 +20,9 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
         listWidget->addItem(item);
     }
 
-    if (matrixPlace) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+    if (matrixPlace) {
+        connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+    }
 
     mPlace = matrixPlace;
     btn = button;
@@ -39,6 +36,7 @@ void explorer::onItemClicked(QListWidgetItem *item){
     mPlace->setModel(model);
     mPlace->show();
     btn->hide();
+    matrixLabel->hide();
     *matrix = selectedMatrix;
 }
 

@@ -36,14 +36,14 @@ void MainWindow::on_exlporerButton_clicked()
 
 void MainWindow::on_matrixAButton_clicked()
 {
-    explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, &matrixA);
+    explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, ui->matrixALabel, &matrixA);
     w1.setModal(true);
     w1.exec();
 }
 
 void MainWindow::on_matrixBButton_clicked()
 {
-    explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, &matrixB);
+    explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, ui->matrixBLabel, &matrixB);
     w1.setModal(true);
     w1.exec();
 }
