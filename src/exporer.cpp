@@ -68,10 +68,10 @@ void explorer::on_btnRemove_clicked() {
         QMessageBox::warning(this, "Предупреждение", "Выберите объект для удаления");
         return;
     }
-    auto *item = selectedItems.first();
-    SparseDoubleLinkedMatrix *matrix = reinterpret_cast<SparseDoubleLinkedMatrix*>(item->data(Qt::UserRole).value<void*>());
-
-    deepDelete(*matrix);
+    auto* item = selectedItems.first();
+    QVariant variant = item->data(Qt::UserRole);
+    SparseDoubleLinkedMatrix* selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    deepDelete(*selectedMatrix);
     delete item;
 }
 
@@ -81,12 +81,13 @@ void explorer::on_btnRename_clicked() {
         QMessageBox::warning(this, "Предупреждение", "Выберите объект для переименования");
         return;
     }
-    auto *item = selectedItems.first();
+    auto* item = selectedItems.first();
     bool ok;
     QString newName = QInputDialog::getText(this, "Переименовать", "Новое название:", QLineEdit::Normal, item->text(), &ok);
     if (ok && !newName.isEmpty()) {
-        SparseDoubleLinkedMatrix *matrix = reinterpret_cast<SparseDoubleLinkedMatrix*>(item->data(Qt::UserRole).value<void*>());
-        matrix->name = newName.toStdString();
+        QVariant variant = item->data(Qt::UserRole);
+        SparseDoubleLinkedMatrix* selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+        selectedMatrix->name = newName.toStdString();
         item->setText(newName);
     }
 }
