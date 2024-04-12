@@ -3,11 +3,11 @@
 #include <headers/explorer.h>
 #include <headers/inmatrix.h>
 #include "QMessageBox"
+#include "ui_mainwindow.h"
 #include <QHBoxLayout>
 #include <qlabel.h>
 
-
-explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, SparseDoubleLinkedMatrix** Matrix)
+explorer::explorer(QWidget *parent, QTableView *Place)
     : QDialog(parent)
     , ui(new Ui::explorer)
 {
@@ -19,27 +19,22 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
 
     for (auto &matrix : explorer::getMatrixs()) {
         QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name));
-        QVariant variant;
-        variant.setValue(matrix);
-        item->setData(Qt::UserRole, variant);
+        item->setData(Qt::UserRole, QVariant::fromValue(reinterpret_cast<void*>(&matrix)));
         listWidget->addItem(item);
     }
 
-    if (matrixPlace) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+    if (Place) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
 
-    mPlace = matrixPlace;
-    btn = button;
-    matrix = Matrix;
+    matrixPlace = Place;
 }
 
-void explorer::onItemClicked(QListWidgetItem *item){
+void explorer::onItemClicked(QListWidgetItem *item) {
+    // Получение указателя на матрицу
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
-    auto model = new SparseMatrixModel(selectedMatrix);
-    mPlace->setModel(model);
-    mPlace->show();
-    btn->hide();
-    *matrix = selectedMatrix;
+    SparseDoubleLinkedMatrix* matrix = variant.value<SparseDoubleLinkedMatrix*>();
+    auto model = new SparseMatrixModel(matrix);
+    matrixPlace->setModel(model);
+    matrixPlace->show();
 }
 
 void explorer::refresh() {
@@ -54,7 +49,7 @@ void explorer::refresh() {
         listWidget->addItem(item);
     }
 
-    if (mPlace) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+    if (matrixPlace) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
 }
 
 void explorer::on_btnAdd_clicked()

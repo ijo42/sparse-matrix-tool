@@ -1,12 +1,13 @@
 #include "../headers/mainwindow.h"
 #include "shared.h"
+#include "operations.h"
 #include "ui_mainwindow.h"
 #include "../headers/inmatrix.h"
 #include "../headers/explorer.h"
 
 #include <headers/sparsematrixmodel.h>
 
-#include <Details.h>
+#include <headers/details.h>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -35,24 +36,59 @@ void MainWindow::on_exlporerButton_clicked()
 
 void MainWindow::on_matrixAButton_clicked()
 {
-    inmatrix w1;
+    explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, &matrixA);
     w1.setModal(true);
     w1.exec();
 }
 
+void MainWindow::on_matrixBButton_clicked()
+{
+    explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, &matrixB);
+    w1.setModal(true);
+    w1.exec();
+}
 
 void MainWindow::on_pushButton_8_clicked()
 {
-    auto model = new SparseMatrixModel(explorer::getMatrixs()[0]);
-    ui->matrixAView->setModel(model);
-    ui->matrixAView->show();
-    ui->matrixAButton->hide();
+    auto detail = new Details(matrixA);
+    detail->show();
 }
 
 
 void MainWindow::on_pushButton_9_clicked()
 {
-    auto detail = new Details(explorer::getMatrixs()[0]);
+    auto detail = new Details(matrixB);
     detail->show();
 }
 
+void MainWindow::on_swapButton_clicked(){
+    std::swap(ui->matrixAView, ui->matrixBView);
+    std::swap(matrixA, matrixB);
+}
+
+void MainWindow::on_sumButton_clicked(){
+    SparseDoubleLinkedMatrix * m = add(*matrixA, *matrixB);
+    m->name = m->name = matrixA->name + " + " + matrixB->name;
+    explorer::getMatrixs().append(m);
+}
+
+void MainWindow::on_subButton_clicked(){
+    SparseDoubleLinkedMatrix * m = sub(*matrixA, *matrixB);
+    m->name = matrixA->name + " - " + matrixB->name;
+    explorer::getMatrixs().append(m);
+}
+
+void MainWindow::on_multiplyButton_clicked(){
+    SparseDoubleLinkedMatrix * m = multiply(*matrixA, *matrixB);
+    m->name = matrixA->name + " * " + matrixB->name;
+    explorer::getMatrixs().append(m);
+}
+
+void MainWindow::on_reverseButton_clicked(){
+    SparseDoubleLinkedMatrix * m = inverseMatrix(*matrixA);
+    if (m == nullptr) std::cout << "error blya" << std::endl;
+    else{
+        m->name = matrixA->name + " ^-1";
+        explorer::getMatrixs().append(m);
+    }
+}
