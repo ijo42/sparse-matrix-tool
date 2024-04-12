@@ -67,7 +67,7 @@ void MainWindow::on_swapButton_clicked(){
 }
 
 void MainWindow::on_sumButton_clicked() {
-    if (!(matrixA && matrixB)) QMessageBox::warning(this, "Ïðåäóïðåæäåíèå", "Íåäîñòàòî÷íî ìàòðèö äëÿ îáðàáîòêè");
+    if (!(matrixA && matrixB)) QMessageBox::warning(this, "ÐŸÑ€ÐµÐ´ÑƒÐ¿Ñ€ÐµÐ¶Ð´ÐµÐ½Ð¸Ðµ", "ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† Ð´Ð»Ñ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸");
     else {
         SparseDoubleLinkedMatrix* m = add(*matrixA, *matrixB);
         m->name = m->name = matrixA->name + " + " + matrixB->name;
@@ -77,7 +77,7 @@ void MainWindow::on_sumButton_clicked() {
 
 void MainWindow::on_subButton_clicked() {
     if (!(matrixA && matrixB))
-        QMessageBox::warning(this, "Ïðåäóïðåæäåíèå", "Íåäîñòàòî÷íî ìàòðèö äëÿ îáðàáîòêè");
+        QMessageBox::warning(this, "ÐŸÑ€ÐµÐ´ÑƒÐ¿Ñ€ÐµÐ¶Ð´ÐµÐ½Ð¸Ðµ", "ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† Ð´Ð»Ñ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸");
     else {
         SparseDoubleLinkedMatrix* m = sub(*matrixA, *matrixB);
         m->name = matrixA->name + " - " + matrixB->name;
@@ -86,7 +86,7 @@ void MainWindow::on_subButton_clicked() {
 }
 
 void MainWindow::on_multiplyButton_clicked() {
-    if (!(matrixA && matrixB)) QMessageBox::warning(this, "Ïðåäóïðåæäåíèå", "Íåäîñòàòî÷íî ìàòðèö äëÿ îáðàáîòêè");
+    if (!(matrixA && matrixB)) QMessageBox::warning(this, "ÐŸÑ€ÐµÐ´ÑƒÐ¿Ñ€ÐµÐ¶Ð´ÐµÐ½Ð¸Ðµ", "ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† Ð´Ð»Ñ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸");
     else {
         SparseDoubleLinkedMatrix* m = multiply(*matrixA, *matrixB);
         m->name = matrixA->name + " * " + matrixB->name;
@@ -99,8 +99,8 @@ void MainWindow::on_reverseButton_clicked() {
     if (matrixA) m = inverseMatrix(*matrixA);
     else if (matrixB) m = inverseMatrix(*matrixB);
     if (m == nullptr) {
-        if (matrixA || matrixB) QMessageBox::warning(this, "Ïðåäóïðåæäåíèå", "Îïðåäåëèòåëü ðàâåí íóëþ");
-        else QMessageBox::warning(this, "Ïðåäóïðåæäåíèå", "Íåäîñòàòî÷íî ìàòðèö äëÿ îáðàáîòêè");
+        if (matrixA || matrixB) QMessageBox::warning(this, "ÐŸÑ€ÐµÐ´ÑƒÐ¿Ñ€ÐµÐ¶Ð´ÐµÐ½Ð¸Ðµ", "ÐžÐ¿Ñ€ÐµÐ´ÐµÐ»Ð¸Ñ‚ÐµÐ»ÑŒ Ñ€Ð°Ð²ÐµÐ½ Ð½ÑƒÐ»ÑŽ");
+        else QMessageBox::warning(this, "ÐŸÑ€ÐµÐ´ÑƒÐ¿Ñ€ÐµÐ¶Ð´ÐµÐ½Ð¸Ðµ", "ÐÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ð¼Ð°Ñ‚Ñ€Ð¸Ñ† Ð´Ð»Ñ Ð¾Ð±Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸");
     }
     else {
         m->name = matrixA->name + " ^-1";
