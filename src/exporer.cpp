@@ -92,6 +92,19 @@ void explorer::on_btnRename_clicked() {
     }
 }
 
+void explorer::on_btnMoreinf_clicked() {
+    auto selectedItems = ui->listWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Предупреждение", "Выберите объект для переименования");
+        return;
+    }
+    auto* item = selectedItems.first();
+    QVariant variant = item->data(Qt::UserRole);
+    SparseDoubleLinkedMatrix* selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    auto detail = new Details(selectedMatrix);
+    detail->show();
+}
+
 explorer::~explorer()
 {
     delete ui;

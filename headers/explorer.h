@@ -37,6 +37,7 @@ private slots:
     void on_btnAdd_clicked();
     void on_btnRemove_clicked();
     void on_btnRename_clicked();
+    void on_btnMoreinf_clicked();
 
 private:
     QTableView* mPlace;
