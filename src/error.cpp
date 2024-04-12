@@ -15,6 +15,6 @@ error::~error()
 
 void error::on_pushButton_clicked()//ошибка ок
 {
-
+    delete ui;
 }
 

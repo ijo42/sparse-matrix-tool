@@ -45,6 +45,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    SparseDoubleLinkedMatrix *matrixA, *matrixB;
+    SparseDoubleLinkedMatrix *matrixA = nullptr, *matrixB =nullptr;
 };
 #endif // MAINWINDOW_H

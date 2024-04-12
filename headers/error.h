@@ -2,6 +2,7 @@
 #define ERROR_H
 
 #include <QDialog>
+#include <QLabel>
 
 namespace Ui {
 class error;
@@ -14,6 +15,7 @@ class error : public QDialog
 public:
     explicit error(QWidget *parent = nullptr);
     ~error();
+    QLabel errormessage;
 
 private slots:
     void on_pushButton_clicked();
