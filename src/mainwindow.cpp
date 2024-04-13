@@ -38,14 +38,14 @@ void MainWindow::on_exlporerButton_clicked()
 
 void MainWindow::on_matrixAButton_clicked()
 {
-    explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, ui->pushButton_8, &matrixA);
+    explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, ui->pushButton_8, ui->matrixALabel, &matrixA);
     w1.setModal(true);
     w1.exec();
 }
 
 void MainWindow::on_matrixBButton_clicked()
 {
-    explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, ui->pushButton_9, &matrixB);
+    explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, ui->pushButton_9, ui->matrixBLabel, &matrixB);
     w1.setModal(true);
     w1.exec();
 }
@@ -55,6 +55,7 @@ void MainWindow::on_pushButton_8_clicked()
     ui->matrixAView->hide();
     ui->pushButton_8->hide();
     ui->matrixAButton->show();
+    ui->matrixALabel->show();
     matrixA = nullptr;
 }
 
@@ -64,6 +65,7 @@ void MainWindow::on_pushButton_9_clicked()
     ui->matrixBView->hide();
     ui->pushButton_9->hide();
     ui->matrixBButton->show();
+    ui->matrixBLabel->show();
     matrixB = nullptr;
 }
 
@@ -72,20 +74,30 @@ void MainWindow::on_swapButton_clicked(){
     if (matrixA) {
         auto model = new SparseMatrixModel(matrixA);
         ui->matrixAView->setModel(model);
+        ui->matrixAButton->hide();
         ui->matrixAView->show();
+        ui->pushButton_8->show();
+        ui->matrixALabel->hide();
     }
     else{
         ui->matrixAView->hide();
         ui->matrixAButton->show();
+        ui->pushButton_8->hide();
+        ui->matrixALabel->show();
     }
     if (matrixB){
-        model = new SparseMatrixModel(matrixB);
+        auto model = new SparseMatrixModel(matrixB);
         ui->matrixBView->setModel(model);
+        ui->matrixBButton->hide();
         ui->matrixBView->show();
+        ui->pushButton_9->show();
+        ui->matrixBLabel->hide();
     }
     else{
         ui->matrixBView->hide();
         ui->matrixBButton->show();
+        ui->pushButton_9->hide();
+        ui->matrixBLabel->show();
     }
 }
 
@@ -93,8 +105,13 @@ void MainWindow::on_sumButton_clicked(){
     if (!(matrixA && matrixB)) QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
     else{
         SparseDoubleLinkedMatrix * m = add(*matrixA, *matrixB);
-        m->name = m->name = matrixA->name + " + " + matrixB->name;
-        explorer::getMatrixs().append(m);
+        if (m){
+            m->name = m->name = matrixA->name + " + " + matrixB->name;
+            explorer::getMatrixs().append(m);
+        }
+        else {
+            QMessageBox::warning(this, "Предупреждение", "Разная размерность матриц");
+        }
     }
 }
 
@@ -103,8 +120,13 @@ void MainWindow::on_subButton_clicked(){
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
     else{
         SparseDoubleLinkedMatrix * m = sub(*matrixA, *matrixB);
-        m->name = matrixA->name + " - " + matrixB->name;
-        explorer::getMatrixs().append(m);
+        if (m){
+            m->name = m->name = matrixA->name + " - " + matrixB->name;
+            explorer::getMatrixs().append(m);
+        }
+        else {
+            QMessageBox::warning(this, "Предупреждение", "Разная размерность матриц");
+        }
     }
 }
 
@@ -112,8 +134,13 @@ void MainWindow::on_multiplyButton_clicked(){
     if (!(matrixA && matrixB)) QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
     else{
         SparseDoubleLinkedMatrix * m = multiply(*matrixA, *matrixB);
-        m->name = matrixA->name + " * " + matrixB->name;
-        explorer::getMatrixs().append(m);
+        if (m){
+            m->name = m->name = matrixA->name + " * " + matrixB->name;
+            explorer::getMatrixs().append(m);
+        }
+        else {
+            QMessageBox::warning(this, "Предупреждение", "Матрицы имеют не сопостовимые размерности");
+        }
     }
 }
 

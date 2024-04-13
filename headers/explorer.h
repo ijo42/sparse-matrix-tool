@@ -12,6 +12,7 @@
 #include "QTableView"
 #include "sparsematrixmodel.h"
 #include "details.h"
+#include "qlabel.h"
 
 namespace Ui {
 class explorer;
@@ -23,7 +24,9 @@ class explorer : public QDialog
 
 public:
     explicit explorer(QWidget *parent = nullptr, QTableView* matrixPlace = nullptr,
-                      QPushButton* button = nullptr, QPushButton* rmButton = nullptr, SparseDoubleLinkedMatrix** matrix = nullptr);
+                      QPushButton* button = nullptr, QPushButton* rmButton = nullptr,
+                      QLabel *matrixLabel = nullptr,
+                      SparseDoubleLinkedMatrix** matrix = nullptr);
     ~explorer();
     static QList<SparseDoubleLinkedMatrix*>& getMatrixs() {
         static QList<SparseDoubleLinkedMatrix*> list;
@@ -40,6 +43,7 @@ private slots:
     void on_btnMoreinf_clicked();
 
 private:
+    QLabel *matrixLabel;
     QTableView* mPlace;
     QPushButton* btn;
     QPushButton* rmbtn;
