@@ -6,6 +6,10 @@
 #include <QString>
 #include <QDebug>
 #include <headers/explorer.h>
+#include <QtConcurrent>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QProgressDialog>
 
 creatematrix::creatematrix(QWidget *parent)
     : QDialog(parent)
@@ -31,23 +35,22 @@ bool checkLineEditValue(QLineEdit* lineEdit) {
     }
 }
 
-void creatematrix::on_pushButton_clicked()//создать матрицу
-{
-    bool rowOk, columnOk;
-    int row = ui->Stroka->text().toInt(&rowOk), column = ui->Stolbec->text().toInt(&columnOk);
 
-    if (rowOk&&columnOk)
-    {
-        auto matrix = !ui->checkBox->checkState() ? generateEmpty(row,column) : generateRnd(row, column);;
-        matrix->name = QString("Матрица %1").arg(1+explorer::getMatrixs().size()).toStdString();
-        explorer::getMatrixs().append(matrix);
-        if(explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
-            v->refresh();
-        }
-    }
-    else
-    {
-        QMessageBox::warning(this,"Ошибка","Значения строк и стобцов могут быть только целые числа от 1 до 10000");
+
+void creatematrix::on_pushButton_clicked() {
+    bool rowOk, columnOk;
+    int row = ui->Stroka->text().toInt(&rowOk);
+    int column = ui->Stolbec->text().toInt(&columnOk);
+
+    if (rowOk && columnOk) {
+        // Показать диалог прогресса
+        auto progress = new QProgressDialog("Генерация матрицы...", "Отмена", 0, 0, this);
+        progress->setWindowModality(Qt::WindowModal);
+        progress->show();
+        int type = ui->type->currentIndex();
+
+        // Асинхронное выполнение создания матрицы
+        QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([type, row, column]() -> SparseDoubleLinkedMatrix* {
             switch(type) {
             case 0:
                 return generateRnd(row,column);
@@ -57,6 +60,28 @@ void creatematrix::on_pushButton_clicked()//создать матрицу
             default:
                 return generateEmpty(row,column);
             }
+        });
+
+        // Создание QFutureWatcher для отслеживания завершения задачи
+        QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
+        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress]() {
+            progress->close(); // Скрываем диалог прогресса
+            SparseDoubleLinkedMatrix* matrix = watcher->result();
+            watcher->deleteLater();
+            if (matrix) {
+                matrix->name = QString("Матрица %1").arg(1 + explorer::getMatrixs().size()).toStdString();
+                explorer::getMatrixs().append(matrix);
+                if (explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
+                    v->refresh();
+                }
+            }
+        });
+        watcher->setFuture(future);
+    } else {
+        QMessageBox::warning(this, "Ошибка", "Значения строк и столбцов могут быть только целые числа от 1 до 10000");
+    }
+}
+
 void creatematrix::on_type_currentIndexChanged(int index)
 {
     if(index == 1) {
