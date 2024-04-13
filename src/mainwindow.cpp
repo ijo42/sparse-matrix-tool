@@ -201,7 +201,8 @@ void MainWindow::on_reverseButton_clicked(){
         SparseDoubleLinkedMatrix *m = watcher->result();
         watcher->deleteLater();
         if (m) {
-            m->name = matrixA->name + " * " + matrixB->name;
+            if (matrixA) m->name = matrixA->name + " ^-1 ";
+            else if (matrixB) m->name = matrixB->name + " ^-1 ";
             explorer::getMatrixs().append(m);
             auto preview = new Preview(m);
             preview->show();
