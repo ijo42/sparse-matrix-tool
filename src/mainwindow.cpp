@@ -67,12 +67,24 @@ void MainWindow::on_pushButton_9_clicked()
 
 void MainWindow::on_swapButton_clicked(){
     std::swap(matrixA, matrixB);
-    auto model = new SparseMatrixModel(matrixA);
-    ui->matrixAView->setModel(model);
-    ui->matrixAView->show();
-    model = new SparseMatrixModel(matrixB);
-    ui->matrixBView->setModel(model);
-    ui->matrixBView->show();
+    if (matrixA) {
+        auto model = new SparseMatrixModel(matrixA);
+        ui->matrixAView->setModel(model);
+        ui->matrixAView->show();
+    }
+    else{
+        ui->matrixAView->hide();
+        ui->matrixAButton->show();
+    }
+    if (matrixB){
+        model = new SparseMatrixModel(matrixB);
+        ui->matrixBView->setModel(model);
+        ui->matrixBView->show();
+    }
+    else{
+        ui->matrixBView->hide();
+        ui->matrixBButton->show();
+    }
 }
 
 void MainWindow::on_sumButton_clicked(){
