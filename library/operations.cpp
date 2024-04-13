@@ -347,7 +347,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
         UnitMatrix = generateUnitMatrix(matrix->linePointer.size());
     joinMatrix(*matrix, *UnitMatrix);
 
-    SparseDoubleLinkedMatrixElement* prevlineTail, * lineTail, * lineHead, * element, * searchedElement, * doplineTail, * blyatskiy, * prevblyatskiy;
+    SparseDoubleLinkedMatrixElement* prevLineTail, * lineTail, * lineHead, * element, * searchedElement, * doplineTail, * rowTail, * prevRowTail;
     std::vector<double> columnTailAvEl(matrix->columnPointer.size()),
         columnTailDopAvEl(matrix->columnPointer.size());
     std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix->columnPointer.size()),
@@ -420,28 +420,28 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
         }
 
         if (stopflag) { //если на главной диагонали не было то нам нужно прибавить одну строку на другую, которую мы нашли в предидущем цикле
-            blyatskiy = matrix->linePointer[counter];
-            prevblyatskiy = blyatskiy;
+            rowTail = matrix->linePointer[counter];
+            prevRowTail = rowTail;
             for (i = 0; i < columnTail.size(); i++) {
-                if (blyatskiy && blyatskiy == columnTail[i]) {// если элемент найден
-                    blyatskiy->value = (blyatskiy->value + columnTailDopAvEl[i]) / delitel;
-                    columnTailAvEl[i] = blyatskiy->value;
-                    prevblyatskiy = blyatskiy;
-                    blyatskiy = blyatskiy->nextLine;
+                if (rowTail && rowTail == columnTail[i]) {// если элемент найден
+                    rowTail->value = (rowTail->value + columnTailDopAvEl[i]) / delitel;
+                    columnTailAvEl[i] = rowTail->value;
+                    prevRowTail = rowTail;
+                    rowTail = rowTail->nextLine;
 
                 }
                 else {
                     if (columnTailDopAvEl[i] != 0.0) {
                         element = initElement(columnTailDopAvEl[i] / delitel);
-                        if (blyatskiy != matrix->linePointer[counter]) { // не первый элемент в строке, связываем
-                            element->nextLine = blyatskiy;
-                            prevblyatskiy->nextLine = element;
+                        if (rowTail != matrix->linePointer[counter]) { // не первый элемент в строке, связываем
+                            element->nextLine = rowTail;
+                            prevRowTail->nextLine = element;
                         }
                         else {       // первый элемент в строке, сохраняем
                             element->nextLine = matrix->linePointer[counter];
                             matrix->linePointer[counter] = element;
                         }
-                        blyatskiy = element;
+                        rowTail = element;
 
                         if (columnTail[i] != matrix->columnPointer[i]) {
                             element->nextColumn = columnTail[i];
@@ -451,10 +451,10 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
                             element->nextColumn = matrix->columnPointer[i];
                             matrix->columnPointer[i] = element;
                         }
-                        columnTailAvEl[i] = blyatskiy->value;
+                        columnTailAvEl[i] = rowTail->value;
                         columnTail[i] = element;
-                        prevblyatskiy = blyatskiy;
-                        blyatskiy = blyatskiy->nextLine;
+                        prevRowTail = rowTail;
+                        rowTail = rowTail->nextLine;
                     }
                     else
                         columnTailAvEl[i] = 0;
@@ -479,14 +479,14 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
 
             koef = 0;
             lineTail = matrix->linePointer[rowit];
-            prevlineTail = matrix->linePointer[rowit];
+            prevLineTail = matrix->linePointer[rowit];
             for (columnit = 0; columnit < matrix->columnPointer.size(); columnit++) {
                 if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден
                     if (columnit == counter) {
                         koef = columnTail[columnit]->value / columnTailAvEl[columnit];
                     }
                     lineTail->value -= koef * columnTailAvEl[columnit];
-                    prevlineTail = lineTail;
+                    prevLineTail = lineTail;
                     lineTail = lineTail->nextLine;
                     prevColumnTail[columnit] = columnTail[columnit];
                     columnTail[columnit] = columnTail[columnit]->nextColumn;
@@ -496,7 +496,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
                         element = initElement(-columnTailAvEl[columnit] * koef);
                         if (lineTail != matrix->linePointer[rowit]) { // не первый элемент в строке, связываем
                             element->nextLine = lineTail;
-                            prevlineTail->nextLine = element;
+                            prevLineTail->nextLine = element;
                         }
                         else {       // первый элемент в строке, сохраняем
                             element->nextLine = matrix->linePointer[rowit];
@@ -515,7 +515,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
 
                         prevColumnTail[columnit] = element;
                         columnTail[columnit] = element->nextColumn;
-                        prevlineTail = lineTail;
+                        prevLineTail = lineTail;
                         lineTail = lineTail->nextLine;
                         midColumnTail[columnit] = midPrevColumnTail[columnit]->nextColumn;
                     }
@@ -565,7 +565,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
         for (rowit = 0; rowit < counter + 1; rowit++) {
             koef = 0;
             lineTail = matrix->linePointer[rowit];
-            prevlineTail = matrix->linePointer[rowit];
+            prevLineTail = matrix->linePointer[rowit];
             for (columnit = 0; columnit < matrix->columnPointer.size(); columnit++) {
                 if (lineTail && lineTail == columnTail[columnit]) {// если элемент найден
                     if (columnit == counter + 1 && columnTail[counter + 1]) {
@@ -573,7 +573,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
                         koef = columnTail[columnit]->value / columnTailAvEl[columnit];
                     }
                     lineTail->value -= koef * columnTailAvEl[columnit];
-                    prevlineTail = lineTail;
+                    prevLineTail = lineTail;
                     lineTail = lineTail->nextLine;
                     prevColumnTail[columnit] = columnTail[columnit];
                     columnTail[columnit] = columnTail[columnit]->nextColumn;
@@ -583,7 +583,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
                         element = initElement(-columnTailAvEl[columnit] * koef);
                         if (lineTail != matrix->linePointer[rowit]) { // не первый элемент в строке, связываем
                             element->nextLine = lineTail;
-                            prevlineTail->nextLine = element;
+                            prevLineTail->nextLine = element;
                         }
                         else {       // первый элемент в строке, сохраняем
                             element->nextLine = matrix->linePointer[rowit];
@@ -602,7 +602,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
 
                         prevColumnTail[columnit] = element;
                         columnTail[columnit] = element->nextColumn;
-                        prevlineTail = lineTail;
+                        prevLineTail = lineTail;
                         lineTail = lineTail->nextLine;
                     }
                 }
@@ -635,26 +635,26 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
     std::copy(UnitMatrix->columnPointer.begin(),UnitMatrix->columnPointer.end(), prevColumnTail.begin());
     for (rowit = 0; rowit < UnitMatrix->linePointer.size(); rowit++) {
         lineTail = UnitMatrix->linePointer[rowit];
-        prevlineTail = lineTail;
+        prevLineTail = lineTail;
         for (columnit = 0; columnit < UnitMatrix->columnPointer.size(); columnit++) {
-            sw1 = 0;
-            sw2 = 0;
+            sw1 = false;
+            sw2 = false;
             if (lineTail && lineTail == columnTail[columnit]) {
                 if (lineTail->value * lineTail->value < MIN_ZNACH) {
-                    if (prevlineTail != lineTail) prevlineTail->nextLine = lineTail->nextLine;
-                    else { UnitMatrix->linePointer[rowit] = lineTail->nextLine; prevlineTail = UnitMatrix->linePointer[rowit]; sw1 = 1; }
+                    if (prevLineTail != lineTail) prevLineTail->nextLine = lineTail->nextLine;
+                    else { UnitMatrix->linePointer[rowit] = lineTail->nextLine; prevLineTail = UnitMatrix->linePointer[rowit]; sw1 = 1; }
                     if (prevColumnTail[columnit] != columnTail[columnit]) prevColumnTail[columnit]->nextColumn = columnTail[columnit]->nextColumn;
                     else { UnitMatrix->columnPointer[columnit] = columnTail[columnit]->nextColumn; prevColumnTail[columnit] = UnitMatrix->columnPointer[columnit]; sw2 = 1; }
                     lineTail->nextColumn = nullptr;
                     lineTail->nextLine = nullptr;
                     delete lineTail;
-                    if (sw1) lineTail = prevlineTail;
-                    else lineTail = prevlineTail->nextLine;
+                    if (sw1) lineTail = prevLineTail;
+                    else lineTail = prevLineTail->nextLine;
                     if (sw2)columnTail[columnit] = prevColumnTail[columnit];
                     else columnTail[columnit] = prevColumnTail[columnit]->nextLine;
                 }
                 else {
-                    prevlineTail = lineTail;
+                    prevLineTail = lineTail;
                     lineTail = lineTail->nextLine;
                     prevColumnTail[columnit] = columnTail[columnit];
                     columnTail[columnit] = columnTail[columnit]->nextColumn;
