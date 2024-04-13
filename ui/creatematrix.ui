@@ -60,7 +60,7 @@
     <rect>
      <x>40</x>
      <y>60</y>
-     <width>63</width>
+     <width>71</width>
      <height>20</height>
     </rect>
    </property>
@@ -70,7 +70,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Строк</string>
+    <string>Столбцов</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -88,7 +88,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Столбцов</string>
+    <string>Строк</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton">
@@ -125,7 +125,7 @@
    </item>
    <item>
     <property name="text">
-     <string>Едиинчная</string>
+     <string>Единичная</string>
     </property>
    </item>
    <item>
