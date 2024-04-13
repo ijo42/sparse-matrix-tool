@@ -137,8 +137,9 @@ void MainWindow::on_multiplyButton_clicked(){
         if (m){
             m->name = m->name = matrixA->name + " * " + matrixB->name;
             explorer::getMatrixs().append(m);
-        }
-        else {
+            auto preview = new Preview(m);
+            preview->show();
+        } else {
             QMessageBox::warning(this, "Предупреждение", "Матрицы имеют не сопостовимые размерности");
         }
     }
