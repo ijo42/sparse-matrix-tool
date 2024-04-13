@@ -151,7 +151,7 @@ void MainWindow::on_multiplyButton_clicked(){
 
     // Показать диалог прогресса
     auto progress = new QProgressDialog("Умножение матриц...", "Отмена", 0, 0, this);
-    progress->setWindowModality(Qt::NonModal);
+    progress->setWindowModality(Qt::WindowModal);
     progress->show();
 
     // Асинхронное выполнение умножения
@@ -180,7 +180,7 @@ void MainWindow::on_multiplyButton_clicked(){
 void MainWindow::on_reverseButton_clicked(){
 
     auto progress = new QProgressDialog("Нахождение обратной матрицы...", "Отмена", 0, 0, this);
-    progress->setWindowModality(Qt::NonModal);
+    progress->setWindowModality(Qt::WindowModal);
     progress->show();
 
     QFuture<SparseDoubleLinkedMatrix*> future;
