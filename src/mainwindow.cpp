@@ -55,6 +55,7 @@ void MainWindow::on_pushButton_8_clicked()
     ui->matrixAView->hide();
     ui->pushButton_8->hide();
     ui->matrixAButton->show();
+    matrixA = nullptr;
 }
 
 
@@ -63,6 +64,7 @@ void MainWindow::on_pushButton_9_clicked()
     ui->matrixBView->hide();
     ui->pushButton_9->hide();
     ui->matrixBButton->show();
+    matrixB = nullptr;
 }
 
 void MainWindow::on_swapButton_clicked(){
