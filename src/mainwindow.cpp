@@ -2,12 +2,17 @@
 #include "shared.h"
 #include "operations.h"
 #include "ui_mainwindow.h"
-#include "../headers/inmatrix.h"
 #include "../headers/explorer.h"
 
 #include <headers/sparsematrixmodel.h>
 
 #include <headers/details.h>
+#include <headers/preview.h>
+
+#include <QtConcurrent>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QProgressDialog>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -108,6 +113,8 @@ void MainWindow::on_sumButton_clicked(){
         if (m){
             m->name = m->name = matrixA->name + " + " + matrixB->name;
             explorer::getMatrixs().append(m);
+            auto preview = new Preview(m);
+            preview->show();
         }
         else {
             QMessageBox::warning(this, "Предупреждение", "Разная размерность матриц");
@@ -123,6 +130,8 @@ void MainWindow::on_subButton_clicked(){
         if (m){
             m->name = m->name = matrixA->name + " - " + matrixB->name;
             explorer::getMatrixs().append(m);
+            auto preview = new Preview(m);
+            preview->show();
         }
         else {
             QMessageBox::warning(this, "Предупреждение", "Разная размерность матриц");
@@ -130,19 +139,39 @@ void MainWindow::on_subButton_clicked(){
     }
 }
 
+
 void MainWindow::on_multiplyButton_clicked(){
-    if (!(matrixA && matrixB)) QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
-    else{
-        SparseDoubleLinkedMatrix * m = multiply(*matrixA, *matrixB);
-        if (m){
-            m->name = m->name = matrixA->name + " * " + matrixB->name;
+    if (!(matrixA && matrixB)) {
+        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+        return;
+    }
+
+    // Показать диалог прогресса
+    auto progress = new QProgressDialog("Умножение матриц...", "Отмена", 0, 0, this);
+    progress->setWindowModality(Qt::WindowModal);
+    progress->show();
+
+    // Асинхронное выполнение умножения
+    QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix* {
+        return multiply(*matrixA, *matrixB);
+    });
+
+    // Создание QFutureWatcher для отслеживания завершения задачи
+    QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
+    connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress]() {
+        progress->close(); // Скрываем диалог прогресса
+        SparseDoubleLinkedMatrix *m = watcher->result();
+        watcher->deleteLater();
+        if (m) {
+            m->name = matrixA->name + " * " + matrixB->name;
             explorer::getMatrixs().append(m);
             auto preview = new Preview(m);
             preview->show();
         } else {
             QMessageBox::warning(this, "Предупреждение", "Матрицы имеют не сопостовимые размерности");
         }
-    }
+    });
+    watcher->setFuture(future);
 }
 
 void MainWindow::on_reverseButton_clicked(){
@@ -156,5 +185,7 @@ void MainWindow::on_reverseButton_clicked(){
     else{
         m->name = matrixA->name + " ^-1";
         explorer::getMatrixs().append(m);
+        auto preview = new Preview(m);
+        preview->show();
     }
 }
