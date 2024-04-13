@@ -50,6 +50,7 @@ private:
     std::string* matrixName;
     SparseDoubleLinkedMatrix** matrix;
     Ui::explorer *ui;
+    void populateList();
 };
 
 #endif // EXPLORER_H

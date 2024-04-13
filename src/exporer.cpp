@@ -6,7 +6,6 @@
 #include <QHBoxLayout>
 #include <qlabel.h>
 
-
 explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, QPushButton* rmButton, QLabel *matrixLabel, SparseDoubleLinkedMatrix** Matrix)
     : QDialog(parent)
     , matrixLabel(matrixLabel)
@@ -18,19 +17,22 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
 {
     ui->setupUi(this);
 
-    auto listWidget = ui->listWidget;
+    this->populateList();
 
+    if (matrixPlace) connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+
+}
+
+void explorer::populateList() {
+    ui->listWidget->clear();
 
     for (auto &matrix : explorer::getMatrixs()) {
-        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name));
+        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name) + QString(" [%0 x %1]").arg(matrix->columnPointer.size()).arg(matrix->linePointer.size()));
         QVariant variant;
         variant.setValue(matrix);
         item->setData(Qt::UserRole, variant);
-        listWidget->addItem(item);
+        ui->listWidget->addItem(item);
     }
-
-    if (matrixPlace) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
-
 }
 
 void explorer::onItemClicked(QListWidgetItem *item){
@@ -46,18 +48,9 @@ void explorer::onItemClicked(QListWidgetItem *item){
 }
 
 void explorer::refresh() {
-    auto listWidget = ui->listWidget;
-    listWidget->clear();
+    this->populateList();
 
-    for (auto &matrix : explorer::getMatrixs()) {
-        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name));
-        QVariant variant;
-        variant.setValue(matrix);
-        item->setData(Qt::UserRole, variant);
-        listWidget->addItem(item);
-    }
-
-    if (mPlace) connect(listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+    if (mPlace) connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
 }
 
 void explorer::on_btnAdd_clicked()
