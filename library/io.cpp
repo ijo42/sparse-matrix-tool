@@ -196,7 +196,7 @@ SparseDoubleLinkedMatrix *loadFromFileValidate(bool& isSuccess, std::string& pat
 
     while (std::getline(input, lineString)) {
         line = split(lineString, DLSMDelimiter);
-        if (!((is_chislo(line[0]) && is_integerpositive(line[1]) && is_integerpositive(line[2])))) {
+        if (!((line.size() == 3 && is_chislo(line[0]) && is_integerpositive(line[1]) && is_integerpositive(line[2])))) {
             isSuccess = false; return nullptr;
         }
     }
