@@ -48,6 +48,25 @@ void creatematrix::on_pushButton_clicked()//создать матрицу
     else
     {
         QMessageBox::warning(this,"Ошибка","Значения строк и стобцов могут быть только целые числа от 1 до 10000");
+            switch(type) {
+            case 0:
+                return generateRnd(row,column);
+            case 1:
+                return generateUnitMatrix(row);
+            case 2:
+            default:
+                return generateEmpty(row,column);
+            }
+void creatematrix::on_type_currentIndexChanged(int index)
+{
+    if(index == 1) {
+        ui->Stolbec->setReadOnly(true);
+        if(QString::compare(ui->Stroka->text(), ui->Stolbec->text(), Qt::CaseInsensitive) != 0){
+            QMessageBox::information(this, "Внимание", "Лишь квадратная единичная матрица может быть создана");
+        }
+        ui->Stolbec->setText(ui->Stroka->text());
+    } else {
+        ui->Stolbec->setReadOnly(false);
     }
 }
 

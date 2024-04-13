@@ -13,27 +13,6 @@
   <property name="windowTitle">
    <string>Создание матрицы</string>
   </property>
-  <widget class="QCheckBox" name="checkBox">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>120</y>
-     <width>171</width>
-     <height>71</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>12</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>заполнить случайно</string>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="Stroka">
    <property name="geometry">
     <rect>
@@ -73,7 +52,7 @@
     <string>100</string>
    </property>
    <property name="maxLength">
-    <number>7</number>
+    <number>5</number>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -128,6 +107,49 @@
    </property>
    <property name="text">
     <string>Создать!</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="type">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>140</y>
+     <width>111</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Случайная</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Едиинчная</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Пустая</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>140</y>
+     <width>91</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>11</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Вид</string>
    </property>
   </widget>
  </widget>
