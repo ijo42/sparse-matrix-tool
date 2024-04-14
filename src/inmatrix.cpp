@@ -84,7 +84,6 @@ void inmatrix::on_pushButton_clicked() {
             msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
             msgBox.setDefaultButton(QMessageBox::Yes);
             if(msgBox.exec() == QMessageBox::No){
-                ((QWidget*)parent())->close();
                 (this)->close();
             }
         } else {
