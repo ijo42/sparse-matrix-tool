@@ -1,5 +1,7 @@
 #include <headers/sparsematrixmodel.h>
 
+#include <qmessagebox.h>
+
 SparseMatrixModel::SparseMatrixModel(SparseDoubleLinkedMatrix *matrix, QObject* parent)
     : QAbstractTableModel(parent), _matrix(matrix) {
 }
@@ -39,3 +41,33 @@ QVariant SparseMatrixModel::data(const QModelIndex &index, int role) const {
     // Элемент на пересечении не найден
     return 0.0;
 }
+
+bool SparseMatrixModel::setData(const QModelIndex &index, const QVariant &value, int role) {
+    if (!index.isValid() || role != Qt::EditRole || value.toString().isEmpty())
+        return false;
+
+    int row = index.row();
+    int column = index.column();
+    bool isSuccess;
+    double newValue = value.toDouble(&isSuccess);
+
+    if(!isSuccess){
+        QMessageBox::warning((QWidget*)this->parent(), "Ошибка", "Введите вещественное число");
+        return false;
+    }
+
+    // Если элемент не найден и значение не нулевое, добавляем новый элемент
+    if(setElement(_matrix, row, column, newValue) == nullptr)
+        return false;
+
+    emit dataChanged(index, index, {Qt::EditRole});
+    return true;
+}
+
+Qt::ItemFlags SparseMatrixModel::flags(const QModelIndex &index) const {
+    if (!index.isValid())
+        return Qt::NoItemFlags;
+
+    return QAbstractTableModel::flags(index) | Qt::ItemIsEditable;
+}
+
