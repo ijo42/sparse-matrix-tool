@@ -48,7 +48,7 @@ QString getLastSubstringOrLastFive(const QString &input) {
 }
 
 void inmatrix::on_pushButton_clicked() {
-    QString filename = QFileDialog::getOpenFileName(this, "Выберите файл матрицы", "", "*.dlsm");
+    QString filename = QFileDialog::getOpenFileName(this, "Выберите файл матрицы", "", "Double Linked Sparse Matrix Files (*.dlsm)");
     if (filename.isEmpty())
         return;
 
@@ -76,6 +76,16 @@ void inmatrix::on_pushButton_clicked() {
             explorer::getMatrixs().append(result.first);
             if (explorer* v = dynamic_cast<explorer*>(parent())) {
                 v->refresh();
+            }
+            QMessageBox msgBox(this);
+            msgBox.setWindowTitle("Создание матрицы");
+            msgBox.setText("Матрица успешно загружена!");
+            msgBox.setInformativeText("Хотите импортировать еще одну матрицу?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            if(msgBox.exec() == QMessageBox::No){
+                ((QWidget*)parent())->close();
+                (this)->close();
             }
         } else {
             QMessageBox::warning(this, "Предупреждение", "Данный файл не содержит матрицу");

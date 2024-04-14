@@ -13,6 +13,7 @@
 #include <QFuture>
 #include <QFutureWatcher>
 #include <QProgressDialog>
+#include <qfiledialog.h>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -216,12 +217,34 @@ void MainWindow::on_btnDeleteB_clicked()
 
 void MainWindow::on_btnSaveB_clicked()
 {
+    QString filename = QFileDialog::getSaveFileName(this, "Сохранить матрицу как", "", "Double Linked Sparse Matrix Files (*.dlsm)");
+    if (filename.isEmpty())
+        return;  // Пользователь отменил сохранение
 
+    try {
+        std::string path = filename.toStdString();  // Преобразуем QString в std::string
+        saveToFile(path, *matrixB);  // Вызываем функцию сохранения, определенную в другом месте
+        QMessageBox::information(this, "Сохранение", "Матрица успешно сохранена!");
+    } catch (const std::exception& e) {
+        // Обработка возможных исключений при сохранении файла
+        QMessageBox::warning(this, "Ошибка", QString("Произошла ошибка при сохранении файла: %1").arg(e.what()));
+    }
 }
 
 
 void MainWindow::on_btnSaveA_clicked()
 {
+    QString filename = QFileDialog::getSaveFileName(this, "Сохранить матрицу как", "", "Double Linked Sparse Matrix Files (*.dlsm)");
+    if (filename.isEmpty())
+        return;  // Пользователь отменил сохранение
 
+    try {
+        std::string path = filename.toStdString();  // Преобразуем QString в std::string
+        saveToFile(path, *matrixA);  // Вызываем функцию сохранения, определенную в другом месте
+        QMessageBox::information(this, "Сохранение", "Матрица успешно сохранена!");
+    } catch (const std::exception& e) {
+        // Обработка возможных исключений при сохранении файла
+        QMessageBox::warning(this, "Ошибка", QString("Произошла ошибка при сохранении файла: %1").arg(e.what()));
+    }
 }
 

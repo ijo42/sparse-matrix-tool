@@ -74,7 +74,19 @@ void creatematrix::on_pushButton_clicked() {
                 if (explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
                     v->refresh();
                 }
-            }
+
+                QMessageBox msgBox(this);
+                msgBox.setWindowTitle("Создание матрицы");
+                msgBox.setText("Матрица успешно создана!");
+                msgBox.setInformativeText("Хотите создать еще одну матрицу?");
+                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::Yes);
+                if(msgBox.exec() == QMessageBox::No){
+                    ((QWidget*)parent())->close();
+                    (this)->close();
+                }
+            } else
+                QMessageBox::warning(this, "Ошибка", "Произошла непредвиденная ошибка");
         });
         watcher->setFuture(future);
     } else {
