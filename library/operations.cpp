@@ -766,7 +766,7 @@ SparseDoubleLinkedMatrix *multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoub
     return output;
 }
 
-SparseDoubleLinkedMatrix *addElement(SparseDoubleLinkedMatrix *&matrix, int row, int column, double value) {
+SparseDoubleLinkedMatrix *setElement(SparseDoubleLinkedMatrix *&matrix, int row, int column, double value) {
     if(column > matrix->columnPointer.size() || row > matrix->linePointer.size())
         return nullptr;
 
@@ -783,7 +783,7 @@ SparseDoubleLinkedMatrix *addElement(SparseDoubleLinkedMatrix *&matrix, int row,
                 SparseDoubleLinkedMatrixElement *element;
                 addElement(i, j, *matrix, outputColumnTail[j], outputColumnPrevTail[j], outputLinePrevTail,
                            outputLineTail, element);
-                element->value = (element->value + value);
+                element->value = value;
                 break;
             }
             if (outputLineTail && outputLineTail == outputColumnTail[j]) {

@@ -15,5 +15,5 @@ void joinMatrix(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& mat
 SparseDoubleLinkedMatrix *multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoubleLinkedMatrix& matrix2);
 SparseDoubleLinkedMatrix *generateUnitMatrix(size_t n);
 SparseDoubleLinkedMatrix *generateRndFifty(int n, int m);
-SparseDoubleLinkedMatrix *addElement(SparseDoubleLinkedMatrix *&matrix, int i, int j, double value);
+SparseDoubleLinkedMatrix *setElement(SparseDoubleLinkedMatrix *&matrix, int row, int column, double value);
 #endif //OPERATIONS_H
