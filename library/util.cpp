@@ -71,3 +71,19 @@ std::vector<SparseDoubleLinkedMatrixElement*> listElements(const SparseDoubleLin
     elements.resize(k-1);
     return elements;
 }
+
+size_t countElements(const SparseDoubleLinkedMatrix &matrix) {
+    size_t k = 0;
+    std::vector<SparseDoubleLinkedMatrixElement*> columnPointer(matrix.columnPointer);
+
+    for(auto lineTail : matrix.linePointer){
+        for (auto & columnHead : columnPointer) {
+            if(lineTail && lineTail == columnHead) {
+                lineTail = lineTail->nextLine;
+                columnHead = columnHead->nextColumn;
+                k++;
+            }
+        }
+    }
+    return k;
+}

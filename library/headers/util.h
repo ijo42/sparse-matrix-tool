@@ -9,5 +9,5 @@ size_t countLines(const std::string& path);
 size_t maxElements(size_t n, size_t m);
 size_t maxElements(const SparseDoubleLinkedMatrix &matrix);
 std::vector<SparseDoubleLinkedMatrixElement*> listElements(const SparseDoubleLinkedMatrix &matrix, std::vector<size_t> &lineIds, std::vector<size_t> &columnIds);
-
+size_t countElements(const SparseDoubleLinkedMatrix &matrix);
 #endif //UTIL_H
