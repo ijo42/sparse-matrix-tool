@@ -216,6 +216,7 @@ void MainWindow::on_reverseButton_clicked(){
             QMessageBox::warning(this, "Предупреждение", "Определитель равен 0");
         }
     });
+    watcher->setFuture(future);
 }
 
 void MainWindow::on_btnDeleteA_clicked()
