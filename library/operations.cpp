@@ -765,3 +765,43 @@ SparseDoubleLinkedMatrix *multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoub
 
     return output;
 }
+
+SparseDoubleLinkedMatrix *addElement(SparseDoubleLinkedMatrix *&matrix, int row, int column, double value) {
+    if(column > matrix->columnPointer.size() || row > matrix->linePointer.size())
+        return nullptr;
+
+    std::vector<SparseDoubleLinkedMatrixElement*>
+            outputColumnTail(matrix->columnPointer),
+            outputColumnPrevTail(matrix->columnPointer);
+
+    for (int i = 0; i < matrix->linePointer.size(); i++) {
+        auto outputLinePrevTail = matrix->linePointer[i],    // хвост отстающий
+             outputLineTail = outputLinePrevTail;            // хвост строки
+        for (int j = 0; j < matrix->columnPointer.size(); ++j) {
+            // есть элемент в 2 матрице
+            if (row == i && column == j) {
+                SparseDoubleLinkedMatrixElement *element;
+                addElement(i, j, *matrix, outputColumnTail[j], outputColumnPrevTail[j], outputLinePrevTail,
+                           outputLineTail, element);
+                element->value = (element->value + value);
+                break;
+            }
+            if (outputLineTail && outputLineTail == outputColumnTail[j]) {
+                // сдвиг хвостов при обработке элементов matrix2 / при пропуске элементов matrix1
+                if (outputLineTail) {
+                    if (outputLinePrevTail != outputLineTail) {
+                        outputLinePrevTail = outputLineTail;
+                    }
+                    outputLineTail = outputLineTail->nextLine;
+                }
+                if (outputColumnTail[j]) {
+                    if (outputColumnPrevTail[j] != outputColumnTail[j]) {
+                        outputColumnPrevTail[j] = outputColumnTail[j];
+                    }
+                    outputColumnTail[j] = outputColumnTail[j]->nextColumn;
+                }
+            }
+        }
+    }
+    return matrix;
+}
