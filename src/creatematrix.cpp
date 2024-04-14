@@ -42,7 +42,7 @@ void creatematrix::on_pushButton_clicked() {
     int row = ui->Stroka->text().toInt(&rowOk);
     int column = ui->Stolbec->text().toInt(&columnOk);
 
-    if (rowOk && columnOk) {
+    if (rowOk && columnOk && row > 0 && row <= 10000 && column > 0 && column <= 10000) {
         // Показать диалог прогресса
         auto progress = new QProgressDialog("Генерация матрицы...", "Отмена", 0, 0, this);
         progress->setWindowModality(Qt::WindowModal);
