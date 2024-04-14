@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    static void save(SparseDoubleLinkedMatrix *matrixA, QWidget *widget, bool isFull);
 
 private slots:
 
@@ -46,6 +47,7 @@ private slots:
     void on_btnSaveB_clicked();
 
     void on_btnSaveA_clicked();
+
 
 private:
     Ui::MainWindow *ui;

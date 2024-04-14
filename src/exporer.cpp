@@ -2,6 +2,7 @@
 #include "ui_explorer.h"
 #include <headers/explorer.h>
 #include <headers/inmatrix.h>
+#include <headers/mainwindow.h>
 #include "QMessageBox"
 #include <QHBoxLayout>
 #include <qlabel.h>
@@ -101,6 +102,31 @@ void explorer::on_btnMoreinf_clicked(){
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
     auto detail = new Details(selectedMatrix);
     detail->show();
+}
+
+
+void explorer::on_btnSpareSave_clicked() {
+    auto selectedItems = ui->listWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Предупреждение", "Выберите объект для сохранения");
+        return;
+    }
+    auto *item = selectedItems.first();
+    QVariant variant = item->data(Qt::UserRole);
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    MainWindow::save(selectedMatrix, this, false);
+}
+
+void explorer::on_btnFullSave_clicked() {
+    auto selectedItems = ui->listWidget->selectedItems();
+    if (selectedItems.isEmpty()) {
+        QMessageBox::warning(this, "Предупреждение", "Выберите объект для сохранения");
+        return;
+    }
+    auto *item = selectedItems.first();
+    QVariant variant = item->data(Qt::UserRole);
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    MainWindow::save(selectedMatrix, this, true);
 }
 
 explorer::~explorer()

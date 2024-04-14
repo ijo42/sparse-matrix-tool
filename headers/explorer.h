@@ -42,6 +42,10 @@ private slots:
     void on_btnRename_clicked();
     void on_btnMoreinf_clicked();
 
+    void on_btnSpareSave_clicked();
+
+    void on_btnFullSave_clicked();
+
 private:
     QLabel *matrixLabel;
     QTableView* mPlace;
