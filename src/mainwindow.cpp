@@ -160,37 +160,60 @@ void MainWindow::on_multiplyButton_clicked(){
 }
 
 void MainWindow::on_reverseButton_clicked(){
+    SparseDoubleLinkedMatrix *matrix = nullptr;
+
+    if(matrixA && matrixB){
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle("Выбор матрицы");
+        msgBox.setText("Выберите матрицу для операции:");
+        msgBox.setIcon(QMessageBox::Question);
+
+        // Добавление кнопок для выбора матриц
+        QAbstractButton* buttonA = msgBox.addButton("Матрица A", QMessageBox::AcceptRole);
+        QAbstractButton* buttonB = msgBox.addButton("Матрица B", QMessageBox::RejectRole);
+
+        msgBox.exec();  // Отображение диалогового окна
+
+        if (msgBox.clickedButton() == buttonA) {
+            matrix = matrixA;
+        } else if (msgBox.clickedButton() == buttonB) {
+            matrix = matrixB;
+        }
+    } else if(matrixA) {
+        matrix = matrixA;
+    } else if(matrixB) {
+        matrix = matrixB;
+    } else {
+        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+        return;
+    }
+
+    if(matrix->columnPointer.size() != matrix->linePointer.size()){
+        QMessageBox::warning(this, "Предупреждение", "Обратная матрица существует только для квадратной матрицы");
+        return;
+    }
 
     auto progress = new QProgressDialog("Нахождение обратной матрицы...", "Отмена", 0, 0, this);
     progress->setWindowModality(Qt::WindowModal);
     progress->show();
 
-    QFuture<SparseDoubleLinkedMatrix*> future;
-    if (matrixA){
-        future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix* {
-            return inverseMatrix(*matrixA);
-        });
-    }
-    else if (matrixB) {
-        future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix* {
-            return inverseMatrix(*matrixB);
-        });
-    }
+    QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([matrix]() -> SparseDoubleLinkedMatrix* {
+        return inverseMatrix(*matrix);
+    });
+    
 
     QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
-    connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress]() {
+    connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress, matrix]() {
         progress->close(); // Скрываем диалог прогресса
         SparseDoubleLinkedMatrix *m = watcher->result();
         watcher->deleteLater();
         if (m) {
-            if (matrixA) m->name = matrixA->name + " ^-1 ";
-            else if (matrixB) m->name = matrixB->name + " ^-1 ";
+            m->name = matrix->name + " ^-1 ";
             explorer::getMatrixs().append(m);
             auto preview = new Preview(m);
             preview->show();
         } else {
-            if (matrixA||matrixB) QMessageBox::warning(this, "Предупреждение", "Определитель равен 0");
-            else QMessageBox::warning(this, "Предупреждение", "Матрицы имеют не сопостовимые размерности");
+            QMessageBox::warning(this, "Предупреждение", "Определитель равен 0");
         }
     });
 }
