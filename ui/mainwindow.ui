@@ -7,25 +7,25 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>600</height>
+    <height>750</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1200</width>
-    <height>600</height>
+    <width>1197</width>
+    <height>750</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>1200</width>
-    <height>600</height>
+    <height>771</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -36,10 +36,22 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>1200</width>
+     <height>750</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>1200</width>
+     <height>750</height>
+    </size>
    </property>
    <widget class="QPushButton" name="matrixAButton">
     <property name="geometry">
@@ -111,7 +123,7 @@
       <x>0</x>
       <y>50</y>
       <width>600</width>
-      <height>421</height>
+      <height>580</height>
      </rect>
     </property>
     <property name="editTriggers">
@@ -139,7 +151,7 @@
       <x>600</x>
       <y>50</y>
       <width>600</width>
-      <height>421</height>
+      <height>580</height>
      </rect>
     </property>
     <property name="palette">
@@ -198,15 +210,16 @@
    <widget class="QLabel" name="matrixBLabel">
     <property name="geometry">
      <rect>
-      <x>800</x>
-      <y>370</y>
-      <width>211</width>
-      <height>31</height>
+      <x>780</x>
+      <y>375</y>
+      <width>270</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>16</pointsize>
+      <family>Candara</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -216,15 +229,15 @@
    <widget class="QLabel" name="matrixALabel">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>370</y>
-      <width>211</width>
-      <height>31</height>
+      <x>220</x>
+      <y>375</y>
+      <width>270</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>16</pointsize>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -235,9 +248,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>468</y>
+      <y>630</y>
       <width>1200</width>
-      <height>291</height>
+      <height>120</height>
      </rect>
     </property>
     <property name="palette">
@@ -716,7 +729,7 @@
      <property name="geometry">
       <rect>
        <x>479</x>
-       <y>0</y>
+       <y>-3</y>
        <width>100</width>
        <height>100</height>
       </rect>
@@ -742,7 +755,7 @@
      <property name="geometry">
       <rect>
        <x>920</x>
-       <y>-11</y>
+       <y>-14</y>
        <width>100</width>
        <height>100</height>
       </rect>
@@ -756,8 +769,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>70</width>
-       <height>70</height>
+       <width>68</width>
+       <height>68</height>
       </size>
      </property>
      <property name="flat">
@@ -768,7 +781,7 @@
      <property name="geometry">
       <rect>
        <x>697</x>
-       <y>0</y>
+       <y>-3</y>
        <width>100</width>
        <height>100</height>
       </rect>
@@ -794,7 +807,7 @@
      <property name="geometry">
       <rect>
        <x>590</x>
-       <y>0</y>
+       <y>-3</y>
        <width>100</width>
        <height>100</height>
       </rect>
@@ -808,8 +821,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>80</width>
-       <height>80</height>
+       <width>76</width>
+       <height>76</height>
       </size>
      </property>
      <property name="flat">
@@ -820,7 +833,7 @@
      <property name="geometry">
       <rect>
        <x>796</x>
-       <y>0</y>
+       <y>-3</y>
        <width>100</width>
        <height>100</height>
       </rect>
@@ -846,7 +859,7 @@
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>0</y>
+       <y>-5</y>
        <width>100</width>
        <height>100</height>
       </rect>
@@ -1341,7 +1354,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>87</y>
+       <y>85</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -1366,7 +1379,7 @@
      <property name="geometry">
       <rect>
        <x>498</x>
-       <y>87</y>
+       <y>85</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -1391,7 +1404,7 @@
      <property name="geometry">
       <rect>
        <x>605</x>
-       <y>87</y>
+       <y>85</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -1416,7 +1429,7 @@
      <property name="geometry">
       <rect>
        <x>711</x>
-       <y>87</y>
+       <y>85</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -1440,8 +1453,8 @@
     <widget class="QLabel" name="label_7">
      <property name="geometry">
       <rect>
-       <x>798</x>
-       <y>87</y>
+       <x>804</x>
+       <y>85</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -1465,8 +1478,8 @@
     <widget class="QLabel" name="label_8">
      <property name="geometry">
       <rect>
-       <x>893</x>
-       <y>87</y>
+       <x>896</x>
+       <y>85</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -1492,9 +1505,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
+      <y>0</y>
       <width>600</width>
-      <height>31</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="palette">
@@ -1973,7 +1986,7 @@
      <property name="geometry">
       <rect>
        <x>570</x>
-       <y>0</y>
+       <y>10</y>
        <width>21</width>
        <height>29</height>
       </rect>
@@ -1987,8 +2000,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>32</width>
-       <height>30</height>
+       <width>38</width>
+       <height>38</height>
       </size>
      </property>
      <property name="flat">
@@ -1996,18 +2009,21 @@
      </property>
     </widget>
     <widget class="QLabel" name="labelA">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>5</y>
-       <width>141</width>
-       <height>21</height>
+       <width>151</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Impact</family>
-       <pointsize>12</pointsize>
+       <pointsize>16</pointsize>
       </font>
      </property>
      <property name="text">
@@ -2017,10 +2033,10 @@
     <widget class="QPushButton" name="btnSaveA">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
+       <x>520</x>
+       <y>10</y>
+       <width>34</width>
+       <height>34</height>
       </rect>
      </property>
      <property name="text">
@@ -2032,8 +2048,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>26</width>
-       <height>26</height>
+       <width>34</width>
+       <height>34</height>
       </size>
      </property>
      <property name="flat">
@@ -2045,9 +2061,9 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>20</y>
+      <y>0</y>
       <width>600</width>
-      <height>31</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="palette">
@@ -2526,7 +2542,7 @@
      <property name="geometry">
       <rect>
        <x>570</x>
-       <y>0</y>
+       <y>10</y>
        <width>21</width>
        <height>29</height>
       </rect>
@@ -2540,8 +2556,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>32</width>
-       <height>30</height>
+       <width>38</width>
+       <height>38</height>
       </size>
      </property>
      <property name="flat">
@@ -2549,18 +2565,21 @@
      </property>
     </widget>
     <widget class="QLabel" name="labelB">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>5</y>
        <width>141</width>
-       <height>21</height>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Impact</family>
-       <pointsize>12</pointsize>
+       <pointsize>16</pointsize>
       </font>
      </property>
      <property name="text">
@@ -2570,10 +2589,10 @@
     <widget class="QPushButton" name="btnSaveB">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>0</y>
-       <width>31</width>
-       <height>31</height>
+       <x>520</x>
+       <y>10</y>
+       <width>34</width>
+       <height>34</height>
       </rect>
      </property>
      <property name="text">
@@ -2585,8 +2604,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>26</width>
-       <height>26</height>
+       <width>34</width>
+       <height>34</height>
       </size>
      </property>
      <property name="flat">

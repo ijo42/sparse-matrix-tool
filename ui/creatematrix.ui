@@ -24,7 +24,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <family>Roboto</family>
+     <pointsize>12</pointsize>
     </font>
    </property>
    <property name="text">
@@ -45,7 +46,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <family>Roboto</family>
+     <pointsize>12</pointsize>
     </font>
    </property>
    <property name="text">
@@ -60,13 +62,14 @@
     <rect>
      <x>40</x>
      <y>60</y>
-     <width>71</width>
+     <width>91</width>
      <height>20</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <family>Candara</family>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
@@ -84,7 +87,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <family>Candara</family>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
@@ -102,7 +106,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>18</pointsize>
+     <family>Impact</family>
+     <pointsize>22</pointsize>
     </font>
    </property>
    <property name="text">
@@ -117,6 +122,12 @@
      <width>111</width>
      <height>24</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Roboto</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <item>
     <property name="text">
@@ -145,7 +156,8 @@
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <family>Candara</family>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="text">
