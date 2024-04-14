@@ -209,3 +209,54 @@ SparseDoubleLinkedMatrix *loadFromFileValidate(bool& isSuccess, std::string& pat
     return loadFromFile(path);
 }
 
+void saveFullToFile(const std::string &path, const SparseDoubleLinkedMatrix &matrix) {
+    std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.begin(), matrix.columnPointer.end());
+
+    std::ofstream clear_file(path, std::ios::trunc); // Очищаем файл перед началом записи
+    clear_file.close();
+
+    // Использование строкового потока для формирования итогового текста
+    std::ostringstream oss;
+    oss;
+
+    std::vector<std::future<void>> futures; // Для управления асинхронными задачами
+
+    int N = 50000; // Количество элементов после которых выполняется сброс
+    size_t count = 1; // Счетчик элементов
+
+
+    for (const auto lineHead : matrix.linePointer) {
+        auto lineTail = lineHead;
+        for (auto& i : columnTail) {
+            if (count++ % N == 0) {
+                // Асинхронная запись в файл когда count достигает N
+                std::string data_to_write = oss.str();
+                futures.push_back(std::async(std::launch::async, asyncWrite, path, data_to_write));
+                oss.str(""); // Очистка oss после каждого сброса
+                oss.clear();
+            }
+
+            if (lineTail && lineTail == i) {
+                oss << std::setw(6) << std::fixed << std::setprecision(2)  << i->value;
+                lineTail = lineTail->nextLine;
+                i = i->nextColumn;
+            } else {
+                oss << std::setw(6) << std::setprecision(0)<< 0.0;
+            }
+        }
+        oss << std::endl;
+    }
+    oss << std::endl;
+
+
+    // Не забываем записать оставшиеся данные после цикла
+    if (!oss.str().empty()) {
+        std::string data_to_write = oss.str();
+        futures.push_back(std::async(std::launch::async, asyncWrite, path, data_to_write));
+    }
+
+    // Ожидание завершения всех асинхронных задач
+    for (auto& fut : futures) {
+        fut.wait();
+    }
+}
