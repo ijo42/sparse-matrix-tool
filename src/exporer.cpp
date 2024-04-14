@@ -6,12 +6,12 @@
 #include <QHBoxLayout>
 #include <qlabel.h>
 
-explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, QPushButton* rmButton, QLabel *matrixLabel, SparseDoubleLinkedMatrix** Matrix)
+explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, QWidget* pane, QLabel *matrixLabel, SparseDoubleLinkedMatrix** Matrix)
     : QDialog(parent)
     , matrixLabel(matrixLabel)
     , mPlace(matrixPlace)
     , btn(button)
-    , rmbtn(rmButton)
+    , pane(pane)
     , matrix(Matrix)
     , ui(new Ui::explorer)
 {
@@ -42,7 +42,7 @@ void explorer::onItemClicked(QListWidgetItem *item){
     mPlace->setModel(model);
     mPlace->show();
     btn->hide();
-    rmbtn->show();
+    pane->show();
     matrixLabel->hide();
     *matrix = selectedMatrix;
 }

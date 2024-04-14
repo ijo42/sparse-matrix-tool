@@ -29,10 +29,6 @@ private slots:
 
     void on_matrixBButton_clicked();
 
-    void on_pushButton_8_clicked();
-
-    void on_pushButton_9_clicked();
-
     void on_swapButton_clicked();
 
     void on_sumButton_clicked();
@@ -42,6 +38,14 @@ private slots:
     void on_multiplyButton_clicked();
 
     void on_reverseButton_clicked();
+
+    void on_btnDeleteA_clicked();
+
+    void on_btnDeleteB_clicked();
+
+    void on_btnSaveB_clicked();
+
+    void on_btnSaveA_clicked();
 
 private:
     Ui::MainWindow *ui;
