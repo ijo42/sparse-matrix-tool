@@ -176,6 +176,10 @@ bool is_integerpositive(const std::string& s)
 
 SparseDoubleLinkedMatrix *loadFromFileValidate(bool& isSuccess, std::string& path) {
     std::ifstream input(path);
+    if(!input) {
+        isSuccess = false;
+        return nullptr;
+    }
     std::string lineString;
     size_t i;
     const auto lines = countLines(path);
