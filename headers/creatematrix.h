@@ -20,6 +20,8 @@ private slots:
 
     void on_type_currentIndexChanged(int index);
 
+    void on_Stroka_textChanged(const QString &arg1);
+
 private:
     Ui::creatematrix *ui;
 };

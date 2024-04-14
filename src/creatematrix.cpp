@@ -107,3 +107,10 @@ void creatematrix::on_type_currentIndexChanged(int index)
     }
 }
 
+
+void creatematrix::on_Stroka_textChanged(const QString &arg1)
+{
+    if(ui->Stolbec->isReadOnly())
+        ui->Stolbec->setText(arg1);
+}
+
