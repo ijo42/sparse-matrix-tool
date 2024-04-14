@@ -20,7 +20,10 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
 
     this->populateList();
 
-    if (matrixPlace) connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+    if (matrixPlace) {
+        connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
+        this->setWindowTitle("Выберите матрицу для добавления");
+    }
 
 }
 
@@ -70,6 +73,7 @@ void explorer::on_btnRemove_clicked() {
     auto *item = selectedItems.first();
     QVariant variant = item->data(Qt::UserRole);
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    explorer::getMatrixs().removeOne(selectedMatrix);
     deepDelete(*selectedMatrix);
     delete item;
 }
@@ -81,20 +85,21 @@ void explorer::on_btnRename_clicked() {
         return;
     }
     auto *item = selectedItems.first();
+    QVariant variant = item->data(Qt::UserRole);
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+
     bool ok;
-    QString newName = QInputDialog::getText(this, "Переименовать", "Новое название:", QLineEdit::Normal, item->text(), &ok);
+    QString newName = QInputDialog::getText(this, "Переименовать", "Новое название:", QLineEdit::Normal, QString::fromStdString(selectedMatrix->name), &ok);
     if (ok && !newName.isEmpty()) {
-        QVariant variant = item->data(Qt::UserRole);
-        SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
         selectedMatrix->name = newName.toStdString();
-        item->setText(newName);
+        item->setText(QString::fromStdString(selectedMatrix->name) + QString(" [%0 x %1]").arg(selectedMatrix->columnPointer.size()).arg(selectedMatrix->linePointer.size()));
     }
 }
 
 void explorer::on_btnMoreinf_clicked(){
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
-        QMessageBox::warning(this, "Предупреждение", "Выберите объект для переименования");
+        QMessageBox::warning(this, "Предупреждение", "Выберите объект для подробностей");
         return;
     }
     auto *item = selectedItems.first();

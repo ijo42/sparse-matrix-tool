@@ -12,10 +12,7 @@ Preview::Preview(SparseDoubleLinkedMatrix *matrix,QWidget *parent)
     this->setWindowTitle(QString("Предпросмотр %1").arg(QString::fromStdString(matrix->name)));
     auto model = new SparseMatrixModel(matrix);
     ui->tableView->setModel(model);
-    ui->tableView->show(); // Отображение таблицы
-
-    //ui->tableView->setModel(&model);
-    //ui->tableView->show();
+    ui->tableView->show();
 }
 
 Preview::~Preview()
