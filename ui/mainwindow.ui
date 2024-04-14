@@ -115,7 +115,7 @@
      </rect>
     </property>
     <property name="editTriggers">
-     <set>QAbstractItemView::AllEditTriggers</set>
+     <set>QAbstractItemView::DoubleClicked</set>
     </property>
     <property name="tabKeyNavigation">
      <bool>false</bool>
@@ -180,7 +180,7 @@
      </palette>
     </property>
     <property name="editTriggers">
-     <set>QAbstractItemView::AllEditTriggers</set>
+     <set>QAbstractItemView::DoubleClicked</set>
     </property>
     <property name="tabKeyNavigation">
      <bool>false</bool>
