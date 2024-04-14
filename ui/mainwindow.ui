@@ -180,7 +180,7 @@
      </palette>
     </property>
     <property name="editTriggers">
-     <set>QAbstractItemView::NoEditTriggers</set>
+     <set>QAbstractItemView::AllEditTriggers</set>
     </property>
     <property name="tabKeyNavigation">
      <bool>false</bool>
