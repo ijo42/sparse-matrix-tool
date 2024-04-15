@@ -109,7 +109,7 @@ void printMatrix(const SparseDoubleLinkedMatrix* matrix) {
                 lineTail = lineTail->nextLine;
                 i = i->nextColumn;
             } else {
-                std::cout << std::setw(6) << std::setprecision(0) << 0.0;
+                std::cout << std::setw(6) << "NULL";
             }
         }
         std::cout << std::endl;
@@ -284,6 +284,38 @@ SparseDoubleLinkedMatrix *twoMatrixAccumulateOperation(const SparseDoubleLinkedM
                         }
                         outputColumnTail[j] = outputColumnTail[j]->nextColumn;
                     }
+                }
+            }
+        }
+    }
+
+    bool sw1, sw2;
+    std::copy(output->columnPointer.begin(), output->columnPointer.end(), outputColumnTail.begin());
+    auto outputPrevColumnTail = outputColumnTail;
+    for (size_t rowit = 0; rowit < output->linePointer.size(); rowit++) {
+        auto lineTail = output->linePointer[rowit];
+        auto prevLineTail = lineTail;
+        for (size_t columnit = 0; columnit < output->columnPointer.size(); columnit++) {
+            if (lineTail && lineTail == outputColumnTail[columnit]) {
+                if (fabs(lineTail->value) < MIN_ZNACH) {
+                    sw1 = false; sw2 = false;
+                    if (prevLineTail != lineTail) prevLineTail->nextLine = lineTail->nextLine;
+                    else { output->linePointer[rowit] = lineTail->nextLine; prevLineTail = output->linePointer[rowit]; sw1 = 1; }
+                    if (outputPrevColumnTail[columnit] != outputColumnTail[columnit]) outputPrevColumnTail[columnit]->nextColumn = outputColumnTail[columnit]->nextColumn;
+                    else { output->columnPointer[columnit] = outputColumnTail[columnit]->nextColumn; outputPrevColumnTail[columnit] = output->columnPointer[columnit]; sw2 = 1; }
+                    lineTail->nextColumn = nullptr;
+                    lineTail->nextLine = nullptr;
+                    free(lineTail);
+                    if (sw1) lineTail = prevLineTail;
+                    else lineTail = prevLineTail->nextLine;
+                    if (sw2)outputColumnTail[columnit] = outputPrevColumnTail[columnit];
+                    else outputColumnTail[columnit] = outputPrevColumnTail[columnit]->nextLine;
+                }
+                else {
+                    prevLineTail = lineTail;
+                    lineTail = lineTail->nextLine;
+                    outputPrevColumnTail[columnit] = outputColumnTail[columnit];
+                    outputColumnTail[columnit] = outputColumnTail[columnit]->nextColumn;
                 }
             }
         }
@@ -492,7 +524,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
                     columnTail[columnit] = columnTail[columnit]->nextColumn;
                 }
                 else {
-                    if (columnTailAvEl[columnit]) {
+                    if (columnTailAvEl[columnit] && koef) {
                         element = initElement(-columnTailAvEl[columnit] * koef);
                         if (lineTail != matrix->linePointer[rowit]) { // не первый элемент в строке, связываем
                             element->nextLine = lineTail;
@@ -637,17 +669,16 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
         lineTail = UnitMatrix->linePointer[rowit];
         prevLineTail = lineTail;
         for (columnit = 0; columnit < UnitMatrix->columnPointer.size(); columnit++) {
-            sw1 = false;
-            sw2 = false;
             if (lineTail && lineTail == columnTail[columnit]) {
-                if (lineTail->value * lineTail->value < MIN_ZNACH) {
+                if (fabs(lineTail->value) < MIN_ZNACH) {
+                    sw1 = false; sw2 = false;
                     if (prevLineTail != lineTail) prevLineTail->nextLine = lineTail->nextLine;
                     else { UnitMatrix->linePointer[rowit] = lineTail->nextLine; prevLineTail = UnitMatrix->linePointer[rowit]; sw1 = 1; }
                     if (prevColumnTail[columnit] != columnTail[columnit]) prevColumnTail[columnit]->nextColumn = columnTail[columnit]->nextColumn;
                     else { UnitMatrix->columnPointer[columnit] = columnTail[columnit]->nextColumn; prevColumnTail[columnit] = UnitMatrix->columnPointer[columnit]; sw2 = 1; }
                     lineTail->nextColumn = nullptr;
                     lineTail->nextLine = nullptr;
-                    delete lineTail;
+                    free(lineTail);
                     if (sw1) lineTail = prevLineTail;
                     else lineTail = prevLineTail->nextLine;
                     if (sw2)columnTail[columnit] = prevColumnTail[columnit];
