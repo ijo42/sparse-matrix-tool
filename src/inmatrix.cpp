@@ -46,7 +46,12 @@ QString inmatrix::getLastSubstringOrLastFive(const QString &input) {
     }
 }
 
-void inmatrix::load(QString filename, QProgressDialog* progress, QWidget *widget) {
+void inmatrix::load(QString filename, QWidget *widget) {
+    // Показать диалог прогресса
+    auto progress = new QProgressDialog("Загрузка матрицы...", "Отмена", 0, 0, widget);
+    progress->setWindowModality(Qt::WindowModal);
+    progress->show();
+
     QFuture<std::pair<SparseDoubleLinkedMatrix*, bool>> future = QtConcurrent::run([filename]() -> std::pair<SparseDoubleLinkedMatrix*, bool> {
         bool isSuccess = false;
         std::string path = filename.toStdString();
@@ -91,11 +96,7 @@ void inmatrix::on_pushButton_clicked() {
     if (filename.isEmpty())
         return;
 
-    // Показать диалог прогресса
-    auto progress = new QProgressDialog("Загрузка матрицы...", "Отмена", 0, 0, this);
-    progress->setWindowModality(Qt::WindowModal);
-    progress->show();
 
     // Асинхронное выполнение загрузки
-    load(filename, progress, this);
+    load(filename, this);
 }

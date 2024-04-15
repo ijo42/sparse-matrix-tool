@@ -158,12 +158,7 @@ void explorer::dropEvent(QDropEvent *event) {
     QString filePath = urls.first().toLocalFile();  // Получаем путь к первому файлу
     if (filePath.isEmpty()) return;
 
-    // Показать диалог прогресса
-    auto progress = new QProgressDialog("Загрузка матрицы...", "Отмена", 0, 0, this);
-    progress->setWindowModality(Qt::WindowModal);
-    progress->show();
-
-    inmatrix::load(filePath, progress, this);
+    inmatrix::load(filePath, this);
 }
 
 
