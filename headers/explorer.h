@@ -55,6 +55,8 @@ private:
     SparseDoubleLinkedMatrix** matrix;
     Ui::explorer *ui;
     void populateList();
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 };
 
 #endif // EXPLORER_H
