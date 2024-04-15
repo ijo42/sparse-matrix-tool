@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/add.svg</file>
+        <file>assets/close.svg</file>
+        <file>assets/delete.svg</file>
+        <file>assets/explorer.svg</file>
+        <file>assets/hex.svg</file>
+        <file>assets/inverse.svg</file>
+        <file>assets/load.svg</file>
+        <file>assets/minus.svg</file>
+        <file>assets/multiply.svg</file>
+        <file>assets/plus.svg</file>
+        <file>assets/save.svg</file>
+        <file>assets/swap.svg</file>
+        <file>assets/view.svg</file>
+    </qresource>
+</RCC>

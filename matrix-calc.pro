@@ -51,3 +51,7 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/library/cmake-build-deb
 
 INCLUDEPATH += $$PWD/library/headers
 DEPENDPATH += $$PWD/library/headers
+
+RESOURCES += \
+    assets.qrc
+win32:RC_ICONS += icon.ico
