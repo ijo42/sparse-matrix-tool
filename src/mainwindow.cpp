@@ -210,7 +210,7 @@ void MainWindow::on_reverseButton_clicked(){
     QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([matrix]() -> SparseDoubleLinkedMatrix* {
         return inverseMatrix(*matrix);
     });
-    
+
 
     QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
     connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress, matrix]() {
@@ -271,17 +271,34 @@ void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool is
     if (filename.isEmpty())
         return;  // Пользователь отменил сохранение
 
-    try {
-        std::string path = filename.toStdString();  // Преобразуем QString в std::string
-        if(isFull) {
-            saveFullToFile(path, *matrix);
-        } else {
-            saveToFile(path, *matrix);  // Вызываем функцию сохранения, определенную в другом месте
+    std::string path = filename.toStdString();  // Преобразуем QString в std::string
+
+
+    auto progress = new QProgressDialog("Сохранение файла...", "Отмена", 0, 0, widget);
+    progress->setWindowModality(Qt::WindowModal);
+    progress->show();
+
+    // Используем QtConcurrent::run для асинхронного выполнения сохранения
+    QFuture<void> future = QtConcurrent::run([matrix, isFull, path]() -> void {
+        try {
+            if (isFull) {
+                saveFullToFile(path, *matrix);  // Предполагается, что это функция сохраняет всю матрицу
+            } else {
+                saveToFile(path, *matrix);  // Вызываем функцию сохранения
+            }
+        } catch (const std::exception &e) {
+            throw std::runtime_error(e.what());  // Переброс исключения для обработки в основном потоке
         }
+    });
+
+    // Отслеживаем завершение асинхронной операции
+    QFutureWatcher<void> *watcher = new QFutureWatcher<void>(widget);
+    connect(watcher, &QFutureWatcher<void>::finished, widget, [widget, watcher, progress, path]() {
+        watcher->deleteLater();
+        progress->close();  // Закрываем прогресс-бар
         QMessageBox::information(widget, "Сохранение", "Матрица успешно сохранена!");
-    } catch (const std::exception& e) {
-        // Обработка возможных исключений при сохранении файла
-        QMessageBox::warning(widget, "Ошибка", QString("Произошла ошибка при сохранении файла: %1").arg(e.what()));
-    }
+
+    });
+    watcher->setFuture(future);
 }
 
