@@ -1,8 +1,6 @@
 #ifndef EXPLORER_H
 #define EXPLORER_H
 
-#include "operations.h"
-#include "qlineedit.h"
 #include "ui_explorer.h"
 #include <QDialog>
 #include <qlistwidget.h>
@@ -10,8 +8,6 @@
 #include <shared.h>
 #include "QInputDialog"
 #include "QTableView"
-#include "sparsematrixmodel.h"
-#include "details.h"
 #include "qlabel.h"
 
 namespace Ui {
@@ -32,7 +28,6 @@ public:
         static QList<SparseDoubleLinkedMatrix*> list;
         return list;
     }
-    void onItemClicked(QListWidgetItem *item);
     void refresh();
 
 
@@ -45,6 +40,8 @@ private slots:
     void on_btnSpareSave_clicked();
 
     void on_btnFullSave_clicked();
+
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
 private:
     QLabel *matrixLabel;

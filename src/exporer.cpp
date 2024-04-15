@@ -25,7 +25,6 @@ explorer::explorer(QWidget *parent, QTableView *matrixPlace, QPushButton *button
     setAcceptDrops(true);
 
     if (matrixPlace) {
-        connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
         this->setWindowTitle("Выберите матрицу для добавления.");
     }
 
@@ -45,7 +44,11 @@ void explorer::populateList() {
     }
 }
 
-void explorer::onItemClicked(QListWidgetItem *item) {
+void explorer::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
+    if(!mPlace){
+        return;
+    }
+
     QVariant variant = item->data(Qt::UserRole);
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     auto model = new SparseMatrixModel(selectedMatrix);
@@ -59,8 +62,6 @@ void explorer::onItemClicked(QListWidgetItem *item) {
 
 void explorer::refresh() {
     this->populateList();
-
-    if (mPlace) connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
 }
 
 void explorer::on_btnAdd_clicked() {
