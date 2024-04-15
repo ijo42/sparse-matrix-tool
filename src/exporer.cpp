@@ -53,6 +53,9 @@ void explorer::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     auto model = new SparseMatrixModel(selectedMatrix);
     mPlace->setModel(model);
+    QModelIndex firstRowIndex = model->index(0, 0);
+    mPlace->scrollTo(firstRowIndex, QAbstractItemView::PositionAtTop);
+
     mPlace->show();
     btn->hide();
     pane->show();
