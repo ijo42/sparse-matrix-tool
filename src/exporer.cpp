@@ -163,30 +163,7 @@ void explorer::dropEvent(QDropEvent *event) {
     progress->setWindowModality(Qt::WindowModal);
     progress->show();
 
-    // Асинхронное выполнение загрузки
-    QFuture<std::pair<SparseDoubleLinkedMatrix*, bool>> future = QtConcurrent::run([filePath]() -> std::pair<SparseDoubleLinkedMatrix*, bool> {
-        bool isSuccess = false;
-        std::string path = filePath.toStdString();
-        auto matrix = loadFromFileValidate(isSuccess, path);
-        return {matrix, isSuccess};
-    });
-
-    // Создание QFutureWatcher для отслеживания завершения задачи
-    QFutureWatcher<std::pair<SparseDoubleLinkedMatrix*, bool>> *watcher = new QFutureWatcher<std::pair<SparseDoubleLinkedMatrix*, bool>>(this);
-    connect(watcher, &QFutureWatcher<std::pair<SparseDoubleLinkedMatrix*, bool>>::finished, this, [this, watcher, filePath, progress]() {
-        progress->close(); // Скрываем диалог прогресса
-        auto result = watcher->result();
-        watcher->deleteLater();
-        if (result.second) {
-            result.first->name = inmatrix::getLastSubstringOrLastFive(filePath).toStdString();
-            this->getMatrixs().append(result.first);
-            this->populateList();
-            QMessageBox::information(this, "Успех", "Матрица успешно загружена");
-        } else {
-            QMessageBox::warning(this, "Предупреждение", "Данный файл не содержит матрицу");
-        }
-    });
-    watcher->setFuture(future);
+    inmatrix::load(filePath, progress, this);
 }
 
 
