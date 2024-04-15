@@ -87,20 +87,37 @@ void MainWindow::on_sumButton_clicked() {
     if (!(matrixA && matrixB)) {
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
-        SparseDoubleLinkedMatrix *m = add(*matrixA, *matrixB);
-        if (m) {
-            if (countElements(*m) > maxElements(*m)) {
-                QMessageBox::warning(this, "Предупреждение",
-                                     "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+        // Показать диалог прогресса
+        auto progress = new QProgressDialog("Сложение матриц...", "Отмена", 0, 0, this);
+        progress->setWindowModality(Qt::WindowModal);
+        progress->show();
+
+        // Асинхронное выполнение умножения
+        QFuture < SparseDoubleLinkedMatrix * > future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix * {
+            return add(*matrixA, *matrixB);
+        });
+
+        // Создание QFutureWatcher для отслеживания завершения задачи
+        QFutureWatcher < SparseDoubleLinkedMatrix * > *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix *>(this);
+        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix *>::finished, this, [this, watcher, progress]() {
+            progress->close(); // Скрываем диалог прогресса
+            SparseDoubleLinkedMatrix *m = watcher->result();
+            watcher->deleteLater();
+            if (m) {
+                if (countElements(*m) > maxElements(*m)) {
+                    QMessageBox::warning(this, "Предупреждение",
+                                         "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+                } else {
+                    m->name = matrixA->name + " + " + matrixB->name;
+                    explorer::getMatrixs().append(m);
+                    QMessageBox::information(this, "Операция над матрицами",
+                                             "Операция успешна! Новая матрица была добавлена в проводник.");
+                }
             } else {
-                m->name = m->name = matrixA->name + " + " + matrixB->name;
-                explorer::getMatrixs().append(m);
-                QMessageBox::information(this, "Операция над матрицами",
-                                         "Операция успешна! Новая матрица была добавлена в проводник.");
+                QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут сложены");
             }
-        } else {
-            QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут складываться.");
-        }
+        });
+        watcher->setFuture(future);
     }
 }
 
@@ -108,22 +125,37 @@ void MainWindow::on_subButton_clicked() {
     if (!(matrixA && matrixB)) {
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
-        SparseDoubleLinkedMatrix *m = sub(*matrixA, *matrixB);
-        if (m) {
-            if (countElements(*m) > maxElements(*m)) {
-                QMessageBox::warning(this, "Предупреждение",
-                                     "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+        // Показать диалог прогресса
+        auto progress = new QProgressDialog("Вычитание матриц...", "Отмена", 0, 0, this);
+        progress->setWindowModality(Qt::WindowModal);
+        progress->show();
+
+        // Асинхронное выполнение умножения
+        QFuture < SparseDoubleLinkedMatrix * > future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix * {
+            return sub(*matrixA, *matrixB);
+        });
+
+        // Создание QFutureWatcher для отслеживания завершения задачи
+        QFutureWatcher < SparseDoubleLinkedMatrix * > *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix *>(this);
+        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix *>::finished, this, [this, watcher, progress]() {
+            progress->close(); // Скрываем диалог прогресса
+            SparseDoubleLinkedMatrix *m = watcher->result();
+            watcher->deleteLater();
+            if (m) {
+                if (countElements(*m) > maxElements(*m)) {
+                    QMessageBox::warning(this, "Предупреждение",
+                                         "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+                } else {
+                    m->name = matrixA->name + " - " + matrixB->name;
+                    explorer::getMatrixs().append(m);
+                    QMessageBox::information(this, "Операция над матрицами",
+                                             "Операция успешна! Новая матрица была добавлена в проводник.");
+                }
             } else {
-                m->name = m->name = matrixA->name + " - " + matrixB->name;
-                explorer::getMatrixs().append(m);
-
-                QMessageBox::information(this, "Операция над матрицами",
-                                         "Операция успешна! Новая матрица была добавлена в проводник.");
-
+                QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут вычитаться");
             }
-        } else {
-            QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут вычитаться");
-        }
+        });
+        watcher->setFuture(future);
     }
 }
 
