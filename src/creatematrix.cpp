@@ -22,20 +22,6 @@ creatematrix::~creatematrix()
 {
     delete ui;
 }
-bool checkLineEditValue(QLineEdit* lineEdit) {
-    bool ok;
-    int value = lineEdit->text().toInt(&ok);
-
-    if (ok && value >= 1 && value <= 10000) {
-        //qDebug() << "Значение в допустимом диапазоне:" << value;
-        return true;
-    } else {
-        //qDebug() << "Значение вне допустимого диапазона или не является числом";
-        return false;
-    }
-}
-
-
 
 void creatematrix::on_pushButton_clicked() {
     bool rowOk, columnOk;
@@ -69,28 +55,33 @@ void creatematrix::on_pushButton_clicked() {
             SparseDoubleLinkedMatrix* matrix = watcher->result();
             watcher->deleteLater();
             if (matrix) {
-                matrix->name = QString("Матрица %1").arg(1 + explorer::getMatrixs().size()).toStdString();
-                explorer::getMatrixs().append(matrix);
-                if (explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
-                    v->refresh();
-                }
 
-                QMessageBox msgBox(this);
-                msgBox.setWindowTitle("Создание матрицы");
-                msgBox.setText("Матрица успешно создана!");
-                msgBox.setInformativeText("Хотите создать еще одну матрицу?");
-                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                msgBox.setDefaultButton(QMessageBox::Yes);
-                if(msgBox.exec() == QMessageBox::No){
-                    ((QWidget*)parent())->close();
-                    (this)->close();
+                if (countElements(*matrix) > maxElements(*matrix)){
+                    QMessageBox::warning(this, "Предупреждение", "Созданная матрица не является разряженной. Обработка невозможна.");
+                } else {
+                    matrix->name = QString("Матрица %1").arg(1 + explorer::getMatrixs().size()).toStdString();
+                    explorer::getMatrixs().append(matrix);
+                    if (explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
+                        v->refresh();
+                    }
+
+                    QMessageBox msgBox(this);
+                    msgBox.setWindowTitle("Создание матрицы");
+                    msgBox.setText("Матрица успешно создана!");
+                    msgBox.setInformativeText("Хотите создать еще одну матрицу?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    if(msgBox.exec() == QMessageBox::No){
+                        ((QWidget*)parent())->close();
+                        (this)->close();
+                    }
                 }
             } else
-                QMessageBox::warning(this, "Ошибка", "Произошла непредвиденная ошибка");
+                QMessageBox::warning(this, "Ошибка", "Произошла непредвиденная ошибка.");
         });
         watcher->setFuture(future);
     } else {
-        QMessageBox::warning(this, "Ошибка", "Значения строк и столбцов могут быть только целые числа от 1 до 10000");
+        QMessageBox::warning(this, "Ошибка", "Значения строк и столбцов могут быть только целые числа от 1 до 10000.");
     }
 }
 
@@ -99,7 +90,7 @@ void creatematrix::on_type_currentIndexChanged(int index)
     if(index == 1) {
         ui->Stolbec->setReadOnly(true);
         if(QString::compare(ui->Stroka->text(), ui->Stolbec->text(), Qt::CaseInsensitive) != 0){
-            QMessageBox::information(this, "Внимание", "Лишь квадратная единичная матрица может быть создана");
+            QMessageBox::information(this, "Внимание", "Лишь квадратная единичная матрица может быть создана.");
         }
         ui->Stolbec->setText(ui->Stroka->text());
     } else {
