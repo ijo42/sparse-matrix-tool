@@ -16,4 +16,5 @@ SparseDoubleLinkedMatrix *multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoub
 SparseDoubleLinkedMatrix *generateUnitMatrix(size_t n);
 SparseDoubleLinkedMatrix *generateRndFifty(int n, int m);
 SparseDoubleLinkedMatrix *setElement(SparseDoubleLinkedMatrix *&matrix, int row, int column, double value);
+void deleteZeroElements(SparseDoubleLinkedMatrix& matrix);
 #endif //OPERATIONS_H

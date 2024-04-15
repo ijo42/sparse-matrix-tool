@@ -289,37 +289,7 @@ SparseDoubleLinkedMatrix *twoMatrixAccumulateOperation(const SparseDoubleLinkedM
         }
     }
 
-    bool sw1, sw2;
-    std::copy(output->columnPointer.begin(), output->columnPointer.end(), outputColumnTail.begin());
-    auto outputPrevColumnTail = outputColumnTail;
-    for (size_t rowit = 0; rowit < output->linePointer.size(); rowit++) {
-        auto lineTail = output->linePointer[rowit];
-        auto prevLineTail = lineTail;
-        for (size_t columnit = 0; columnit < output->columnPointer.size(); columnit++) {
-            if (lineTail && lineTail == outputColumnTail[columnit]) {
-                if (fabs(lineTail->value) < MIN_ZNACH) {
-                    sw1 = false; sw2 = false;
-                    if (prevLineTail != lineTail) prevLineTail->nextLine = lineTail->nextLine;
-                    else { output->linePointer[rowit] = lineTail->nextLine; prevLineTail = output->linePointer[rowit]; sw1 = 1; }
-                    if (outputPrevColumnTail[columnit] != outputColumnTail[columnit]) outputPrevColumnTail[columnit]->nextColumn = outputColumnTail[columnit]->nextColumn;
-                    else { output->columnPointer[columnit] = outputColumnTail[columnit]->nextColumn; outputPrevColumnTail[columnit] = output->columnPointer[columnit]; sw2 = 1; }
-                    lineTail->nextColumn = nullptr;
-                    lineTail->nextLine = nullptr;
-                    free(lineTail);
-                    if (sw1) lineTail = prevLineTail;
-                    else lineTail = prevLineTail->nextLine;
-                    if (sw2)outputColumnTail[columnit] = outputPrevColumnTail[columnit];
-                    else outputColumnTail[columnit] = outputPrevColumnTail[columnit]->nextLine;
-                }
-                else {
-                    prevLineTail = lineTail;
-                    lineTail = lineTail->nextLine;
-                    outputPrevColumnTail[columnit] = outputColumnTail[columnit];
-                    outputColumnTail[columnit] = outputColumnTail[columnit]->nextColumn;
-                }
-            }
-        }
-    }
+    deleteZeroElements(*output);
     return output;
 }
 
@@ -390,7 +360,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
         midPrevColumnTail(columnTail);
     double koef, delitelexist, delitel;
 
-    bool found, stopflag, sw1, sw2;
+    bool found, stopflag;
 
     size_t counter, columnit, column1it, doprowit, dopcolumnit, count, i;
 
@@ -663,36 +633,7 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
 
     //удаляем нули (почему мы убираем только в самом конце)
     //если убирать походу программы будут постоянно возникать нули и на эти нули записываться элементы по несколько раз что скажется на производительности
-    std::copy(UnitMatrix->columnPointer.begin(),UnitMatrix->columnPointer.end(), columnTail.begin());
-    std::copy(UnitMatrix->columnPointer.begin(),UnitMatrix->columnPointer.end(), prevColumnTail.begin());
-    for (rowit = 0; rowit < UnitMatrix->linePointer.size(); rowit++) {
-        lineTail = UnitMatrix->linePointer[rowit];
-        prevLineTail = lineTail;
-        for (columnit = 0; columnit < UnitMatrix->columnPointer.size(); columnit++) {
-            if (lineTail && lineTail == columnTail[columnit]) {
-                if (fabs(lineTail->value) < MIN_ZNACH) {
-                    sw1 = false; sw2 = false;
-                    if (prevLineTail != lineTail) prevLineTail->nextLine = lineTail->nextLine;
-                    else { UnitMatrix->linePointer[rowit] = lineTail->nextLine; prevLineTail = UnitMatrix->linePointer[rowit]; sw1 = 1; }
-                    if (prevColumnTail[columnit] != columnTail[columnit]) prevColumnTail[columnit]->nextColumn = columnTail[columnit]->nextColumn;
-                    else { UnitMatrix->columnPointer[columnit] = columnTail[columnit]->nextColumn; prevColumnTail[columnit] = UnitMatrix->columnPointer[columnit]; sw2 = 1; }
-                    lineTail->nextColumn = nullptr;
-                    lineTail->nextLine = nullptr;
-                    free(lineTail);
-                    if (sw1) lineTail = prevLineTail;
-                    else lineTail = prevLineTail->nextLine;
-                    if (sw2)columnTail[columnit] = prevColumnTail[columnit];
-                    else columnTail[columnit] = prevColumnTail[columnit]->nextLine;
-                }
-                else {
-                    prevLineTail = lineTail;
-                    lineTail = lineTail->nextLine;
-                    prevColumnTail[columnit] = columnTail[columnit];
-                    columnTail[columnit] = columnTail[columnit]->nextColumn;
-                }
-            }
-        }
-    }
+    deleteZeroElements(*UnitMatrix);
 
 
 
@@ -835,4 +776,42 @@ SparseDoubleLinkedMatrix *setElement(SparseDoubleLinkedMatrix *&matrix, int row,
         }
     }
     return matrix;
+}
+
+
+void deleteZeroElements(SparseDoubleLinkedMatrix& matrix) {
+    size_t rowit, columnit;
+    bool sw1, sw2;
+    std::vector<SparseDoubleLinkedMatrixElement*> columnTail(matrix.columnPointer.size()),
+        prevColumnTail(matrix.columnPointer.size());
+    std::copy(matrix.columnPointer.begin(), matrix.columnPointer.end(), columnTail.begin());
+    std::copy(matrix.columnPointer.begin(), matrix.columnPointer.end(), prevColumnTail.begin());
+    for (rowit = 0; rowit < matrix.linePointer.size(); rowit++) {
+        auto lineTail = matrix.linePointer[rowit];
+        auto prevLineTail = lineTail;
+        for (columnit = 0; columnit < matrix.columnPointer.size(); columnit++) {
+            if (lineTail && lineTail == columnTail[columnit]) {
+                if (fabs(lineTail->value) < MIN_ZNACH) {
+                    sw1 = false; sw2 = false;
+                    if (prevLineTail != lineTail) prevLineTail->nextLine = lineTail->nextLine;
+                    else { matrix.linePointer[rowit] = lineTail->nextLine; prevLineTail = matrix.linePointer[rowit]; sw1 = 1; }
+                    if (prevColumnTail[columnit] != columnTail[columnit]) prevColumnTail[columnit]->nextColumn = columnTail[columnit]->nextColumn;
+                    else { matrix.columnPointer[columnit] = columnTail[columnit]->nextColumn; prevColumnTail[columnit] = matrix.columnPointer[columnit]; sw2 = 1; }
+                    lineTail->nextColumn = nullptr;
+                    lineTail->nextLine = nullptr;
+                    free(lineTail);
+                    if (sw1) lineTail = prevLineTail;
+                    else lineTail = prevLineTail->nextLine;
+                    if (sw2)columnTail[columnit] = prevColumnTail[columnit];
+                    else columnTail[columnit] = prevColumnTail[columnit]->nextLine;
+                }
+                else {
+                    prevLineTail = lineTail;
+                    lineTail = lineTail->nextLine;
+                    prevColumnTail[columnit] = columnTail[columnit];
+                    columnTail[columnit] = columnTail[columnit]->nextColumn;
+                }
+            }
+        }
+    }
 }
