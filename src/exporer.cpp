@@ -1,6 +1,7 @@
 #include "qlineedit.h"
 #include "qtconcurrentrun.h"
 #include "ui_explorer.h"
+#include <headers/details.h>
 #include <headers/explorer.h>
 #include <headers/inmatrix.h>
 #include <headers/mainwindow.h>
@@ -13,7 +14,6 @@
 #include <qprogressdialog.h>
 #include <qfuture.h>
 #include <qfuturewatcher.h>
-#include "io.h"
 
 explorer::explorer(QWidget *parent, QTableView *matrixPlace, QPushButton *button, QWidget *pane, QLabel *matrixLabel,
                    SparseDoubleLinkedMatrix **Matrix)
@@ -58,7 +58,14 @@ void explorer::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
     pane->show();
     matrixLabel->hide();
     *matrix = selectedMatrix;
+    QLabel* label = pane->findChild<QLabel*>();
+    if(label) {
+        label->setText(QString::fromStdString(selectedMatrix->name) +
+                       QString(" [%0 x %1]").arg(selectedMatrix->columnPointer.size()).arg(
+                           selectedMatrix->linePointer.size()));
+    }
 }
+
 
 void explorer::refresh() {
     this->populateList();
