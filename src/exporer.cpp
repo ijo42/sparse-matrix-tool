@@ -1,5 +1,6 @@
 #include "qlineedit.h"
 #include "qtconcurrentrun.h"
+#include "operations.h"
 #include "ui_explorer.h"
 #include <headers/details.h>
 #include <headers/explorer.h>
@@ -17,7 +18,7 @@
 
 explorer::explorer(QWidget *parent, QTableView *matrixPlace, QPushButton *button, QWidget *pane, QLabel *matrixLabel,
                    SparseDoubleLinkedMatrix **Matrix)
-        : QDialog(parent), matrixLabel(matrixLabel), mPlace(matrixPlace), btn(button), pane(pane), matrix(Matrix),
+    : QDialog(parent), matrixLabel(matrixLabel), mPlace(matrixPlace), btn(button), pane(pane), matrix(Matrix),
           ui(new Ui::explorer) {
     ui->setupUi(this);
 
@@ -60,7 +61,7 @@ void explorer::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
     btn->hide();
     pane->show();
     matrixLabel->hide();
-    *matrix = selectedMatrix;
+    *matrix = deepCopy(*selectedMatrix);
     QLabel* label = pane->findChild<QLabel*>();
     if(label) {
         label->setText(QString::fromStdString(selectedMatrix->name) +

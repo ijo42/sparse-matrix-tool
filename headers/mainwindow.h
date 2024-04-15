@@ -22,6 +22,7 @@ public:
     ~MainWindow();
     static void save(SparseDoubleLinkedMatrix *matrixA, QWidget *widget, bool isFull);
     static bool isCompatibleWithStdString(const QString &str);
+    void refreshWindow();
 private slots:
 
     void on_exlporerButton_clicked();
