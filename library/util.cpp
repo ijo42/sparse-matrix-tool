@@ -38,6 +38,10 @@ size_t maxElements(const size_t n, const size_t m) {
     return n * m / 10;
 }
 
+size_t softMaxElements(const size_t n, const size_t m) {
+    return n * m / 12;
+}
+
 /* определяет максимальное кол-во элементов матрицы на основе процента заполнения
  * используется для отладки, целевое значение: 10%  */
 size_t maxElements(const SparseDoubleLinkedMatrix &matrix) {

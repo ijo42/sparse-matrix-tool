@@ -25,7 +25,7 @@ SparseDoubleLinkedMatrix *generateEmpty(const int n, const int m) {
  * n - кол-во столбцов, m - кол-во строк
  */
 SparseDoubleLinkedMatrix *generateRnd(const int n, const int m) {
-    int k = maxElements(n, m); // максимальное кол-во ненулевых
+    size_t k = softMaxElements(n, m); // максимальное кол-во ненулевых
 
     auto matrix = new SparseDoubleLinkedMatrix;
     matrix->columnPointer = std::vector<SparseDoubleLinkedMatrixElement *>(n);
@@ -162,10 +162,6 @@ SparseDoubleLinkedMatrix *deepCopy(const SparseDoubleLinkedMatrix &input) {
     }
 
     return output;
-}
-
-size_t countElement(const SparseDoubleLinkedMatrix &matrix) {
-    return matrix.columnPointer.size() * matrix.linePointer.size();
 }
 
 std::pair<size_t, size_t> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
