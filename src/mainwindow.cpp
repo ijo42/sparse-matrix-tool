@@ -17,9 +17,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+        : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
 
@@ -29,13 +27,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->matrixBPane->hide();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_exlporerButton_clicked()
-{
+void MainWindow::on_exlporerButton_clicked() {
     explorer w1;
     w1.setModal(true);
     w1.setWindowModality(Qt::NonModal);
@@ -43,23 +39,21 @@ void MainWindow::on_exlporerButton_clicked()
 }
 
 
-void MainWindow::on_matrixAButton_clicked()
-{
+void MainWindow::on_matrixAButton_clicked() {
     explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, ui->matrixAPane, ui->matrixALabel, &matrixA);
     w1.setModal(true);
     w1.setWindowModality(Qt::ApplicationModal);
     w1.exec();
 }
 
-void MainWindow::on_matrixBButton_clicked()
-{
+void MainWindow::on_matrixBButton_clicked() {
     explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, ui->matrixBPane, ui->matrixBLabel, &matrixB);
     w1.setModal(true);
     w1.setWindowModality(Qt::ApplicationModal);
     w1.exec();
 }
 
-void MainWindow::on_swapButton_clicked(){
+void MainWindow::on_swapButton_clicked() {
     std::swap(matrixA, matrixB);
     if (matrixA) {
         auto model = new SparseMatrixModel(matrixA);
@@ -68,22 +62,20 @@ void MainWindow::on_swapButton_clicked(){
         ui->matrixAView->show();
         ui->matrixAPane->show();
         ui->matrixALabel->hide();
-    }
-    else{
+    } else {
         ui->matrixAView->hide();
         ui->matrixAButton->show();
         ui->matrixAPane->hide();
         ui->matrixALabel->show();
     }
-    if (matrixB){
+    if (matrixB) {
         auto model = new SparseMatrixModel(matrixB);
         ui->matrixBView->setModel(model);
         ui->matrixBButton->hide();
         ui->matrixBView->show();
         ui->matrixBPane->show();
         ui->matrixBLabel->hide();
-    }
-    else{
+    } else {
         ui->matrixBView->hide();
         ui->matrixBButton->show();
         ui->matrixBPane->hide();
@@ -91,18 +83,20 @@ void MainWindow::on_swapButton_clicked(){
     }
 }
 
-void MainWindow::on_sumButton_clicked(){
+void MainWindow::on_sumButton_clicked() {
     if (!(matrixA && matrixB)) {
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
         SparseDoubleLinkedMatrix *m = add(*matrixA, *matrixB);
-        if (m){
-            if (countElements(*m) > maxElements(*m)){
-                QMessageBox::warning(this, "Предупреждение", "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+        if (m) {
+            if (countElements(*m) > maxElements(*m)) {
+                QMessageBox::warning(this, "Предупреждение",
+                                     "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
             } else {
                 m->name = m->name = matrixA->name + " + " + matrixB->name;
                 explorer::getMatrixs().append(m);
-                QMessageBox::information(this, "Операция над матрицами", "Операция успешна! Новая матрица была добавлена в проводник.");
+                QMessageBox::information(this, "Операция над матрицами",
+                                         "Операция успешна! Новая матрица была добавлена в проводник.");
             }
         } else {
             QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут складываться.");
@@ -110,19 +104,21 @@ void MainWindow::on_sumButton_clicked(){
     }
 }
 
-void MainWindow::on_subButton_clicked(){
-    if (!(matrixA && matrixB)){
+void MainWindow::on_subButton_clicked() {
+    if (!(matrixA && matrixB)) {
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
         SparseDoubleLinkedMatrix *m = sub(*matrixA, *matrixB);
-        if (m){
-            if (countElements(*m) > maxElements(*m)){
-                QMessageBox::warning(this, "Предупреждение", "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+        if (m) {
+            if (countElements(*m) > maxElements(*m)) {
+                QMessageBox::warning(this, "Предупреждение",
+                                     "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
             } else {
                 m->name = m->name = matrixA->name + " - " + matrixB->name;
                 explorer::getMatrixs().append(m);
 
-                QMessageBox::information(this, "Операция над матрицами", "Операция успешна! Новая матрица была добавлена в проводник.");
+                QMessageBox::information(this, "Операция над матрицами",
+                                         "Операция успешна! Новая матрица была добавлена в проводник.");
 
             }
         } else {
@@ -132,7 +128,7 @@ void MainWindow::on_subButton_clicked(){
 }
 
 
-void MainWindow::on_multiplyButton_clicked(){
+void MainWindow::on_multiplyButton_clicked() {
     if (!(matrixA && matrixB)) {
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
@@ -142,44 +138,47 @@ void MainWindow::on_multiplyButton_clicked(){
         progress->show();
 
         // Асинхронное выполнение умножения
-        QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix* {
+        QFuture < SparseDoubleLinkedMatrix * > future = QtConcurrent::run([this]() -> SparseDoubleLinkedMatrix * {
             return multiply(*matrixA, *matrixB);
         });
 
         // Создание QFutureWatcher для отслеживания завершения задачи
-        QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
-        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress]() {
+        QFutureWatcher < SparseDoubleLinkedMatrix * > *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix *>(this);
+        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix *>::finished, this, [this, watcher, progress]() {
             progress->close(); // Скрываем диалог прогресса
             SparseDoubleLinkedMatrix *m = watcher->result();
             watcher->deleteLater();
             if (m) {
-                if (countElements(*m) > maxElements(*m)){
-                    QMessageBox::warning(this, "Предупреждение", "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+                if (countElements(*m) > maxElements(*m)) {
+                    QMessageBox::warning(this, "Предупреждение",
+                                         "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
                 } else {
                     m->name = matrixA->name + " * " + matrixB->name;
                     explorer::getMatrixs().append(m);
-                    QMessageBox::information(this, "Операция над матрицами", "Операция успешна! Новая матрица была добавлена в проводник.");
+                    QMessageBox::information(this, "Операция над матрицами",
+                                             "Операция успешна! Новая матрица была добавлена в проводник.");
                 }
             } else {
-                QMessageBox::warning(this, "Предупреждение", "Число столбцов А не равно числу строк B, произведения A*B не существует.");
+                QMessageBox::warning(this, "Предупреждение",
+                                     "Число столбцов А не равно числу строк B, произведения A*B не существует.");
             }
         });
         watcher->setFuture(future);
     }
 }
 
-void MainWindow::on_reverseButton_clicked(){
+void MainWindow::on_reverseButton_clicked() {
     SparseDoubleLinkedMatrix *matrix = nullptr;
 
-    if(matrixA && matrixB){
+    if (matrixA && matrixB) {
         QMessageBox msgBox(this);
         msgBox.setWindowTitle("Выбор матрицы");
         msgBox.setText("Выберите матрицу для операции:");
         msgBox.setIcon(QMessageBox::Question);
 
         // Добавление кнопок для выбора матриц
-        QAbstractButton* buttonA = msgBox.addButton("Матрица A", QMessageBox::AcceptRole);
-        QAbstractButton* buttonB = msgBox.addButton("Матрица B", QMessageBox::RejectRole);
+        QAbstractButton *buttonA = msgBox.addButton("Матрица A", QMessageBox::AcceptRole);
+        QAbstractButton *buttonB = msgBox.addButton("Матрица B", QMessageBox::RejectRole);
 
         msgBox.exec();  // Отображение диалогового окна
 
@@ -188,16 +187,16 @@ void MainWindow::on_reverseButton_clicked(){
         } else if (msgBox.clickedButton() == buttonB) {
             matrix = matrixB;
         }
-    } else if(matrixA) {
+    } else if (matrixA) {
         matrix = matrixA;
-    } else if(matrixB) {
+    } else if (matrixB) {
         matrix = matrixB;
     } else {
         QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
         return;
     }
 
-    if(matrix->columnPointer.size() != matrix->linePointer.size()){
+    if (matrix->columnPointer.size() != matrix->linePointer.size()) {
         QMessageBox::warning(this, "Предупреждение", "Обратная матрица существует только для квадратной матрицы");
         return;
     }
@@ -206,33 +205,35 @@ void MainWindow::on_reverseButton_clicked(){
     progress->setWindowModality(Qt::WindowModal);
     progress->show();
 
-    QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([matrix]() -> SparseDoubleLinkedMatrix* {
+    QFuture < SparseDoubleLinkedMatrix * > future = QtConcurrent::run([matrix]() -> SparseDoubleLinkedMatrix * {
         return inverseMatrix(*matrix);
     });
 
 
-    QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
-    connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress, matrix]() {
+    QFutureWatcher < SparseDoubleLinkedMatrix * > *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix *>(this);
+    connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix *>::finished, this, [this, watcher, progress, matrix]() {
         progress->close(); // Скрываем диалог прогресса
         SparseDoubleLinkedMatrix *m = watcher->result();
         watcher->deleteLater();
         if (m) {
-            if (countElements(*m) > maxElements(*m)){
-                QMessageBox::warning(this, "Предупреждение", "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
+            if (countElements(*m) > maxElements(*m)) {
+                QMessageBox::warning(this, "Предупреждение",
+                                     "Получившаяся в ходе операции матрица не является разряженной. Обработка невозможна.");
             } else {
                 m->name = matrix->name + " ^-1 ";
                 explorer::getMatrixs().append(m);
-                QMessageBox::information(this, "Операция над матрицей", "Операция успешна! Новая матрица была добавлена в проводник.");
+                QMessageBox::information(this, "Операция над матрицей",
+                                         "Операция успешна! Новая матрица была добавлена в проводник.");
             }
         } else {
-            QMessageBox::warning(this, "Предупреждение", "Определитель матрицы равен 0, обратной матрицы не существует");
+            QMessageBox::warning(this, "Предупреждение",
+                                 "Определитель матрицы равен 0, обратной матрицы не существует");
         }
     });
     watcher->setFuture(future);
 }
 
-void MainWindow::on_btnDeleteA_clicked()
-{
+void MainWindow::on_btnDeleteA_clicked() {
     ui->matrixAView->hide();
     ui->matrixAPane->hide();
     ui->matrixAButton->show();
@@ -241,8 +242,7 @@ void MainWindow::on_btnDeleteA_clicked()
 }
 
 
-void MainWindow::on_btnDeleteB_clicked()
-{
+void MainWindow::on_btnDeleteB_clicked() {
     ui->matrixBView->hide();
     ui->matrixBPane->hide();
     ui->matrixBButton->show();
@@ -251,21 +251,20 @@ void MainWindow::on_btnDeleteB_clicked()
 }
 
 
-void MainWindow::on_btnSaveB_clicked()
-{
+void MainWindow::on_btnSaveB_clicked() {
     MainWindow::save(matrixB, this, false);
 
 }
 
 
-void MainWindow::on_btnSaveA_clicked()
-{
+void MainWindow::on_btnSaveA_clicked() {
     MainWindow::save(matrixA, this, false);
 }
 
-void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool isFull)
-{
-    QString filename = QFileDialog::getSaveFileName(widget, "Сохранить матрицу как", "", isFull ? "Matrix Content (*.txt)" : "Double Linked Sparse Matrix Files (*.dlsm)");
+void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool isFull) {
+    QString filename = QFileDialog::getSaveFileName(widget, "Сохранить матрицу как", "",
+                                                    isFull ? "Matrix Content (*.txt)"
+                                                           : "Double Linked Sparse Matrix Files (*.dlsm)");
     if (filename.isEmpty())
         return;  // Пользователь отменил сохранение
 

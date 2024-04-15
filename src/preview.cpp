@@ -5,9 +5,8 @@
 #include <qlabel.h>
 #include <qtableview.h>
 
-Preview::Preview(SparseDoubleLinkedMatrix *matrix,QWidget *parent)
-    : QWidget(parent), ui(new Ui::Preview)
-{
+Preview::Preview(SparseDoubleLinkedMatrix *matrix, QWidget *parent)
+        : QWidget(parent), ui(new Ui::Preview) {
     ui->setupUi(this);
     this->setWindowTitle(QString("Предпросмотр %1").arg(QString::fromStdString(matrix->name)));
     auto model = new SparseMatrixModel(matrix);
@@ -15,7 +14,6 @@ Preview::Preview(SparseDoubleLinkedMatrix *matrix,QWidget *parent)
     ui->tableView->show();
 }
 
-Preview::~Preview()
-{
+Preview::~Preview() {
     delete ui;
 }

@@ -12,14 +12,11 @@
 #include <QProgressDialog>
 
 creatematrix::creatematrix(QWidget *parent)
-    : QDialog(parent)
-    , ui(new Ui::creatematrix)
-{
+        : QDialog(parent), ui(new Ui::creatematrix) {
     ui->setupUi(this);
 }
 
-creatematrix::~creatematrix()
-{
+creatematrix::~creatematrix() {
     delete ui;
 }
 
@@ -36,32 +33,34 @@ void creatematrix::on_pushButton_clicked() {
         int type = ui->type->currentIndex();
 
         // Асинхронное выполнение создания матрицы
-        QFuture<SparseDoubleLinkedMatrix*> future = QtConcurrent::run([type, row, column]() -> SparseDoubleLinkedMatrix* {
-            switch(type) {
-            case 0:
-                return generateRnd(row,column);
-            case 1:
-                return generateUnitMatrix(row);
-            case 2:
-            default:
-                return generateEmpty(row,column);
-            }
-        });
+        QFuture < SparseDoubleLinkedMatrix * > future = QtConcurrent::run(
+                [type, row, column]() -> SparseDoubleLinkedMatrix * {
+                    switch (type) {
+                        case 0:
+                            return generateRnd(row, column);
+                        case 1:
+                            return generateUnitMatrix(row);
+                        case 2:
+                        default:
+                            return generateEmpty(row, column);
+                    }
+                });
 
         // Создание QFutureWatcher для отслеживания завершения задачи
-        QFutureWatcher<SparseDoubleLinkedMatrix*> *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix*>(this);
-        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix*>::finished, this, [this, watcher, progress]() {
+        QFutureWatcher < SparseDoubleLinkedMatrix * > *watcher = new QFutureWatcher<SparseDoubleLinkedMatrix *>(this);
+        connect(watcher, &QFutureWatcher<SparseDoubleLinkedMatrix *>::finished, this, [this, watcher, progress]() {
             progress->close(); // Скрываем диалог прогресса
-            SparseDoubleLinkedMatrix* matrix = watcher->result();
+            SparseDoubleLinkedMatrix *matrix = watcher->result();
             watcher->deleteLater();
             if (matrix) {
 
-                if (countElements(*matrix) > maxElements(*matrix)){
-                    QMessageBox::warning(this, "Предупреждение", "Созданная матрица не является разряженной. Обработка невозможна.");
+                if (countElements(*matrix) > maxElements(*matrix)) {
+                    QMessageBox::warning(this, "Предупреждение",
+                                         "Созданная матрица не является разряженной. Обработка невозможна.");
                 } else {
                     matrix->name = QString("Матрица %1").arg(1 + explorer::getMatrixs().size()).toStdString();
                     explorer::getMatrixs().append(matrix);
-                    if (explorer* v = dynamic_cast<explorer*>(parent()->parent())) {
+                    if (explorer * v = dynamic_cast<explorer *>(parent()->parent())) {
                         v->refresh();
                     }
 
@@ -71,8 +70,8 @@ void creatematrix::on_pushButton_clicked() {
                     msgBox.setInformativeText("Хотите создать еще одну матрицу?");
                     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
                     msgBox.setDefaultButton(QMessageBox::Yes);
-                    if(msgBox.exec() == QMessageBox::No){
-                        ((QWidget*)parent())->close();
+                    if (msgBox.exec() == QMessageBox::No) {
+                        ((QWidget *) parent())->close();
                         (this)->close();
                     }
                 }
@@ -85,11 +84,10 @@ void creatematrix::on_pushButton_clicked() {
     }
 }
 
-void creatematrix::on_type_currentIndexChanged(int index)
-{
-    if(index == 1) {
+void creatematrix::on_type_currentIndexChanged(int index) {
+    if (index == 1) {
         ui->Stolbec->setReadOnly(true);
-        if(QString::compare(ui->Stroka->text(), ui->Stolbec->text(), Qt::CaseInsensitive) != 0){
+        if (QString::compare(ui->Stroka->text(), ui->Stolbec->text(), Qt::CaseInsensitive) != 0) {
             QMessageBox::information(this, "Внимание", "Лишь квадратная единичная матрица может быть создана.");
         }
         ui->Stolbec->setText(ui->Stroka->text());
@@ -99,9 +97,8 @@ void creatematrix::on_type_currentIndexChanged(int index)
 }
 
 
-void creatematrix::on_Stroka_textChanged(const QString &arg1)
-{
-    if(ui->Stolbec->isReadOnly())
+void creatematrix::on_Stroka_textChanged(const QString &arg1) {
+    if (ui->Stolbec->isReadOnly())
         ui->Stolbec->setText(arg1);
 }
 

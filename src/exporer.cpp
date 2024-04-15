@@ -15,15 +15,10 @@
 #include <qfuturewatcher.h>
 #include "io.h"
 
-explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, QWidget* pane, QLabel *matrixLabel, SparseDoubleLinkedMatrix** Matrix)
-    : QDialog(parent)
-    , matrixLabel(matrixLabel)
-    , mPlace(matrixPlace)
-    , btn(button)
-    , pane(pane)
-    , matrix(Matrix)
-    , ui(new Ui::explorer)
-{
+explorer::explorer(QWidget *parent, QTableView *matrixPlace, QPushButton *button, QWidget *pane, QLabel *matrixLabel,
+                   SparseDoubleLinkedMatrix **Matrix)
+        : QDialog(parent), matrixLabel(matrixLabel), mPlace(matrixPlace), btn(button), pane(pane), matrix(Matrix),
+          ui(new Ui::explorer) {
     ui->setupUi(this);
 
     this->populateList();
@@ -39,8 +34,10 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
 void explorer::populateList() {
     ui->listWidget->clear();
 
-    for (auto &matrix : explorer::getMatrixs()) {
-        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name) + QString(" [%0 x %1]").arg(matrix->columnPointer.size()).arg(matrix->linePointer.size()));
+    for (auto &matrix: explorer::getMatrixs()) {
+        QListWidgetItem *item = new QListWidgetItem(QString::fromStdString(matrix->name) +
+                                                    QString(" [%0 x %1]").arg(matrix->columnPointer.size()).arg(
+                                                            matrix->linePointer.size()));
         QVariant variant;
         variant.setValue(matrix);
         item->setData(Qt::UserRole, variant);
@@ -48,9 +45,9 @@ void explorer::populateList() {
     }
 }
 
-void explorer::onItemClicked(QListWidgetItem *item){
+void explorer::onItemClicked(QListWidgetItem *item) {
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     auto model = new SparseMatrixModel(selectedMatrix);
     mPlace->setModel(model);
     mPlace->show();
@@ -66,8 +63,7 @@ void explorer::refresh() {
     if (mPlace) connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
 }
 
-void explorer::on_btnAdd_clicked()
-{
+void explorer::on_btnAdd_clicked() {
     inmatrix w1(this);
     w1.setModal(true);
     w1.exec();
@@ -81,7 +77,7 @@ void explorer::on_btnRemove_clicked() {
     }
     auto *item = selectedItems.first();
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     explorer::getMatrixs().removeOne(selectedMatrix);
     deepDelete(*selectedMatrix);
     delete item;
@@ -95,17 +91,20 @@ void explorer::on_btnRename_clicked() {
     }
     auto *item = selectedItems.first();
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
 
     bool ok;
-    QString newName = QInputDialog::getText(this, "Переименовать", "Новое название:", QLineEdit::Normal, QString::fromStdString(selectedMatrix->name), &ok);
+    QString newName = QInputDialog::getText(this, "Переименовать", "Новое название:", QLineEdit::Normal,
+                                            QString::fromStdString(selectedMatrix->name), &ok);
     if (ok && !newName.isEmpty()) {
         selectedMatrix->name = newName.toStdString();
-        item->setText(QString::fromStdString(selectedMatrix->name) + QString(" [%0 x %1]").arg(selectedMatrix->columnPointer.size()).arg(selectedMatrix->linePointer.size()));
+        item->setText(QString::fromStdString(selectedMatrix->name) +
+                      QString(" [%0 x %1]").arg(selectedMatrix->columnPointer.size()).arg(
+                              selectedMatrix->linePointer.size()));
     }
 }
 
-void explorer::on_btnMoreinf_clicked(){
+void explorer::on_btnMoreinf_clicked() {
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
         QMessageBox::warning(this, "Предупреждение", "Выберите матрицу для вывода подробной информации.");
@@ -113,7 +112,7 @@ void explorer::on_btnMoreinf_clicked(){
     }
     auto *item = selectedItems.first();
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     auto detail = new Details(selectedMatrix);
     detail->show();
 }
@@ -127,7 +126,7 @@ void explorer::on_btnSpareSave_clicked() {
     }
     auto *item = selectedItems.first();
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     MainWindow::save(selectedMatrix, this, false);
 }
 
@@ -139,7 +138,7 @@ void explorer::on_btnFullSave_clicked() {
     }
     auto *item = selectedItems.first();
     QVariant variant = item->data(Qt::UserRole);
-    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
+    SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     MainWindow::save(selectedMatrix, this, true);
 }
 
@@ -152,7 +151,7 @@ void explorer::dragEnterEvent(QDragEnterEvent *event) {
 
 void explorer::dropEvent(QDropEvent *event) {
     // Получаем список URL-ов, которые были перетащены в виджет
-    QList<QUrl> urls = event->mimeData()->urls();
+    QList <QUrl> urls = event->mimeData()->urls();
     if (urls.isEmpty()) return;
 
     QString filePath = urls.first().toLocalFile();  // Получаем путь к первому файлу
@@ -162,7 +161,6 @@ void explorer::dropEvent(QDropEvent *event) {
 }
 
 
-explorer::~explorer()
-{
+explorer::~explorer() {
     delete ui;
 }

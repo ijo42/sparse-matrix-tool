@@ -2,8 +2,8 @@
 
 #include <qmessagebox.h>
 
-SparseMatrixModel::SparseMatrixModel(SparseDoubleLinkedMatrix *matrix, QObject* parent)
-    : QAbstractTableModel(parent), _matrix(matrix) {
+SparseMatrixModel::SparseMatrixModel(SparseDoubleLinkedMatrix *matrix, QObject *parent)
+        : QAbstractTableModel(parent), _matrix(matrix) {
 }
 
 int SparseMatrixModel::rowCount(const QModelIndex &parent) const {
@@ -51,17 +51,19 @@ bool SparseMatrixModel::setData(const QModelIndex &index, const QVariant &value,
     bool isSuccess;
     double newValue = value.toDouble(&isSuccess);
 
-    if(!isSuccess){
-        QMessageBox::warning((QWidget*)this->parent(), "Ошибка", "Введите вещественное число.");
+    if (!isSuccess) {
+        QMessageBox::warning((QWidget * )
+        this->parent(), "Ошибка", "Введите вещественное число.");
         return false;
     }
 
-    if (countElements(*_matrix) >= maxElements(*_matrix) && newValue != 0.0){
-        QMessageBox::warning((QWidget*)this->parent(), "Предупреждение", "В матрицу уже добавлено максимальное количество элементов.");
+    if (countElements(*_matrix) >= maxElements(*_matrix) && newValue != 0.0) {
+        QMessageBox::warning((QWidget * )
+        this->parent(), "Предупреждение", "В матрицу уже добавлено максимальное количество элементов.");
         return false;
     }
 
-    if(setElement(_matrix, row, column, newValue) == nullptr)
+    if (setElement(_matrix, row, column, newValue) == nullptr)
         return false;
 
     emit dataChanged(index, index, {Qt::EditRole});
