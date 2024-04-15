@@ -55,32 +55,7 @@ void MainWindow::on_matrixBButton_clicked() {
 
 void MainWindow::on_swapButton_clicked() {
     std::swap(matrixA, matrixB);
-    if (matrixA) {
-        auto model = new SparseMatrixModel(matrixA);
-        ui->matrixAView->setModel(model);
-        ui->matrixAButton->hide();
-        ui->matrixAView->show();
-        ui->matrixAPane->show();
-        ui->matrixALabel->hide();
-    } else {
-        ui->matrixAView->hide();
-        ui->matrixAButton->show();
-        ui->matrixAPane->hide();
-        ui->matrixALabel->show();
-    }
-    if (matrixB) {
-        auto model = new SparseMatrixModel(matrixB);
-        ui->matrixBView->setModel(model);
-        ui->matrixBButton->hide();
-        ui->matrixBView->show();
-        ui->matrixBPane->show();
-        ui->matrixBLabel->hide();
-    } else {
-        ui->matrixBView->hide();
-        ui->matrixBButton->show();
-        ui->matrixBPane->hide();
-        ui->matrixBLabel->show();
-    }
+    refreshWindow();
 }
 
 void MainWindow::on_sumButton_clicked() {
@@ -331,7 +306,8 @@ void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool is
     QFuture<void> future = QtConcurrent::run([matrix, isFull, path]() -> void {
         try {
             if (isFull) {
-                saveFullToFile(path, *matrix);  // Предполагается, что это функция сохраняет всю матрицу
+                //saveFullToFile(path, *matrix);  // Предполагается, что это функция сохраняет всю матрицу
+                int i;
             } else {
                 saveToFile(path, *matrix);  // Вызываем функцию сохранения
             }
@@ -351,3 +327,32 @@ void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool is
     watcher->setFuture(future);
 }
 
+
+void MainWindow::refreshWindow(){
+    if (matrixA) {
+        auto model = new SparseMatrixModel(matrixA);
+        ui->matrixAView->setModel(model);
+        ui->matrixAButton->hide();
+        ui->matrixAView->show();
+        ui->matrixAPane->show();
+        ui->matrixALabel->hide();
+    } else {
+        ui->matrixAView->hide();
+        ui->matrixAButton->show();
+        ui->matrixAPane->hide();
+        ui->matrixALabel->show();
+    }
+    if (matrixB) {
+        auto model = new SparseMatrixModel(matrixB);
+        ui->matrixBView->setModel(model);
+        ui->matrixBButton->hide();
+        ui->matrixBView->show();
+        ui->matrixBPane->show();
+        ui->matrixBLabel->hide();
+    } else {
+        ui->matrixBView->hide();
+        ui->matrixBButton->show();
+        ui->matrixBPane->hide();
+        ui->matrixBLabel->show();
+    }
+}
