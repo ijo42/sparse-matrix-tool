@@ -77,6 +77,10 @@ SparseDoubleLinkedMatrix *loadFromFile(const std::string &path) {
         line = split(lineString, DLSMDelimiter);
         loadElement(line, elements, i);                    // загрузка элементов
     }
+
+
+    deleteZeroElements(*matrix);
+
     return matrix;
 }
 

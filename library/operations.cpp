@@ -630,17 +630,15 @@ SparseDoubleLinkedMatrix *inverseMatrix(SparseDoubleLinkedMatrix& mainMatrix) { 
         UnitMatrix->columnPointer[rowit] = matrix->columnPointer[matrix->linePointer.size() + rowit];
     }
 
-
-    //удаляем нули (почему мы убираем только в самом конце)
-    //если убирать походу программы будут постоянно возникать нули и на эти нули записываться элементы по несколько раз что скажется на производительности
-    deleteZeroElements(*UnitMatrix);
-
-
-
     matrix->columnPointer.resize(matrix->linePointer.size());
 
 
     deepDelete(*matrix);
+
+
+    //удаляем нули (почему мы убираем только в самом конце)
+    //если убирать походу программы будут постоянно возникать нули и на эти нули записываться элементы по несколько раз что скажется на производительности
+    deleteZeroElements(*UnitMatrix);
 
     return UnitMatrix;
 }
@@ -735,6 +733,7 @@ SparseDoubleLinkedMatrix *multiply(SparseDoubleLinkedMatrix& matrix1, SparseDoub
         }
     }
 
+    deleteZeroElements(*output);
     return output;
 }
 
@@ -775,6 +774,8 @@ SparseDoubleLinkedMatrix *setElement(SparseDoubleLinkedMatrix *&matrix, int row,
             }
         }
     }
+
+    deleteZeroElements(*matrix);
     return matrix;
 }
 
