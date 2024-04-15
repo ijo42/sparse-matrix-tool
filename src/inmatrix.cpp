@@ -71,17 +71,24 @@ void inmatrix::load(QString filename, QWidget *widget) {
             } else {
                 result.first->name = getLastSubstringOrLastFive(filename).toStdString();
                 explorer::getMatrixs().append(result.first);
-                if (explorer* v = dynamic_cast<explorer*>(widget->parent())) {
+
+                if (explorer* v = dynamic_cast<explorer*>(widget)) { // drag'n'drop
                     v->refresh();
-                }
-                QMessageBox msgBox(widget);
-                msgBox.setWindowTitle("Создание матрицы");
-                msgBox.setText("Матрица успешно загружена!");
-                msgBox.setInformativeText("Хотите импортировать еще одну матрицу?");
-                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                msgBox.setDefaultButton(QMessageBox::Yes);
-                if(msgBox.exec() == QMessageBox::No) {
-                    (widget)->close();
+                    QMessageBox::information(widget, "Загрузка матрицы", "Матрица успешно загружена!");
+
+                } else {    // загрузка через окно выбора файла
+                    if (explorer* v = dynamic_cast<explorer*>(widget->parent())) {
+                        v->refresh();
+                    }
+                    QMessageBox msgBox(widget);
+                    msgBox.setWindowTitle("Создание матрицы");
+                    msgBox.setText("Матрица успешно загружена!");
+                    msgBox.setInformativeText("Хотите импортировать еще одну матрицу?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    if(msgBox.exec() == QMessageBox::No) {
+                        (widget)->close();
+                    }
                 }
             }
         } else {
