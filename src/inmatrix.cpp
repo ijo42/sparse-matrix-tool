@@ -92,7 +92,7 @@ void inmatrix::load(QString filename, QWidget *widget) {
                 }
             }
         } else {
-            QMessageBox::warning(widget, "Предупреждение", "Данный файл не содержит матрицу");
+            QMessageBox::warning(widget, "Предупреждение", "Данный файл не содержит матрицу в поддерживаемом формате.");
         }
     });
     watcher->setFuture(future);

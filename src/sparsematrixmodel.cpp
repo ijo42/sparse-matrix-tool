@@ -52,12 +52,12 @@ bool SparseMatrixModel::setData(const QModelIndex &index, const QVariant &value,
     double newValue = value.toDouble(&isSuccess);
 
     if(!isSuccess){
-        QMessageBox::warning((QWidget*)this->parent(), "Ошибка", "Введите вещественное число");
+        QMessageBox::warning((QWidget*)this->parent(), "Ошибка", "Введите вещественное число.");
         return false;
     }
 
     if (countElements(*_matrix) >= maxElements(*_matrix) && newValue != 0.0){
-        QMessageBox::warning((QWidget*)this->parent(), "Предупреждение", "В матрицу уже добавлено максимальное количество элементов");
+        QMessageBox::warning((QWidget*)this->parent(), "Предупреждение", "В матрицу уже добавлено максимальное количество элементов.");
         return false;
     }
 

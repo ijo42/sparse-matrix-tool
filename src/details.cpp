@@ -14,7 +14,7 @@ Details::Details(SparseDoubleLinkedMatrix *matrix, QWidget *parent)
 
     auto elements = listElements(*matrix, lineIds, columnIds);
     ui->tableWidget->setRowCount(elements.size());
-    for (auto r=0; r < elements.size(); r++){
+    for (size_t r = 0; r < elements.size(); r++){
         ss << elements[r]->value;
         ui->tableWidget->setItem(r, 0,new QTableWidgetItem(QString::fromStdString(ss.str())));
         ss.str(std::string());

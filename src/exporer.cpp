@@ -31,7 +31,7 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
 
     if (matrixPlace) {
         connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
-        this->setWindowTitle("Выберите матрицу для добавления");
+        this->setWindowTitle("Выберите матрицу для добавления.");
     }
 
 }
@@ -76,7 +76,7 @@ void explorer::on_btnAdd_clicked()
 void explorer::on_btnRemove_clicked() {
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
-        QMessageBox::warning(this, "Предупреждение", "Выберите объект для удаления");
+        QMessageBox::warning(this, "Предупреждение", "Выберите матрицу для удаления.");
         return;
     }
     auto *item = selectedItems.first();
@@ -90,7 +90,7 @@ void explorer::on_btnRemove_clicked() {
 void explorer::on_btnRename_clicked() {
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
-        QMessageBox::warning(this, "Предупреждение", "Выберите объект для переименования");
+        QMessageBox::warning(this, "Предупреждение", "Выберите матрицу для переименования.");
         return;
     }
     auto *item = selectedItems.first();
@@ -108,7 +108,7 @@ void explorer::on_btnRename_clicked() {
 void explorer::on_btnMoreinf_clicked(){
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
-        QMessageBox::warning(this, "Предупреждение", "Выберите объект для подробностей");
+        QMessageBox::warning(this, "Предупреждение", "Выберите матрицу для вывода подробной информации.");
         return;
     }
     auto *item = selectedItems.first();
@@ -122,7 +122,7 @@ void explorer::on_btnMoreinf_clicked(){
 void explorer::on_btnSpareSave_clicked() {
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
-        QMessageBox::warning(this, "Предупреждение", "Выберите объект для сохранения");
+        QMessageBox::warning(this, "Предупреждение", "Выберите матрицу для сохранения.");
         return;
     }
     auto *item = selectedItems.first();
@@ -134,7 +134,7 @@ void explorer::on_btnSpareSave_clicked() {
 void explorer::on_btnFullSave_clicked() {
     auto selectedItems = ui->listWidget->selectedItems();
     if (selectedItems.isEmpty()) {
-        QMessageBox::warning(this, "Предупреждение", "Выберите объект для сохранения");
+        QMessageBox::warning(this, "Предупреждение", "Выберите матрицу для сохранения.");
         return;
     }
     auto *item = selectedItems.first();

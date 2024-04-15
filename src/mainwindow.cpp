@@ -93,7 +93,7 @@ void MainWindow::on_swapButton_clicked(){
 
 void MainWindow::on_sumButton_clicked(){
     if (!(matrixA && matrixB)) {
-        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
         SparseDoubleLinkedMatrix *m = add(*matrixA, *matrixB);
         if (m){
@@ -102,18 +102,17 @@ void MainWindow::on_sumButton_clicked(){
             } else {
                 m->name = m->name = matrixA->name + " + " + matrixB->name;
                 explorer::getMatrixs().append(m);
-                auto preview = new Preview(m);
-                preview->show();
+                QMessageBox::information(this, "Операция над матрицами", "Операция успешна! Новая матрица была добавлена в проводник.");
             }
         } else {
-            QMessageBox::warning(this, "Предупреждение", "Разная размерность матриц");
+            QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут складываться.");
         }
     }
 }
 
 void MainWindow::on_subButton_clicked(){
     if (!(matrixA && matrixB)){
-        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
         SparseDoubleLinkedMatrix *m = sub(*matrixA, *matrixB);
         if (m){
@@ -122,11 +121,12 @@ void MainWindow::on_subButton_clicked(){
             } else {
                 m->name = m->name = matrixA->name + " - " + matrixB->name;
                 explorer::getMatrixs().append(m);
-                auto preview = new Preview(m);
-                preview->show();
+
+                QMessageBox::information(this, "Операция над матрицами", "Операция успешна! Новая матрица была добавлена в проводник.");
+
             }
         } else {
-            QMessageBox::warning(this, "Предупреждение", "Разная размерность матриц");
+            QMessageBox::warning(this, "Предупреждение", "Матрицы разной размерности не могут вычитаться");
         }
     }
 }
@@ -134,7 +134,7 @@ void MainWindow::on_subButton_clicked(){
 
 void MainWindow::on_multiplyButton_clicked(){
     if (!(matrixA && matrixB)) {
-        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки");
+        QMessageBox::warning(this, "Предупреждение", "Недостаточно матриц для обработки.");
     } else {
         // Показать диалог прогресса
         auto progress = new QProgressDialog("Умножение матриц...", "Отмена", 0, 0, this);
@@ -158,11 +158,10 @@ void MainWindow::on_multiplyButton_clicked(){
                 } else {
                     m->name = matrixA->name + " * " + matrixB->name;
                     explorer::getMatrixs().append(m);
-                    auto preview = new Preview(m);
-                    preview->show();
+                    QMessageBox::information(this, "Операция над матрицами", "Операция успешна! Новая матрица была добавлена в проводник.");
                 }
             } else {
-                QMessageBox::warning(this, "Предупреждение", "Матрицы имеют не сопостовимые размерности");
+                QMessageBox::warning(this, "Предупреждение", "Число столбцов А не равно числу строк B, произведения A*B не существует.");
             }
         });
         watcher->setFuture(future);
@@ -223,11 +222,10 @@ void MainWindow::on_reverseButton_clicked(){
             } else {
                 m->name = matrix->name + " ^-1 ";
                 explorer::getMatrixs().append(m);
-                auto preview = new Preview(m);
-                preview->show();
+                QMessageBox::information(this, "Операция над матрицей", "Операция успешна! Новая матрица была добавлена в проводник.");
             }
         } else {
-            QMessageBox::warning(this, "Предупреждение", "Определитель равен 0");
+            QMessageBox::warning(this, "Предупреждение", "Определитель матрицы равен 0, обратной матрицы не существует");
         }
     });
     watcher->setFuture(future);
