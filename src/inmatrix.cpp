@@ -5,6 +5,7 @@
 #include "QFileDialog"
 
 #include <headers/explorer.h>
+#include <headers/mainwindow.h>
 #include <headers/preview.h>
 #include <QtConcurrent>
 #include <QFuture>
@@ -44,6 +45,13 @@ QString inmatrix::getLastSubstringOrLastFive(const QString &input) {
 }
 
 void inmatrix::load(QString filename, QWidget *widget) {
+
+
+    if(!MainWindow::isCompatibleWithStdString(filename)) {
+        QMessageBox::warning(widget, "Ошибка", "В пути загружаемого файла обнаружены сиволы не латинского алфавита. Загрузка невозможно");
+        return;
+    }
+
     // Показать диалог прогресса
     auto progress = new QProgressDialog("Загрузка матрицы...", "Отмена", 0, 0, widget);
     progress->setWindowModality(Qt::WindowModal);

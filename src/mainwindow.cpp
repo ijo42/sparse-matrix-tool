@@ -261,12 +261,32 @@ void MainWindow::on_btnSaveA_clicked() {
     MainWindow::save(matrixA, this, false);
 }
 
+bool MainWindow::isCompatibleWithStdString(const QString &str) {
+    // Проверяем каждый символ в QString
+    for (int i = 0; i < str.length(); ++i) {
+        QChar ch = str[i];
+        // Если символ выходит за пределы ASCII (0-127), возвращаем false
+        if (ch.unicode() > 127) {
+            return false;
+        }
+    }
+    // Все символы в строке совместимы с ASCII
+    return true;
+}
+
+
 void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool isFull) {
     QString filename = QFileDialog::getSaveFileName(widget, "Сохранить матрицу как", "",
                                                     isFull ? "Matrix Content (*.txt)"
                                                            : "Double Linked Sparse Matrix Files (*.dlsm)");
     if (filename.isEmpty())
         return;  // Пользователь отменил сохранение
+
+
+    if(!isCompatibleWithStdString(filename)) {
+        QMessageBox::warning(widget, "Ошибка", "В пути сохраняемого файла обнаружены сиволы не латинского алфавита. Сохранение невозможно");
+        return;
+    }
 
     std::string path = filename.toStdString();  // Преобразуем QString в std::string
 
