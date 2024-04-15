@@ -72,19 +72,23 @@ void inmatrix::on_pushButton_clicked() {
         auto result = watcher->result();
         watcher->deleteLater();
         if (result.second) {
-            result.first->name = getLastSubstringOrLastFive(filename).toStdString();
-            explorer::getMatrixs().append(result.first);
-            if (explorer* v = dynamic_cast<explorer*>(parent())) {
-                v->refresh();
-            }
-            QMessageBox msgBox(this);
-            msgBox.setWindowTitle("Создание матрицы");
-            msgBox.setText("Матрица успешно загружена!");
-            msgBox.setInformativeText("Хотите импортировать еще одну матрицу?");
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
-            if(msgBox.exec() == QMessageBox::No){
-                (this)->close();
+            if (countElements(*result.first) > maxElements(*result.first)){
+                QMessageBox::warning(this, "Предупреждение", "Загружаемая матрица не является разряженной. Обработка невозможна.");
+            } else {
+                result.first->name = getLastSubstringOrLastFive(filename).toStdString();
+                explorer::getMatrixs().append(result.first);
+                if (explorer* v = dynamic_cast<explorer*>(parent())) {
+                    v->refresh();
+                }
+                QMessageBox msgBox(this);
+                msgBox.setWindowTitle("Создание матрицы");
+                msgBox.setText("Матрица успешно загружена!");
+                msgBox.setInformativeText("Хотите импортировать еще одну матрицу?");
+                msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                msgBox.setDefaultButton(QMessageBox::Yes);
+                if(msgBox.exec() == QMessageBox::No) {
+                    (this)->close();
+                }
             }
         } else {
             QMessageBox::warning(this, "Предупреждение", "Данный файл не содержит матрицу");

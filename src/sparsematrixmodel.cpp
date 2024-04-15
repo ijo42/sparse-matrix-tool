@@ -56,7 +56,11 @@ bool SparseMatrixModel::setData(const QModelIndex &index, const QVariant &value,
         return false;
     }
 
-    // Если элемент не найден и значение не нулевое, добавляем новый элемент
+    if (countElements(*_matrix) >= maxElements(*_matrix) && newValue != 0.0){
+        QMessageBox::warning((QWidget*)this->parent(), "Предупреждение", "В матрицу уже добавлено максимальное количество элементов");
+        return false;
+    }
+
     if(setElement(_matrix, row, column, newValue) == nullptr)
         return false;
 
