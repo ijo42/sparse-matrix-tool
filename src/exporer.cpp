@@ -1,4 +1,5 @@
 #include "qlineedit.h"
+#include "qtconcurrentrun.h"
 #include "ui_explorer.h"
 #include <headers/explorer.h>
 #include <headers/inmatrix.h>
@@ -6,6 +7,13 @@
 #include "QMessageBox"
 #include <QHBoxLayout>
 #include <qlabel.h>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
+#include <qprogressdialog.h>
+#include <qfuture.h>
+#include <qfuturewatcher.h>
+#include "io.h"
 
 explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button, QWidget* pane, QLabel *matrixLabel, SparseDoubleLinkedMatrix** Matrix)
     : QDialog(parent)
@@ -19,6 +27,7 @@ explorer::explorer(QWidget *parent, QTableView* matrixPlace, QPushButton* button
     ui->setupUi(this);
 
     this->populateList();
+    setAcceptDrops(true);
 
     if (matrixPlace) {
         connect(ui->listWidget, &QListWidget::itemClicked, this, &explorer::onItemClicked);
@@ -133,6 +142,53 @@ void explorer::on_btnFullSave_clicked() {
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix*>();
     MainWindow::save(selectedMatrix, this, true);
 }
+
+void explorer::dragEnterEvent(QDragEnterEvent *event) {
+    // Разрешаем событие, если это перетаскивание файла
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void explorer::dropEvent(QDropEvent *event) {
+    // Получаем список URL-ов, которые были перетащены в виджет
+    QList<QUrl> urls = event->mimeData()->urls();
+    if (urls.isEmpty()) return;
+
+    QString filePath = urls.first().toLocalFile();  // Получаем путь к первому файлу
+    if (filePath.isEmpty()) return;
+
+    // Показать диалог прогресса
+    auto progress = new QProgressDialog("Загрузка матрицы...", "Отмена", 0, 0, this);
+    progress->setWindowModality(Qt::WindowModal);
+    progress->show();
+
+    // Асинхронное выполнение загрузки
+    QFuture<std::pair<SparseDoubleLinkedMatrix*, bool>> future = QtConcurrent::run([filePath]() -> std::pair<SparseDoubleLinkedMatrix*, bool> {
+        bool isSuccess = false;
+        std::string path = filePath.toStdString();
+        auto matrix = loadFromFileValidate(isSuccess, path);
+        return {matrix, isSuccess};
+    });
+
+    // Создание QFutureWatcher для отслеживания завершения задачи
+    QFutureWatcher<std::pair<SparseDoubleLinkedMatrix*, bool>> *watcher = new QFutureWatcher<std::pair<SparseDoubleLinkedMatrix*, bool>>(this);
+    connect(watcher, &QFutureWatcher<std::pair<SparseDoubleLinkedMatrix*, bool>>::finished, this, [this, watcher, filePath, progress]() {
+        progress->close(); // Скрываем диалог прогресса
+        auto result = watcher->result();
+        watcher->deleteLater();
+        if (result.second) {
+            result.first->name = inmatrix::getLastSubstringOrLastFive(filePath).toStdString();
+            this->getMatrixs().append(result.first);
+            this->populateList();
+            QMessageBox::information(this, "Успех", "Матрица успешно загружена");
+        } else {
+            QMessageBox::warning(this, "Предупреждение", "Данный файл не содержит матрицу");
+        }
+    });
+    watcher->setFuture(future);
+}
+
 
 explorer::~explorer()
 {

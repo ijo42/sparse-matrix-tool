@@ -15,6 +15,7 @@ public:
     explicit inmatrix(QWidget *parent = nullptr);
     ~inmatrix();
 
+    static QString getLastSubstringOrLastFive(const QString &input);
 private slots:
     void on_pushButton_2_clicked();
 

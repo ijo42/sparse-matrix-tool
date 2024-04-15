@@ -30,7 +30,7 @@ void inmatrix::on_pushButton_2_clicked()//открыть окно создани
     w3.exec();
 }
 
-QString getLastSubstringOrLastFive(const QString &input) {
+QString inmatrix::getLastSubstringOrLastFive(const QString &input) {
     // Проверяем, содержит ли строка символ "/"
     int lastSlashIndex = input.lastIndexOf('/');
     if (lastSlashIndex != -1) {
