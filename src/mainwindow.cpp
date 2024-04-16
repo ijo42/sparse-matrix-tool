@@ -304,8 +304,7 @@ void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool is
     QFuture<void> future = QtConcurrent::run([matrix, isFull, path]() -> void {
         try {
             if (isFull) {
-                //saveFullToFile(path, *matrix);  // Предполагается, что это функция сохраняет всю матрицу
-                int i;
+                saveFullToFile(path, *matrix);  // Предполагается, что это функция сохраняет всю матрицу
             } else {
                 saveToFile(path, *matrix);  // Вызываем функцию сохранения
             }
