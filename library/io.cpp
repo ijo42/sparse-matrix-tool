@@ -6,14 +6,14 @@
  * поиск элемента `searched` начиная от текущей позиции итератора
  * возвращает кол-во элементов между текущим элементом и искомым
  */
-size_t findElementNext(std::vector<SparseDoubleLinkedMatrixElement *>::iterator current,
+inline size_t findElementNext(std::vector<SparseDoubleLinkedMatrixElement *>::iterator current,
                        const SparseDoubleLinkedMatrixElement *searched) {
     int i = 0;
     for (; *current != searched; ++current, ++i) {}
     return i;
 }
 
-SparseDoubleLinkedMatrixElement *
+inline SparseDoubleLinkedMatrixElement *
 createIfNotExists(std::unordered_map<size_t, SparseDoubleLinkedMatrixElement *> &table, size_t id,
                   const double value = NAN) {
     if (id == 0) {
@@ -30,7 +30,7 @@ createIfNotExists(std::unordered_map<size_t, SparseDoubleLinkedMatrixElement *> 
     return table[id]; // Return the element
 }
 
-void loadPointers(const std::vector<std::string> &line,
+inline void loadPointers(const std::vector<std::string> &line,
                   std::unordered_map<size_t, SparseDoubleLinkedMatrixElement *> &elements,
                   std::vector<SparseDoubleLinkedMatrixElement *> &pointers) {
     for (const auto &number: line) {
@@ -44,7 +44,7 @@ void loadPointers(const std::vector<std::string> &line,
     }
 }
 
-void loadElement(const std::vector<std::string> &line,
+inline void loadElement(const std::vector<std::string> &line,
                  std::unordered_map<size_t, SparseDoubleLinkedMatrixElement *> &elements, int id) {
 
     const double value = std::stod(line[0]);
@@ -58,7 +58,7 @@ void loadElement(const std::vector<std::string> &line,
 
 }
 
-SparseDoubleLinkedMatrix *loadFromFile(const std::string &path) {
+inline SparseDoubleLinkedMatrix *loadFromFile(const std::string &path) {
     std::ifstream input(path);
     std::string lineString;
     auto *matrix = new SparseDoubleLinkedMatrix{};
@@ -91,7 +91,7 @@ SparseDoubleLinkedMatrix *loadFromFile(const std::string &path) {
 std::mutex file_mutex; // Мьютекс для синхронизации записи в файл
 
 // Функция асинхронной записи данных в файл
-void asyncWrite(const std::string &path, const std::string &data) {
+inline void asyncWrite(const std::string &path, const std::string &data) {
     std::lock_guard<std::mutex> lock(file_mutex); // Захват мьютекса на время записи в файл
     std::ofstream output(path, std::ios::app); // Открываем файл в режиме добавления
     if (output) {
@@ -159,7 +159,7 @@ void saveToFile(const std::string &path, const SparseDoubleLinkedMatrix &matrix)
 }
 
 
-bool is_chislo(const std::string &s) {
+inline bool is_chislo(const std::string &s) {
     std::string::const_iterator it = s.begin();
     bool b = true, a = true;
     while (it != s.end() && a) {
@@ -174,7 +174,7 @@ bool is_chislo(const std::string &s) {
     return !s.empty() && it == s.end();
 }
 
-bool is_integerpositive(const std::string &s) {
+inline bool is_integerpositive(const std::string &s) {
     std::string::const_iterator it = s.begin();
     while (it != s.end() && std::isdigit(*it)) ++it;
     return !s.empty() && it == s.end();
