@@ -1,4 +1,5 @@
 #include "headers/operations.h"
+#include <random>
 
 /*
  * иницилизирует новый элемент, заполняя значение из параметра, либо NAN при отсутствии параметра
@@ -18,6 +19,12 @@ SparseDoubleLinkedMatrix *generateEmpty(const int n, const int m) {
     return matrix;
 }
 
+
+std::random_device rd;  // Используется только для инициализации
+std::mt19937 gen(rd()); // Генератор, используемый для всех случайных чисел в программе
+std::uniform_real_distribution<> distrib(1.0, 100.0);
+std::uniform_int_distribution<> genDistrib(0, 10);
+
 /*
  * генерирует матрицу
  * каждый элемент генерируется с вероятностью 0.1,
@@ -27,6 +34,7 @@ SparseDoubleLinkedMatrix *generateEmpty(const int n, const int m) {
 SparseDoubleLinkedMatrix *generateRnd(const int n, const int m) {
     size_t k = softMaxElements(n, m); // максимальное кол-во ненулевых
 
+
     auto matrix = new SparseDoubleLinkedMatrix;
     matrix->columnPointer = std::vector<SparseDoubleLinkedMatrixElement *>(n);
     matrix->linePointer = std::vector<SparseDoubleLinkedMatrixElement *>(m);
@@ -35,8 +43,8 @@ SparseDoubleLinkedMatrix *generateRnd(const int n, const int m) {
 
     for (int i = 0; i < n && k > 0; ++i) {      // вместо полного прохода прегенерировать непустые индексы
         for (int j = 0; j < m && k > 0; ++j) {
-            if (rand() % 10 == 0) {
-                auto element = initElement((1.0 + rand() % 1000) / 101.0);
+            if (genDistrib(gen) == 0) {
+                auto element = initElement(distrib(gen));
                 if (!matrix->columnPointer[i])
                     matrix->columnPointer[i] = columnTail[i] = element;
                 else {
