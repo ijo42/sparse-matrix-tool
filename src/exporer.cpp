@@ -52,22 +52,8 @@ void explorer::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
 
     QVariant variant = item->data(Qt::UserRole);
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
-    auto model = new SparseMatrixModel(selectedMatrix);
-    mPlace->setModel(model);
-    QModelIndex firstRowIndex = model->index(0, 0);
-    mPlace->scrollTo(firstRowIndex, QAbstractItemView::PositionAtTop);
-
-    mPlace->show();
-    btn->hide();
-    pane->show();
-    matrixLabel->hide();
-    *matrix = deepCopy(*selectedMatrix);
-    QLabel* label = pane->findChild<QLabel*>();
-    if(label) {
-        label->setText(QString::fromStdString(selectedMatrix->name) +
-                       QString(" [%0 x %1]").arg(selectedMatrix->columnPointer.size()).arg(
-                           selectedMatrix->linePointer.size()));
-    }
+    *matrix = selectedMatrix;
+    qobject_cast<MainWindow *>(parent())->refreshWindow();
 }
 
 
@@ -92,7 +78,9 @@ void explorer::on_btnRemove_clicked() {
     SparseDoubleLinkedMatrix *selectedMatrix = variant.value<SparseDoubleLinkedMatrix *>();
     explorer::getMatrixs().removeOne(selectedMatrix);
     deepDelete(*selectedMatrix);
+    selectedMatrix = nullptr;
     delete item;
+    qobject_cast<MainWindow *>(parent())->refreshWindow();
 }
 
 void explorer::on_btnRename_clicked() {

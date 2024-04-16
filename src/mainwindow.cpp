@@ -329,9 +329,19 @@ void MainWindow::save(SparseDoubleLinkedMatrix *matrix, QWidget *widget, bool is
 
 
 void MainWindow::refreshWindow(){
-    if (matrixA) {
+    if (matrixA && !matrixA->columnPointer.empty()) {
         auto model = new SparseMatrixModel(matrixA);
         ui->matrixAView->setModel(model);
+
+        QModelIndex firstRowIndex = model->index(0, 0);
+        ui->matrixAView->scrollTo(firstRowIndex, QAbstractItemView::PositionAtTop);
+
+        QLabel* label = ui->matrixAPane->findChild<QLabel*>();
+        if(label) {
+            label->setText(QString::fromStdString(matrixA->name) +
+                           QString(" [%0 x %1]").arg(matrixA->columnPointer.size()).arg(
+                               matrixA->linePointer.size()));
+        }
         ui->matrixAButton->hide();
         ui->matrixAView->show();
         ui->matrixAPane->show();
@@ -342,9 +352,19 @@ void MainWindow::refreshWindow(){
         ui->matrixAPane->hide();
         ui->matrixALabel->show();
     }
-    if (matrixB) {
+    if (matrixB&& !matrixB->columnPointer.empty()) {
         auto model = new SparseMatrixModel(matrixB);
         ui->matrixBView->setModel(model);
+
+        QModelIndex firstRowIndex = model->index(0, 0);
+        ui->matrixBView->scrollTo(firstRowIndex, QAbstractItemView::PositionAtTop);
+        QLabel* label = ui->matrixBPane->findChild<QLabel*>();
+        if(label) {
+            label->setText(QString::fromStdString(matrixB->name) +
+                           QString(" [%0 x %1]").arg(matrixB->columnPointer.size()).arg(
+                               matrixB->linePointer.size()));
+        }
+
         ui->matrixBButton->hide();
         ui->matrixBView->show();
         ui->matrixBPane->show();
