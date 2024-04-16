@@ -101,6 +101,7 @@ void explorer::on_btnRename_clicked() {
         item->setText(QString::fromStdString(selectedMatrix->name) +
                       QString(" [%0 x %1]").arg(selectedMatrix->columnPointer.size()).arg(
                               selectedMatrix->linePointer.size()));
+        qobject_cast<MainWindow *>(parent())->refreshWindow();
     }
 }
 
