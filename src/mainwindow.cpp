@@ -32,22 +32,20 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_exlporerButton_clicked() {
-    explorer w1;
-    w1.setModal(true);
-    w1.setWindowModality(Qt::NonModal);
+    explorer w1(this);
     w1.exec();
 }
 
 
 void MainWindow::on_matrixAButton_clicked() {
-    explorer w1(nullptr, ui->matrixAView, ui->matrixAButton, ui->matrixAPane, ui->matrixALabel, &matrixA);
+    explorer w1(this, ui->matrixAView, ui->matrixAButton, ui->matrixAPane, ui->matrixALabel, &matrixA);
     w1.setModal(true);
     w1.setWindowModality(Qt::ApplicationModal);
     w1.exec();
 }
 
 void MainWindow::on_matrixBButton_clicked() {
-    explorer w1(nullptr, ui->matrixBView, ui->matrixBButton, ui->matrixBPane, ui->matrixBLabel, &matrixB);
+    explorer w1(this, ui->matrixBView, ui->matrixBButton, ui->matrixBPane, ui->matrixBLabel, &matrixB);
     w1.setModal(true);
     w1.setWindowModality(Qt::ApplicationModal);
     w1.exec();
