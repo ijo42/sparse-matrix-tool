@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1197</width>
+    <width>1200</width>
     <height>750</height>
    </size>
   </property>
@@ -69,7 +69,7 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../l.qrc">
+     <iconset resource="../assets.qrc">
       <normaloff>:/assets/add.svg</normaloff>:/assets/add.svg</iconset>
     </property>
     <property name="iconSize">
@@ -101,7 +101,7 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../l.qrc">
+     <iconset resource="../assets.qrc">
       <normaloff>:/assets/add.svg</normaloff>:/assets/add.svg</iconset>
     </property>
     <property name="iconSize">
@@ -738,7 +738,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/swap.svg</normaloff>:/assets/swap.svg</iconset>
      </property>
      <property name="iconSize">
@@ -764,7 +764,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/inverse.svg</normaloff>:/assets/inverse.svg</iconset>
      </property>
      <property name="iconSize">
@@ -790,7 +790,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/minus.svg</normaloff>:/assets/minus.svg</iconset>
      </property>
      <property name="iconSize">
@@ -816,7 +816,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/plus.svg</normaloff>:/assets/plus.svg</iconset>
      </property>
      <property name="iconSize">
@@ -842,7 +842,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/multiply.svg</normaloff>:/assets/multiply.svg</iconset>
      </property>
      <property name="iconSize">
@@ -1337,7 +1337,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/explorer.svg</normaloff>:/assets/explorer.svg</iconset>
      </property>
      <property name="iconSize">
@@ -1995,7 +1995,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/close.svg</normaloff>:/assets/close.svg</iconset>
      </property>
      <property name="iconSize">
@@ -2016,7 +2016,7 @@
       <rect>
        <x>10</x>
        <y>5</y>
-       <width>151</width>
+       <width>471</width>
        <height>41</height>
       </rect>
      </property>
@@ -2043,7 +2043,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/save.svg</normaloff>:/assets/save.svg</iconset>
      </property>
      <property name="iconSize">
@@ -2551,7 +2551,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/close.svg</normaloff>:/assets/close.svg</iconset>
      </property>
      <property name="iconSize">
@@ -2572,7 +2572,7 @@
       <rect>
        <x>10</x>
        <y>5</y>
-       <width>141</width>
+       <width>491</width>
        <height>41</height>
       </rect>
      </property>
@@ -2599,7 +2599,7 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset resource="../l.qrc">
+      <iconset resource="../assets.qrc">
        <normaloff>:/assets/save.svg</normaloff>:/assets/save.svg</iconset>
      </property>
      <property name="iconSize">
@@ -2625,7 +2625,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../l.qrc"/>
+  <include location="../assets.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -164,7 +164,7 @@ SparseDoubleLinkedMatrix *deepCopy(const SparseDoubleLinkedMatrix &input) {
     return output;
 }
 
-std::pair<size_t, size_t> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
+inline std::pair<size_t, size_t> matrixSize(const SparseDoubleLinkedMatrix &matrix) {
     return std::pair{matrix.columnPointer.size(), matrix.linePointer.size()};
 }
 
@@ -194,7 +194,7 @@ void deepDelete(SparseDoubleLinkedMatrix &matrix) {
 
 }
 
-void addElement(int i, int j, SparseDoubleLinkedMatrix &output, SparseDoubleLinkedMatrixElement *&outputColumnTail,
+inline void addElement(int i, int j, SparseDoubleLinkedMatrix &output, SparseDoubleLinkedMatrixElement *&outputColumnTail,
                 SparseDoubleLinkedMatrixElement *&outputColumnPrevTail,
                 SparseDoubleLinkedMatrixElement *&outputLinePrevTail, SparseDoubleLinkedMatrixElement *&outputLineTail,
                 SparseDoubleLinkedMatrixElement *&element) {
@@ -225,7 +225,7 @@ void addElement(int i, int j, SparseDoubleLinkedMatrix &output, SparseDoubleLink
     }
 }
 
-SparseDoubleLinkedMatrix *
+inline SparseDoubleLinkedMatrix *
 twoMatrixAccumulateOperation(const SparseDoubleLinkedMatrix &matrix1, const SparseDoubleLinkedMatrix &matrix2,
                              const std::function<double(double, double)> &accumulateFunc) {
     if (matrixSize(matrix1) != matrixSize(matrix2)) { // неквадратные матрицы нельзя складывать / вычитать
@@ -316,7 +316,7 @@ SparseDoubleLinkedMatrix *generateUnitMatrix(size_t n) {
 }
 
 /* добавляет все столбцы из матрицы matrix2 справа к матрице matrix1 */
-void joinMatrix(SparseDoubleLinkedMatrix &matrix1, SparseDoubleLinkedMatrix &matrix2) {
+inline void joinMatrix(SparseDoubleLinkedMatrix &matrix1, SparseDoubleLinkedMatrix &matrix2) {
     if (matrix1.linePointer.size() != matrix2.linePointer.size()) {
         return;
     }
